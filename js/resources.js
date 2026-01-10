@@ -100,6 +100,39 @@ class ResourceManager {
             await new Promise(resolve => setTimeout(resolve, 300));
         }
     }
+
+    // Sprint 3: Load and render manual for AI type
+    async loadManual(aiType) {
+        try {
+            const manualPath = this.getManualForAI(aiType);
+
+            if (!manualPath) {
+                return {
+                    success: false,
+                    message: `No manual found for ${aiType}`
+                };
+            }
+
+            const response = await fetch(manualPath);
+            if (!response.ok) {
+                throw new Error(`Failed to load manual: ${response.status}`);
+            }
+
+            const markdown = await response.text();
+
+            return {
+                success: true,
+                markdown: markdown,
+                aiType: aiType
+            };
+        } catch (error) {
+            console.error('Error loading manual:', error);
+            return {
+                success: false,
+                message: `Failed to load manual: ${error.message}`
+            };
+        }
+    }
 }
 
 // Export for use in other scripts

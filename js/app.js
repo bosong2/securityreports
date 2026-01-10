@@ -114,6 +114,13 @@ class App {
 
         // Render filtered file list
         this.renderFileList(filterType);
+
+        // Sprint 3: Load and display manual for selected AI type
+        if (filterType !== 'all') {
+            this.loadAndDisplayManual(filterType);
+        } else {
+            this.hideManual();
+        }
     }
 
     // Sprint 2: Render file list
@@ -167,6 +174,63 @@ class App {
         // For Sprint 1, we only have HOME tab functionality
         // REPORTS tab will navigate to reports.html
         console.log('Active tab:', tabName);
+    }
+
+    // Sprint 3: Load and display manual
+    async loadAndDisplayManual(aiType) {
+        const manualContainer = document.getElementById('manualSection');
+        if (!manualContainer) return;
+
+        // Show container
+        manualContainer.classList.remove('hidden');
+
+        // Show loading state
+        const manualContent = document.getElementById('manualContent');
+        const manualTitle = document.getElementById('manualTitle');
+
+        if (manualContent) {
+            manualContent.innerHTML = '<div class="manual-loading"><div class="spinner"></div><p style="margin-top: 1rem;">Loading manual...</p></div>';
+        }
+
+        // Load manual
+        const result = await window.resourceManager.loadManual(aiType);
+
+        if (!result.success) {
+            if (manualContent) {
+                manualContent.innerHTML = `
+                    <div class="manual-empty">
+                        <div class="manual-empty-icon">📖</div>
+                        <div class="empty-state-text">${result.message}</div>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        // Update title
+        if (manualTitle) {
+            const aiName = aiType.charAt(0).toUpperCase() + aiType.slice(1);
+            manualTitle.textContent = `📖 ${aiName} Usage Manual`;
+        }
+
+        // Render markdown
+        if (manualContent && window.marked) {
+            try {
+                const html = window.marked.parse(result.markdown);
+                manualContent.innerHTML = html;
+            } catch (error) {
+                console.error('Error rendering markdown:', error);
+                manualContent.innerHTML = `<div class="manual-empty"><div class="empty-state-text">Failed to render manual</div></div>`;
+            }
+        }
+    }
+
+    // Sprint 3: Hide manual
+    hideManual() {
+        const manualContainer = document.getElementById('manualSection');
+        if (manualContainer) {
+            manualContainer.classList.add('hidden');
+        }
     }
 }
 
