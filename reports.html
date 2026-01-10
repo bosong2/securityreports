@@ -1025,15 +1025,23 @@
                     </svg>
                     <span data-en="Home" data-ko="홈">Home</span>
                 </a>
-                <button class="action-btn primary" id="downloadBtn" style="display:none;"
-                    onclick="downloadCurrentReport()">
+                <button class="action-btn" id="printBtn" style="display:none;" onclick="printReport()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                        <path
+                            d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                    </svg>
+                    <span data-en="Print PDF" data-ko="PDF 인쇄">Print PDF</span>
+                </button>
+                <button class="action-btn primary" id="exportBtn" style="display:none;" onclick="exportHTML()">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                         <path
                             d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
                         <path
                             d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
                     </svg>
-                    Download
+                    <span data-en="Export HTML" data-ko="HTML 내보내기">Export HTML</span>
                 </button>
             </div>
         </div>
@@ -2032,7 +2040,8 @@
             document.getElementById('reportContent').innerHTML = html;
             document.getElementById('reportContent').style.display = 'block';
             document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('downloadBtn').style.display = 'flex';
+            document.getElementById('printBtn').style.display = 'flex';
+            document.getElementById('exportBtn').style.display = 'flex';
         }
 
         function updateNavigation() {
@@ -2081,12 +2090,46 @@
             });
         }
 
-        function downloadCurrentReport() {
-            if (reports.length === 0) return;
+        function printReport() {
+            // Print to PDF (browser native)
+            if (reports.length === 0) {
+                alert('No report loaded');
+                return;
+            }
+            window.print();
+        }
+
+        function exportHTML() {
+            // Export as standalone HTML file
+            if (reports.length === 0) {
+                alert('No report loaded');
+                return;
+            }
 
             const report = reports[currentReportIndex];
-            const filename = report._filename || 'report.json';
-            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const filename = (report._filename || 'report.json').replace('.json', '.html');
+
+            // Get the current page HTML
+            const htmlContent = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Report - ${report.scan_metadata?.scan_id || 'Report'}</title>
+    <style>
+        ${document.querySelector('style').textContent}
+        
+        /* Hide navigation controls in exported HTML */
+        .header-controls, .nav-btn, .action-btn { display: none !important; }
+        .header { position: relative !important; }
+    </style>
+</head>
+<body>
+    ${document.documentElement.innerHTML}
+</body>
+</html>`;
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
