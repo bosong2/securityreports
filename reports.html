@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -198,6 +199,26 @@
             background: #4c96eb;
         }
 
+        .home-btn {
+            padding: 8px 16px;
+            background: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .home-btn:hover {
+            background: #35a346;
+            transform: translateY(-1px);
+        }
+
         .main-content {
             max-width: 1400px;
             margin: 0 auto;
@@ -276,7 +297,8 @@
             border: 1px solid rgba(63, 185, 80, 0.3);
         }
 
-        .severity-none, .severity-info {
+        .severity-none,
+        .severity-info {
             background: rgba(139, 148, 158, 0.15);
             color: var(--severity-none);
             border: 1px solid rgba(139, 148, 158, 0.3);
@@ -472,11 +494,13 @@
             margin-top: 4px;
         }
 
-        .components-list, .sensitive-files-list {
+        .components-list,
+        .sensitive-files-list {
             list-style: none;
         }
 
-        .components-list li, .sensitive-files-list li {
+        .components-list li,
+        .sensitive-files-list li {
             padding: 8px 12px;
             background: var(--bg-primary);
             border-radius: 6px;
@@ -600,11 +624,25 @@
             border-radius: 50%;
         }
 
-        .severity-dot.critical { background: var(--severity-critical); }
-        .severity-dot.high { background: var(--severity-high); }
-        .severity-dot.medium { background: var(--severity-medium); }
-        .severity-dot.low { background: var(--severity-low); }
-        .severity-dot.none { background: var(--severity-none); }
+        .severity-dot.critical {
+            background: var(--severity-critical);
+        }
+
+        .severity-dot.high {
+            background: var(--severity-high);
+        }
+
+        .severity-dot.medium {
+            background: var(--severity-medium);
+        }
+
+        .severity-dot.low {
+            background: var(--severity-low);
+        }
+
+        .severity-dot.none {
+            background: var(--severity-none);
+        }
 
         .scan-meta {
             display: flex;
@@ -691,7 +729,8 @@
             font-size: 13px;
         }
 
-        .risk-matrix th, .risk-matrix td {
+        .risk-matrix th,
+        .risk-matrix td {
             padding: 10px 12px;
             text-align: center;
             border: 1px solid var(--border-color);
@@ -708,10 +747,25 @@
             font-weight: 500;
         }
 
-        .risk-matrix .count-critical { color: var(--severity-critical); font-weight: 600; }
-        .risk-matrix .count-high { color: var(--severity-high); font-weight: 600; }
-        .risk-matrix .count-medium { color: var(--severity-medium); font-weight: 600; }
-        .risk-matrix .count-low { color: var(--severity-low); font-weight: 600; }
+        .risk-matrix .count-critical {
+            color: var(--severity-critical);
+            font-weight: 600;
+        }
+
+        .risk-matrix .count-high {
+            color: var(--severity-high);
+            font-weight: 600;
+        }
+
+        .risk-matrix .count-medium {
+            color: var(--severity-medium);
+            font-weight: 600;
+        }
+
+        .risk-matrix .count-low {
+            color: var(--severity-low);
+            font-weight: 600;
+        }
 
         .priority-action-card {
             background: var(--bg-primary);
@@ -776,10 +830,25 @@
             margin-left: 8px;
         }
 
-        .category-vulnerability { background: rgba(248, 81, 73, 0.2); color: var(--severity-high); }
-        .category-license { background: rgba(163, 113, 247, 0.2); color: var(--accent-purple); }
-        .category-version { background: rgba(210, 153, 34, 0.2); color: var(--severity-medium); }
-        .category-supplychain { background: rgba(57, 197, 207, 0.2); color: var(--accent-cyan); }
+        .category-vulnerability {
+            background: rgba(248, 81, 73, 0.2);
+            color: var(--severity-high);
+        }
+
+        .category-license {
+            background: rgba(163, 113, 247, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .category-version {
+            background: rgba(210, 153, 34, 0.2);
+            color: var(--severity-medium);
+        }
+
+        .category-supplychain {
+            background: rgba(57, 197, 207, 0.2);
+            color: var(--accent-cyan);
+        }
 
         .manifest-list {
             display: grid;
@@ -858,9 +927,17 @@
             font-weight: 600;
         }
 
-        .sbom-status-value.status-yes { color: var(--accent-green); }
-        .sbom-status-value.status-no { color: var(--severity-high); }
-        .sbom-status-value.status-na { color: var(--text-muted); }
+        .sbom-status-value.status-yes {
+            color: var(--accent-green);
+        }
+
+        .sbom-status-value.status-no {
+            color: var(--severity-high);
+        }
+
+        .sbom-status-value.status-na {
+            color: var(--text-muted);
+        }
 
         @media (max-width: 768px) {
             .header-content {
@@ -890,12 +967,23 @@
         }
 
         @media print {
-            .header { position: relative; }
-            .nav-btn, .action-btn, .lang-toggle { display: none; }
-            .section.collapsed .section-content { display: block; }
+            .header {
+                position: relative;
+            }
+
+            .nav-btn,
+            .action-btn,
+            .lang-toggle {
+                display: none;
+            }
+
+            .section.collapsed .section-content {
+                display: block;
+            }
         }
     </style>
 </head>
+
 <body>
     <header class="header">
         <div class="header-content">
@@ -908,13 +996,13 @@
                 <div class="report-nav">
                     <button class="nav-btn" id="prevReport" title="Previous Report">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M11 2L5 8l6 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path d="M11 2L5 8l6 6" stroke="currentColor" stroke-width="2" fill="none" />
                         </svg>
                     </button>
                     <span class="report-indicator" id="reportIndicator">1 / 1</span>
                     <button class="nav-btn" id="nextReport" title="Next Report">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" />
                         </svg>
                     </button>
                 </div>
@@ -924,11 +1012,27 @@
                 </div>
                 <input type="file" id="fileInput" class="file-input" accept=".json" multiple>
                 <button class="action-btn" onclick="document.getElementById('fileInput').click()">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 12.5a.5.5 0 0 1-1 0V3.5a.5.5 0 0 1 1 0v9zm1-9a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M3.5 12.5a.5.5 0 0 1-1 0V3.5a.5.5 0 0 1 1 0v9zm1-9a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z" />
+                    </svg>
                     Load JSON
                 </button>
-                <button class="action-btn primary" id="downloadBtn" style="display:none;" onclick="downloadCurrentReport()">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+                <a href="index.html" class="home-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z" />
+                    </svg>
+                    <span data-en="Home" data-ko="홈">Home</span>
+                </a>
+                <button class="action-btn primary" id="downloadBtn" style="display:none;"
+                    onclick="downloadCurrentReport()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                        <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                    </svg>
                     Download
                 </button>
             </div>
@@ -939,7 +1043,10 @@
         <div class="empty-state" id="emptyState">
             <div class="empty-state-icon">📋</div>
             <div class="empty-state-title" data-en="No Report Loaded" data-ko="보고서가 로드되지 않았습니다">No Report Loaded</div>
-            <div class="empty-state-desc" data-en="Click 'Load JSON' to select one or more JSON report files, or drag and drop files here." data-ko="'Load JSON' 버튼을 클릭하여 JSON 보고서 파일을 선택하거나, 파일을 여기에 드래그 앤 드롭하세요.">Click 'Load JSON' to select one or more JSON report files, or drag and drop files here.</div>
+            <div class="empty-state-desc"
+                data-en="Click 'Load JSON' to select one or more JSON report files, or drag and drop files here."
+                data-ko="'Load JSON' 버튼을 클릭하여 JSON 보고서 파일을 선택하거나, 파일을 여기에 드래그 앤 드롭하세요.">Click 'Load JSON' to select one
+                or more JSON report files, or drag and drop files here.</div>
         </div>
         <div id="reportContent" style="display: none;"></div>
     </main>
@@ -1174,9 +1281,9 @@
         function countSbomFindings(sbom) {
             if (!sbom) return 0;
             return (sbom.vulnerability_findings?.length || 0) +
-                   (sbom.license_findings?.length || 0) +
-                   (sbom.version_risk_findings?.length || 0) +
-                   (sbom.supply_chain_findings?.length || 0);
+                (sbom.license_findings?.length || 0) +
+                (sbom.version_risk_findings?.length || 0) +
+                (sbom.supply_chain_findings?.length || 0);
         }
 
         function renderScanMetadata(meta) {
@@ -2045,7 +2152,41 @@
             }
         });
 
+        // Auto-load from localStorage if available (from index.html upload)
+        function checkAndLoadFromLocalStorage() {
+            const storageKey = 'securityReportData';
+            const storedData = localStorage.getItem(storageKey);
+
+            if (storedData) {
+                try {
+                    const reportData = JSON.parse(storedData);
+
+                    // Create a mock file object to use with existing loadReports
+                    const jsonData = reportData.data;
+                    jsonData._filename = reportData.metadata.fileName || 'Uploaded Report';
+
+                    // Load the report
+                    reports = [jsonData];
+                    currentReportIndex = 0;
+                    displayReport(reports[currentReportIndex]);
+                    updateNavigation();
+
+                    // Clear localStorage after loading
+                    localStorage.removeItem(storageKey);
+
+                    console.log('Auto-loaded report from localStorage');
+                } catch (error) {
+                    console.error('Failed to load from localStorage:', error);
+                    // Clear corrupted data
+                    localStorage.removeItem(storageKey);
+                }
+            }
+        }
+
+        // Check localStorage on page load
+        checkAndLoadFromLocalStorage();
         updateNavigation();
     </script>
 </body>
+
 </html>
