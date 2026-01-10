@@ -65,6 +65,91 @@ class App {
                 }
             });
         });
+
+        // Sprint 2: Initialize AI filters and file list
+        if (window.resourceManager) {
+            this.initializeFilters();
+            this.renderFileList('all');
+        }
+    }
+
+    // Sprint 2: Initialize AI filter buttons
+    initializeFilters() {
+        const filterContainer = document.getElementById('filterButtons');
+        if (!filterContainer) return;
+
+        filterContainer.innerHTML = '';
+
+        // Add "All" button
+        const allBtn = document.createElement('button');
+        allBtn.className = 'filter-btn active';
+        allBtn.setAttribute('data-filter', 'all');
+        allBtn.textContent = window.i18n ? window.i18n.t('filterAll') : 'All';
+        allBtn.addEventListener('click', () => this.handleFilterClick('all'));
+        filterContainer.appendChild(allBtn);
+
+        // Add AI-specific buttons
+        const aiTypes = window.resourceManager.getAITypes();
+        aiTypes.forEach(aiType => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.setAttribute('data-filter', aiType);
+            btn.textContent = aiType.charAt(0).toUpperCase() + aiType.slice(1);
+            btn.addEventListener('click', () => this.handleFilterClick(aiType));
+            filterContainer.appendChild(btn);
+        });
+    }
+
+    // Sprint 2: Handle filter button clicks
+    handleFilterClick(filterType) {
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        const activeBtn = document.querySelector(`[data-filter="${filterType}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+
+        // Render filtered file list
+        this.renderFileList(filterType);
+    }
+
+    // Sprint 2: Render file list
+    renderFileList(filterType) {
+        const fileListContainer = document.getElementById('fileList');
+        if (!fileListContainer) return;
+
+        const files = window.resourceManager.filterByAI(filterType);
+
+        if (files.length === 0) {
+            fileListContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-state-text">No resources found for this filter.</div>
+                </div>
+            `;
+            return;
+        }
+
+        fileListContainer.innerHTML = files.map(file => `
+            <div class="file-item">
+                <div class="file-info">
+                    <div class="file-name">
+                        <span>${file.displayName}</span>
+                        <span class="file-type-badge">${file.aiType}</span>
+                    </div>
+                    <div class="file-description">${file.description}</div>
+                </div>
+                <div class="file-actions">
+                    <button class="btn-download" onclick="window.resourceManager.downloadFile('${file.filename}')">
+                        <span>⬇️</span>
+                        <span>Download</span>
+                    </button>
+                </div>
+            </div>
+        `).join('');
     }
 
     setActiveTab(tabName) {
