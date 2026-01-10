@@ -176,6 +176,12 @@ const translations = {
     contactContribute4: 'Pull Request를 제출하세요',
     contactResponseTitle: '응답 시간',
     contactResponse: '이 프로젝트는 오픈소스 커뮤니티에 의해 운영됩니다. 응답 시간은 다를 수 있으며, 긴급한 보안 문제는 우선적으로 처리됩니다.',
+
+    // Cookie Consent
+    cookieConsentText: '이 웹사이트는 사용자 경험 개선 및 맞춤 광고 제공을 위해 쿠키를 사용합니다. 계속 사용하시면 쿠키 정책에 동의하는 것으로 간주됩니다. 자세한 내용은',
+    cookieConsentLink: '개인정보 처리방침',
+    cookieAccept: '동의함',
+    cookieDecline: '거부함',
   },
 
   en: {
@@ -353,6 +359,12 @@ const translations = {
     contactContribute4: 'Submit a Pull Request',
     contactResponseTitle: 'Response Time',
     contactResponse: 'This project is run by the open-source community. Response times may vary, and urgent security issues will be prioritized.',
+
+    // Cookie Consent
+    cookieConsentText: 'This website uses cookies to improve user experience and provide personalized advertising. By continuing to use this site, you consent to our cookie policy. For more information, see our',
+    cookieConsentLink: 'Privacy Policy',
+    cookieAccept: 'Accept',
+    cookieDecline: 'Decline',
   }
 };
 
