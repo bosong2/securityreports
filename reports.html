@@ -2154,16 +2154,21 @@
 
         // Auto-load from localStorage if available (from index.html upload)
         function checkAndLoadFromLocalStorage() {
+            console.log('🔍 Checking localStorage for uploaded report...');
             const storageKey = 'securityReportData';
             const storedData = localStorage.getItem(storageKey);
 
             if (storedData) {
+                console.log('✅ Found data in localStorage!', storedData.substring(0, 100) + '...');
                 try {
                     const reportData = JSON.parse(storedData);
+                    console.log('📦 Parsed report data:', reportData);
 
                     // Create a mock file object to use with existing loadReports
                     const jsonData = reportData.data;
                     jsonData._filename = reportData.metadata.fileName || 'Uploaded Report';
+
+                    console.log('📊 Loading report:', jsonData._filename);
 
                     // Load the report
                     reports = [jsonData];
@@ -2173,17 +2178,21 @@
 
                     // Clear localStorage after loading
                     localStorage.removeItem(storageKey);
+                    console.log('🗑️ Cleared localStorage');
 
-                    console.log('Auto-loaded report from localStorage');
+                    console.log('✅ Auto-loaded report from localStorage successfully!');
                 } catch (error) {
-                    console.error('Failed to load from localStorage:', error);
+                    console.error('❌ Failed to load from localStorage:', error);
                     // Clear corrupted data
                     localStorage.removeItem(storageKey);
                 }
+            } else {
+                console.log('ℹ️ No data found in localStorage');
             }
         }
 
-        // Check localStorage on page load
+        // Check localStorage on page load (MUST RUN FIRST!)
+        console.log('🚀 Reports page initialized');
         checkAndLoadFromLocalStorage();
         updateNavigation();
     </script>
