@@ -129,21 +129,25 @@
                 <div class="ad-placeholder">Ad Banner (728x90)</div>
             </div>
 
-            <!-- Sprint 4: Upload & Reports Integration -->
+            <!-- Sprint 5: JSON Upload (ACTIVE) -->
             <div class="content-section">
                 <h3 class="section-title">
                     <span data-i18n="uploadTitle">JSON 리포트 업로드</span>
-                    <span class="feature-badge">COMING SOON</span>
                 </h3>
 
                 <!-- Quick Actions -->
                 <div class="quick-actions">
                     <!-- Upload Card -->
-                    <div class="quick-action-card upload-section">
+                    <div class="quick-action-card upload-section" id="uploadZone">
                         <div class="upload-icon">📤</div>
                         <div class="upload-title" data-i18n="uploadTitle">JSON 리포트 업로드</div>
                         <div class="upload-description" data-i18n="uploadDesc">스캔 결과 JSON 파일을 업로드하여 상세 리포트를 확인하세요</div>
-                        <button class="upload-button" disabled style="opacity: 0.6; cursor: not-allowed;">
+
+                        <!-- Hidden File Input -->
+                        <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+
+                        <!-- Upload Button (NOW ACTIVE!) -->
+                        <button class="upload-button" id="uploadJsonBtn">
                             <span>📁</span>
                             <span data-i18n="uploadButton">파일 선택</span>
                         </button>
@@ -225,6 +229,7 @@
     <script src="js/theme.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/cookie-consent.js"></script>
+    <script src="js/upload-handler.js"></script>
     <script src="js/app.js"></script>
 </body>
 

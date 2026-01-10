@@ -182,6 +182,15 @@ const translations = {
     cookieConsentLink: '개인정보 처리방침',
     cookieAccept: '동의함',
     cookieDecline: '거부함',
+
+    // Upload Handler
+    uploadErrorInvalidFormat: 'JSON 파일만 업로드 가능합니다',
+    uploadErrorFileSize: '파일 크기는 10MB 이하여야 합니다',
+    uploadErrorEmptyFile: '빈 파일입니다',
+    uploadErrorInvalidJSON: '유효하지 않은 JSON 형식입니다',
+    uploadErrorStorageFull: '저장 공간이 부족합니다. 이전 리포트를 삭제해주세요',
+    uploadProcessing: '처리 중...',
+    uploadSuccess: '업로드 성공',
   },
 
   en: {
@@ -365,6 +374,15 @@ const translations = {
     cookieConsentLink: 'Privacy Policy',
     cookieAccept: 'Accept',
     cookieDecline: 'Decline',
+
+    // Upload Handler
+    uploadErrorInvalidFormat: 'Only JSON files are allowed',
+    uploadErrorFileSize: 'File size must be less than 10MB',
+    uploadErrorEmptyFile: 'File is empty',
+    uploadErrorInvalidJSON: 'Invalid JSON format',
+    uploadErrorStorageFull: 'Storage quota exceeded. Please clear old reports',
+    uploadProcessing: 'Processing...',
+    uploadSuccess: 'Upload successful',
   }
 };
 
