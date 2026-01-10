@@ -31,3 +31,6 @@ dist/
 build/
 *.pyc
 __pycache__/
+
+# Development documentation
+.devdocs/
