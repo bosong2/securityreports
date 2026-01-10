@@ -1,0 +1,202 @@
+/* Layout Optimization & AdSense Integration */
+
+/* Optimized Main Content Layout with Sidebar */
+.main-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.main-content-area {
+    min-width: 0;
+    /* Prevents grid overflow */
+}
+
+/* Sidebar for Ads */
+.sidebar {
+    position: sticky;
+    top: 80px;
+    /* Below header */
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* AdSense Ad Containers */
+.ad-container {
+    background-color: var(--bg-accent);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.ad-placeholder {
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+/* In-content Ad (between sections) */
+.ad-inline {
+    background-color: var(--bg-accent);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+/* Compact Welcome Banner */
+.welcome-banner-compact {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.welcome-banner-compact h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-banner-compact p {
+    font-size: 1rem;
+    opacity: 0.95;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Compact Getting Started */
+.getting-started-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.step-card-compact {
+    padding: 1rem;
+    background-color: var(--bg-accent);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-primary);
+}
+
+.step-card-compact h4 {
+    color: var(--accent-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.step-card-compact p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Responsive Layout */
+@media (max-width: 1200px) {
+    .main-content-wrapper {
+        grid-template-columns: 1fr 250px;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 968px) {
+    .main-content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-top: 2rem;
+    }
+
+    /* Hide sidebar ads on mobile to avoid clutter */
+    .sidebar .ad-container {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-banner-compact {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .welcome-banner-compact h2 {
+        font-size: 1.5rem;
+    }
+
+    .welcome-banner-compact p {
+        font-size: 0.9rem;
+    }
+
+    .getting-started-compact {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content-wrapper {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-banner-compact {
+        padding: 1rem;
+    }
+
+    .welcome-banner-compact h2 {
+        font-size: 1.25rem;
+    }
+
+    .welcome-banner-compact p {
+        font-size: 0.85rem;
+    }
+
+    .step-card-compact {
+        padding: 0.875rem;
+    }
+
+    .step-card-compact h4 {
+        font-size: 0.9rem;
+    }
+
+    .step-card-compact p {
+        font-size: 0.8rem;
+    }
+}
