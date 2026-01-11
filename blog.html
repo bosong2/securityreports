@@ -317,6 +317,12 @@
     <script src="js/blog.js"></script>
 
     <script>
+        // Ensure blogSystem is initialized
+        if (!window.blogSystem) {
+            console.log('Creating BlogSystem instance');
+            window.blogSystem = new BlogSystem();
+        }
+
         // Render blog posts
         async function renderPosts() {
             const container = document.getElementById('blogPosts');
