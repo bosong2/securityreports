@@ -191,6 +191,18 @@ const translations = {
     uploadErrorStorageFull: '저장 공간이 부족합니다. 이전 리포트를 삭제해주세요',
     uploadProcessing: '처리 중...',
     uploadSuccess: '업로드 성공',
+
+    // Blog
+    tabBlog: '블로그',
+    blogTitle: '커뮤니티 보안 리포트',
+    blogSubtitle: '커뮤니티에서 공유된 보안 취약점을 발견하고 공유하세요',
+    filterBy: '필터:',
+    filterAll: '전체',
+    viewReport: '리포트 보기',
+    noPosts: '포스트가 없습니다',
+    loading: '로딩 중...',
+    latestReports: '최신 리포트',
+    newReport: '새로운 리포트',
   },
 
   en: {
@@ -383,6 +395,18 @@ const translations = {
     uploadErrorStorageFull: 'Storage quota exceeded. Please clear old reports',
     uploadProcessing: 'Processing...',
     uploadSuccess: 'Upload successful',
+
+    // Blog
+    tabBlog: 'BLOG',
+    blogTitle: 'Community Security Reports',
+    blogSubtitle: 'Discover and share security vulnerabilities from the community',
+    filterBy: 'Filter by:',
+    filterAll: 'All',
+    viewReport: 'View Report',
+    noPosts: 'No posts found',
+    loading: 'Loading posts...',
+    latestReports: 'Latest Reports',
+    newReport: 'New Report',
   }
 };
 

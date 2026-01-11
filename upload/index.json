@@ -1,0 +1,11 @@
+[
+  {
+    "id": "post-001",
+    "title": "React Application Security Audit - Critical Vulnerabilities Found",
+    "author": "Security Research Team",
+    "date": "2026-01-10",
+    "tags": ["security", "react", "critical", "sql-injection"],
+    "description": "Comprehensive security audit of a React application revealing critical SQL injection vulnerabilities and XSS issues that require immediate attention.",
+    "folder": "post-001"
+  }
+]

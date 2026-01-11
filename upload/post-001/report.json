@@ -1,0 +1,144 @@
+{
+  "scan_metadata": {
+    "scan_id": "DEMO-2026-01-11-001",
+    "scan_date": "2026-01-11T00:24:00Z",
+    "scanner": "Claude AI",
+    "scanner_version": "3.0",
+    "target_repository": "sample-application",
+    "scan_duration_seconds": 42
+  },
+  "repository_overview": {
+    "total_files": 127,
+    "total_lines_of_code": 8543,
+    "primary_languages": ["JavaScript", "Python", "HTML"],
+    "frameworks_detected": ["React", "Express", "Django"]
+  },
+  "security_findings": {
+    "total_findings": 8,
+    "critical": 1,
+    "high": 2,
+    "medium": 3,
+    "low": 2,
+    "findings": [
+      {
+        "id": "SEC-001",
+        "severity": "CRITICAL",
+        "category": "Authentication",
+        "title": "Hardcoded API Key in Source Code",
+        "description": "API keys and secrets found directly in source code files, exposing sensitive credentials",
+        "affected_files": [
+          "src/api/config.js:15",
+          "src/utils/auth.js:28"
+        ],
+        "recommendation": "Move all API keys to environment variables and use a secrets management system",
+        "cwe_id": "CWE-798"
+      },
+      {
+        "id": "SEC-002",
+        "severity": "HIGH",
+        "category": "SQL Injection",
+        "title": "SQL Injection Vulnerability",
+        "description": "User input is directly concatenated into SQL queries without proper sanitization",
+        "affected_files": [
+          "src/database/queries.py:42"
+        ],
+        "recommendation": "Use parameterized queries or prepared statements for all database operations",
+        "cwe_id": "CWE-89"
+      },
+      {
+        "id": "SEC-003",
+        "severity": "HIGH",
+        "category": "XSS",
+        "title": "Cross-Site Scripting (XSS) Vulnerability",
+        "description": "User-controlled data is rendered without proper escaping",
+        "affected_files": [
+          "src/components/UserProfile.jsx:78"
+        ],
+        "recommendation": "Implement proper input validation and output encoding",
+        "cwe_id": "CWE-79"
+      },
+      {
+        "id": "SEC-004",
+        "severity": "MEDIUM",
+        "category": "Authentication",
+        "title": "Weak Password Policy",
+        "description": "Password requirements do not meet security best practices",
+        "affected_files": [
+          "src/auth/password-validator.js:12"
+        ],
+        "recommendation": "Enforce stronger password requirements (minimum 12 characters, mixed case, numbers, symbols)",
+        "cwe_id": "CWE-521"
+      },
+      {
+        "id": "SEC-005",
+        "severity": "MEDIUM",
+        "category": "Session Management",
+        "title": "Session Timeout Not Configured",
+        "description": "User sessions do not expire, allowing indefinite access",
+        "affected_files": [
+          "src/middleware/session.js:25"
+        ],
+        "recommendation": "Implement session timeout with a maximum duration of 30 minutes of inactivity",
+        "cwe_id": "CWE-613"
+      },
+      {
+        "id": "SEC-006",
+        "severity": "MEDIUM",
+        "category": "Data Exposure",
+        "title": "Sensitive Data in Logs",
+        "description": "User passwords and tokens are being logged in application logs",
+        "affected_files": [
+          "src/utils/logger.js:18"
+        ],
+        "recommendation": "Sanitize all logs to remove sensitive information before writing",
+        "cwe_id": "CWE-532"
+      },
+      {
+        "id": "SEC-007",
+        "severity": "LOW",
+        "category": "Configuration",
+        "title": "HTTPS Not Enforced",
+        "description": "Application allows HTTP connections alongside HTTPS",
+        "affected_files": [
+          "server.js:12"
+        ],
+        "recommendation": "Redirect all HTTP traffic to HTTPS and implement HSTS headers",
+        "cwe_id": "CWE-311"
+      },
+      {
+        "id": "SEC-008",
+        "severity": "LOW",
+        "category": "Dependency",
+        "title": "Outdated Dependencies",
+        "description": "Several npm packages have known vulnerabilities",
+        "affected_files": [
+          "package.json"
+        ],
+        "recommendation": "Run 'npm audit fix' and update to latest stable versions",
+        "cwe_id": "CWE-1104"
+      }
+    ]
+  },
+  "priority_recommendations": [
+    {
+      "priority": "CRITICAL",
+      "action": "Remove hardcoded secrets immediately",
+      "rationale": "Exposed API keys can lead to unauthorized access and data breaches"
+    },
+    {
+      "priority": "HIGH",
+      "action": "Implement parameterized SQL queries",
+      "rationale": "SQL injection can lead to complete database compromise"
+    },
+    {
+      "priority": "HIGH",
+      "action": "Add XSS protection",
+      "rationale": "XSS vulnerabilities can steal user sessions and sensitive data"
+    }
+  ],
+  "summary": {
+    "overall_risk_level": "HIGH",
+    "immediate_action_required": true,
+    "estimated_remediation_hours": 16
+  }
+}

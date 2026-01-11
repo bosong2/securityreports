@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Community security reports - Share and discover security vulnerabilities">
+    <title>Community Reports - Security Reports</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>
+        /* Blog-specific styles */
+        .blog-header {
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .blog-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .blog-filters {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .blog-posts {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .post-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-primary);
+        }
+
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .post-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tag.critical {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--accent-red);
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-bottom: 1rem;
+        }
+
+        .post-author {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-view-report {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-view-report:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .blog-header h1 {
+                font-size: 2rem;
+            }
+
+            .blog-posts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header (existing) -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="emoji-logo">🛡️</div>
+                <div>
+                    <div class="logo-text" data-i18n="appTitle">Security Reports</div>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <a href="index.html" class="nav-tab" data-i18n="tabHome">HOME</a>
+                <a href="blog.html" class="nav-tab active" data-i18n="tabBlog">BLOG</a>
+                <a href="reports.html" class="nav-tab" data-i18n="tabReports">REPORTS</a>
+            </nav>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="lang-toggle" id="langToggle">
+                    <span id="currentLang">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Header -->
+    <div class="blog-header">
+        <h1 data-i18n="blogTitle">Community Security Reports</h1>
+        <p data-i18n="blogSubtitle">Discover and share security vulnerabilities from the community</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="blog-filters">
+        <span class="filter-label" data-i18n="filterBy">Filter by:</span>
+        <button class="filter-btn active" data-tag="all" data-i18n="filterAll">All</button>
+        <div id="tagFilters"></div>
+    </div>
+
+    <!-- Posts -->
+    <div class="blog-posts" id="blogPosts">
+        <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div data-i18n="loading">Loading posts...</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            <span data-i18n="footerText">© 2026 Security Reports. 오픈소스 프로젝트</span>
+            <br>
+            <a href="https://github.com/bosong2/securityreports" target="_blank" rel="noopener noreferrer"
+                data-i18n="footerGithub">GitHub에서 보기</a>
+            |
+            <a href="privacy.html" data-i18n="footerPrivacy">개인정보 처리방침</a>
+            |
+            <a href="about.html" data-i18n="footerAbout">소개</a>
+            |
+            <a href="contact.html" data-i18n="footerContact">문의</a>
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/blog.js"></script>
+
+    <script>
+        // Render blog posts
+        async function renderPosts() {
+            const container = document.getElementById('blogPosts');
+
+            try {
+                await window.blogSystem.loadPosts();
+                const posts = window.blogSystem.filteredPosts;
+
+                if (posts.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div data-i18n="noPosts">No posts found</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = posts.map(post => `
+                    <div class="post-card">
+                        <h2 class="post-title">${post.title}</h2>
+                        <p class="post-description">${post.description}</p>
+                        <div class="post-tags">
+                            ${post.tags.map(tag => `
+                                <span class="tag ${tag === 'critical' ? 'critical' : ''}">${tag}</span>
+                            `).join('')}
+                        </div>
+                        <div class="post-meta">
+                            <span class="post-author">By ${post.author}</span>
+                            <span>${window.blogSystem.formatDate(post.date)}</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="btn-view-report" onclick="window.blogSystem.viewReport('${post.id}', '${post.folder}/report.json')">
+                                <span data-i18n="viewReport">View Report</span> →
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Update i18n
+                if (window.i18n) window.i18n.updatePageLanguage();
+
+            } catch (error) {
+                console.error('Error rendering posts:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <div>Failed to load posts</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Render tag filters
+        async function renderTagFilters() {
+            const container = document.getElementById('tagFilters');
+            const tags = window.blogSystem.getAllTags();
+
+            container.innerHTML = tags.map(tag => `
+                <button class="filter-btn" data-tag="${tag}">${tag}</button>
+            `).join('');
+
+            // Add click handlers
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tag = btn.dataset.tag;
+
+                    // Update active state
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Filter posts
+                    if (tag === 'all') {
+                        window.blogSystem.filterByTags([]);
+                    } else {
+                        window.blogSystem.filterByTags([tag]);
+                    }
+
+                    renderPosts();
+                });
+            });
+        }
+
+        // Initialize
+        async function init() {
+            await renderPosts();
+            await renderTagFilters();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
