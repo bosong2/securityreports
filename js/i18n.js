@@ -491,18 +491,21 @@ class I18n {
   }
 
   loadLanguage() {
-    // Check localStorage first
+    // Priority 1: Check localStorage (user preference saved from any page)
     const saved = localStorage.getItem('language');
     if (saved && (saved === 'ko' || saved === 'en')) {
+      console.log('Language loaded from localStorage:', saved);
       return saved;
     }
 
-    // Detect browser language
+    // Priority 2: Detect browser language (only if no saved preference)
     const browserLang = navigator.language.toLowerCase();
     if (browserLang.startsWith('ko')) {
+      console.log('Language set from browser preference: ko');
       return 'ko';
     }
 
+    console.log('Language set to default: en');
     return 'en'; // Default to English
   }
 

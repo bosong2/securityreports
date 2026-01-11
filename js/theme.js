@@ -8,17 +8,20 @@ class ThemeManager {
     }
 
     loadTheme() {
-        // Check localStorage first
+        // Priority 1: Check localStorage (user preference saved from any page)
         const saved = localStorage.getItem('theme');
         if (saved && (saved === 'light' || saved === 'dark')) {
+            console.log('Theme loaded from localStorage:', saved);
             return saved;
         }
 
-        // Detect system preference
+        // Priority 2: Detect system preference (only if no saved preference)
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            console.log('Theme set from system preference: dark');
             return 'dark';
         }
 
+        console.log('Theme set to default: light');
         return 'light'; // Default to light
     }
 
