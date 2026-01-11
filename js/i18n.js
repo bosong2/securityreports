@@ -203,6 +203,8 @@ const translations = {
     loading: '로딩 중...',
     latestReports: '최신 리포트',
     newReport: '새로운 리포트',
+    searchPlaceholder: '포스트 검색...',
+    createPost: '✍️ 포스트 작성',
   },
 
   en: {
@@ -407,6 +409,8 @@ const translations = {
     loading: 'Loading posts...',
     latestReports: 'Latest Reports',
     newReport: 'New Report',
+    searchPlaceholder: 'Search posts...',
+    createPost: '✍️ Create Post',
   }
 };
 
