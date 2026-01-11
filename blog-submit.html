@@ -222,28 +222,37 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="header-content">
+        <div class="header-container">
             <div class="logo">
-                <div class="emoji-logo">🛡️</div>
-                <div>
-                    <div class="logo-text" data-i18n="appTitle">Security Reports</div>
+                <span class="logo-icon">🛡️</span>
+                <div class="logo-text">
+                    <h1 data-i18n="siteTitle">Security Reports</h1>
+                    <p data-i18n="siteSubtitle">AI 기반 보안 스캔 리포트</p>
                 </div>
             </div>
-            <nav class="nav-tabs">
-                <a href="index.html" class="nav-tab" data-i18n="tabHome">HOME</a>
-                <a href="blog.html" class="nav-tab" data-i18n="tabBlog">BLOG</a>
-                <a href="reports.html" class="nav-tab" data-i18n="tabReports">REPORTS</a>
-            </nav>
-            <div class="header-controls">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <span class="theme-icon">🌙</span>
+
+            <div class="header-actions">
+                <button id="langToggle" class="btn" title="Change Language">
+                    <span>🌐</span>
+                    <span class="btn-text">KO</span>
                 </button>
-                <button class="lang-toggle" id="langToggle">
-                    <span id="currentLang">KO</span>
+
+                <button id="themeToggle" class="btn" title="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                    <span class="btn-text" data-i18n="btnDark">다크</span>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-container">
+            <a href="index.html" class="nav-tab" data-i18n="navHome">홈</a>
+            <a href="blog.html" class="nav-tab" data-i18n="tabBlog">블로그</a>
+            <a href="reports.html" class="nav-tab" data-i18n="navReports">리포트</a>
+        </div>
+    </nav>
 
     <!-- Main Content -->
     <div class="submit-container">
@@ -514,11 +523,11 @@ ${nextSteps}:
                 renderTags();
                 selectedFile = null;
                 uploadZone.classList.remove('has-file');
-                
+
                 const uploadText = t.formJsonFileUpload || '클릭하여 업로드';
                 const dragText = t.formJsonFileDragDrop || '또는 드래그 앤 드롭';
                 const helpText = t.formJsonFileHelp || '보안 스캔에서 생성된 JSON 파일';
-                
+
                 uploadZone.innerHTML = `
                     <div class="file-icon">📄</div>
                     <div><strong data-i18n="formJsonFileUpload">${uploadText}</strong> <span data-i18n="formJsonFileDragDrop">${dragText}</span></div>
