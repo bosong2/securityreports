@@ -18,13 +18,6 @@ class ResourceManager {
                 displayName: 'Threat Scan Prompt v2',
                 description: 'Claude prompt template for security threat scanning',
                 path: 'resources/claude_threat_scan_prompt_v_2.md'
-            },
-            {
-                filename: 'claude-manual.md',
-                aiType: 'claude',
-                displayName: 'Usage Manual',
-                description: 'How to use Claude for security scanning',
-                path: 'resources/claude-manual.md'
             }
         ];
 
@@ -52,14 +45,7 @@ class ResourceManager {
         return this.resources.filter(resource => resource.aiType === aiType);
     }
 
-    // Get manual file for AI type
-    getManualForAI(aiType) {
-        const manualFile = this.resources.find(
-            resource => resource.aiType === aiType && resource.filename.includes('manual')
-        );
 
-        return manualFile ? manualFile.path : null;
-    }
 
     // Download a single file
     async downloadFile(filename) {
@@ -104,14 +90,15 @@ class ResourceManager {
     // Sprint 3: Load and render manual for AI type
     async loadManual(aiType) {
         try {
-            const manualPath = this.getManualForAI(aiType);
+            // Get current language from i18n
+            const currentLang = window.i18n ? window.i18n.currentLang : 'en';
 
-            if (!manualPath) {
-                return {
-                    success: false,
-                    message: `No manual found for ${aiType}`
-                };
-            }
+            // Determine which language file to load
+            // Korean uses 'ko', all other languages use 'en'
+            const langCode = currentLang === 'ko' ? 'ko' : 'en';
+
+            // Construct manual file path: /manual/{aiType}-security-scan-manual-{lang}.md
+            const manualPath = `manual/${aiType}-security-scan-manual-${langCode}.md`;
 
             const response = await fetch(manualPath);
             if (!response.ok) {
