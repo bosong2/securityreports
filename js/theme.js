@@ -48,7 +48,8 @@ class ThemeManager {
     }
 
     updateThemeButton() {
-        const themeBtn = document.getElementById('themeBtn');
+        // Support both button IDs (themeBtn for index.html, themeToggle for other pages)
+        const themeBtn = document.getElementById('themeBtn') || document.getElementById('themeToggle');
         if (themeBtn) {
             const icon = themeBtn.querySelector('.theme-icon');
             const text = themeBtn.querySelector('.btn-text');
@@ -60,6 +61,12 @@ class ThemeManager {
                 if (icon) icon.textContent = '🌙';
                 if (text) text.textContent = window.i18n ? window.i18n.t('btnDark') : 'Dark';
             }
+        }
+
+        // Setup click listener if not already set
+        if (themeBtn && !themeBtn.hasAttribute('data-theme-listener')) {
+            themeBtn.addEventListener('click', () => this.toggleTheme());
+            themeBtn.setAttribute('data-theme-listener', 'true');
         }
     }
 

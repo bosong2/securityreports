@@ -540,12 +540,18 @@ class I18n {
       }
     });
 
-    // Update language button text
-    const langBtn = document.getElementById('languageBtn');
+    // Update language button text (support both languageBtn and langToggle)
+    const langBtn = document.getElementById('languageBtn') || document.getElementById('langToggle');
     if (langBtn) {
-      const langText = langBtn.querySelector('.btn-text');
+      const langText = langBtn.querySelector('.btn-text') || langBtn.querySelector('#currentLang');
       if (langText) {
         langText.textContent = this.currentLang === 'ko' ? 'EN' : 'KO';
+      }
+
+      // Auto-setup click listener if not already set
+      if (!langBtn.hasAttribute('data-lang-listener')) {
+        langBtn.addEventListener('click', () => this.toggleLanguage());
+        langBtn.setAttribute('data-lang-listener', 'true');
       }
     }
 

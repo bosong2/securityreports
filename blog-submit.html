@@ -239,7 +239,7 @@
                     <span class="theme-icon">🌙</span>
                 </button>
                 <button class="lang-toggle" id="langToggle">
-                    <span id="currentLang">EN</span>
+                    <span id="currentLang">KO</span>
                 </button>
             </div>
         </div>
@@ -267,64 +267,67 @@
         <form id="submitForm" class="form-card">
             <!-- Title -->
             <div class="form-group">
-                <label class="form-label required" for="title">Title</label>
-                <input type="text" id="title" class="form-input" placeholder="e.g., React Application Security Audit"
-                    required>
-                <div class="form-help">A clear, descriptive title for your security report</div>
+                <label class="form-label required" for="title" data-i18n="formTitle">제목</label>
+                <input type="text" id="title" class="form-input" data-i18n-placeholder="formTitlePlaceholder"
+                    placeholder="예: React 애플리케이션 보안 감사" required>
+                <div class="form-help" data-i18n="formTitleHelp">보안 리포트를 명확하게 설명하는 제목</div>
             </div>
 
             <!-- Description -->
             <div class="form-group">
-                <label class="form-label required" for="description">Description</label>
-                <textarea id="description" class="form-textarea" placeholder="Brief summary of your findings..."
-                    required></textarea>
-                <div class="form-help">Short summary (1-2 sentences)</div>
+                <label class="form-label required" for="description" data-i18n="formDescription">설명</label>
+                <textarea id="description" class="form-textarea" data-i18n-placeholder="formDescriptionPlaceholder"
+                    placeholder="발견된 내용에 대한 간략한 요약..." required></textarea>
+                <div class="form-help" data-i18n="formDescriptionHelp">짧은 요약 (1-2문장)</div>
             </div>
 
             <!-- Author -->
             <div class="form-group">
-                <label class="form-label required" for="author">Your Name</label>
-                <input type="text" id="author" class="form-input" placeholder="e.g., Security Research Team" required>
+                <label class="form-label required" for="author" data-i18n="formAuthor">작성자</label>
+                <input type="text" id="author" class="form-input" data-i18n-placeholder="formAuthorPlaceholder"
+                    placeholder="예: 보안 연구팀" required>
             </div>
 
             <!-- Tags -->
             <div class="form-group">
-                <label class="form-label required">Tags</label>
+                <label class="form-label required" data-i18n="formTags">태그</label>
                 <div class="tag-input-container" id="tagContainer">
-                    <input type="text" id="tagInput" class="form-input" placeholder="Type tag and press Enter"
-                        style="flex: 1; min-width: 200px;">
+                    <input type="text" id="tagInput" class="form-input" data-i18n-placeholder="formTagPlaceholder"
+                        placeholder="태그를 입력하고 Enter를 누르세요" style="flex: 1; min-width: 200px;">
                 </div>
-                <div class="form-help">Add tags like: security, react, critical, sql-injection (press Enter to add)
-                </div>
+                <div class="form-help" data-i18n="formTagHelp">태그 추가 예: security, react, critical, sql-injection (Enter로
+                    추가)</div>
             </div>
 
             <!-- Content -->
             <div class="form-group">
-                <label class="form-label required" for="content">Detailed Report</label>
+                <label class="form-label required" for="content" data-i18n="formContent">상세 리포트</label>
                 <textarea id="content" class="form-textarea" style="min-height: 300px;"
-                    placeholder="# Your Detailed Analysis&#10;&#10;## Key Findings&#10;&#10;### 1. Critical Vulnerability&#10;&#10;..."
-                    required></textarea>
-                <div class="form-help">Markdown supported - detailed analysis, findings, recommendations</div>
+                    data-i18n-placeholder="formContentPlaceholder"
+                    placeholder="# 상세 분석&#10;&#10;## 주요 발견사항&#10;&#10;### 1. 심각한 취약점&#10;&#10;..." required></textarea>
+                <div class="form-help" data-i18n="formContentHelp">Markdown 지원 - 상세 분석, 발견사항, 권장사항</div>
             </div>
 
             <!-- JSON File Upload -->
             <div class="form-group">
-                <label class="form-label required">JSON Security Report</label>
+                <label class="form-label required" data-i18n="formJsonFile">JSON 보안 리포트</label>
                 <div class="file-upload-zone" id="uploadZone">
                     <div class="file-icon">📄</div>
-                    <div><strong>Click to upload</strong> or drag and drop</div>
-                    <div class="form-help">JSON file from your security scan</div>
+                    <div><strong data-i18n="formJsonFileUpload">클릭하여 업로드</strong> <span
+                            data-i18n="formJsonFileDragDrop">또는 드래그 앤 드롭</span></div>
+                    <div class="form-help" data-i18n="formJsonFileHelp">보안 스캔에서 생성된 JSON 파일</div>
                 </div>
                 <input type="file" id="jsonFile" accept=".json" style="display: none;" required>
             </div>
 
             <!-- Actions -->
             <div class="form-actions">
-                <button type="button" class="btn-secondary" onclick="window.location.href='blog.html'">
-                    Cancel
+                <button type="button" class="btn-secondary" onclick="window.location.href='blog.html'"
+                    data-i18n="btnCancel">
+                    취소
                 </button>
                 <button type="submit" class="btn-primary" id="submitBtn">
-                    Generate Files 📦
+                    <span data-i18n="btnGenerate">파일 생성</span> 📦
                 </button>
             </div>
         </form>
@@ -431,18 +434,18 @@
             const t = window.i18n?.translations[window.i18n?.currentLanguage] || {};
 
             if (tags.length === 0) {
-                alert(t.alertNoTags || 'Please add at least one tag');
+                alert(t.alertNoTags || '최소 하나의 태그를 추가해주세요');
                 return;
             }
 
             if (!selectedFile) {
-                alert(t.alertNoFile || 'Please upload a JSON file');
+                alert(t.alertNoFile || 'JSON 파일을 업로드해주세요');
                 return;
             }
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Generating... ⏳';
+            submitBtn.querySelector('span').textContent = t.btnGenerating || '생성 중...';
 
             try {
                 // Get form data
@@ -492,16 +495,18 @@ ${content}
                 URL.revokeObjectURL(url);
 
                 // Show success message
-                alert(`✅ Files generated successfully!
+                const successMsg = t.alertSuccess || '파일이 성공적으로 생성되었습니다!';
+                const nextSteps = t.alertNextSteps || '다음 단계';
+                alert(`✅ ${successMsg}
 
-Next steps:
-1. Extract ${postId}.zip
-2. Fork https://github.com/bosong2/securityreports
-3. Upload folder to /upload/${postId}/
-4. Create Pull Request
-5. Wait for approval
+${nextSteps}:
+1. ${postId}.zip 압축 해제
+2. https://github.com/bosong2/securityreports Fork
+3. /upload/${postId}/ 폴더에 업로드
+4. Pull Request 생성
+5. 승인 대기
 
-Thank you for sharing! 🎉`);
+감사합니다! 🎉`);
 
                 // Reset form
                 document.getElementById('submitForm').reset();
@@ -509,18 +514,24 @@ Thank you for sharing! 🎉`);
                 renderTags();
                 selectedFile = null;
                 uploadZone.classList.remove('has-file');
+                
+                const uploadText = t.formJsonFileUpload || '클릭하여 업로드';
+                const dragText = t.formJsonFileDragDrop || '또는 드래그 앤 드롭';
+                const helpText = t.formJsonFileHelp || '보안 스캔에서 생성된 JSON 파일';
+                
                 uploadZone.innerHTML = `
                     <div class="file-icon">📄</div>
-                    <div><strong>Click to upload</strong> or drag and drop</div>
-                    <div class="form-help">JSON file from your security scan</div>
+                    <div><strong data-i18n="formJsonFileUpload">${uploadText}</strong> <span data-i18n="formJsonFileDragDrop">${dragText}</span></div>
+                    <div class="form-help" data-i18n="formJsonFileHelp">${helpText}</div>
                 `;
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('❌ Error generating files. Please try again.');
+                const errorMsg = t.alertError || '파일 생성 중 오류가 발생했습니다. 다시 시도해주세요.';
+                alert(`❌ ${errorMsg}`);
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Generate Files 📦';
+                submitBtn.querySelector('span').textContent = t.btnGenerate || '파일 생성';
             }
         });
     </script>
