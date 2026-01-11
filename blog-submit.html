@@ -421,13 +421,15 @@
         document.getElementById('submitForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const t = window.i18n?.translations[window.i18n?.currentLanguage] || {};
+
             if (tags.length === 0) {
-                alert('Please add at least one tag');
+                alert(t.alertNoTags || 'Please add at least one tag');
                 return;
             }
 
             if (!selectedFile) {
-                alert('Please upload a JSON file');
+                alert(t.alertNoFile || 'Please upload a JSON file');
                 return;
             }
 
