@@ -90,7 +90,21 @@ window.themeManager = new ThemeManager();
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.themeManager.updateThemeButton();
+
+        // Setup themeToggle button (for pages other than index.html)
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle && !themeToggle.hasAttribute('data-theme-listener')) {
+            themeToggle.addEventListener('click', () => window.themeManager.toggleTheme());
+            themeToggle.setAttribute('data-theme-listener', 'true');
+        }
     });
 } else {
     window.themeManager.updateThemeButton();
+
+    // Setup themeToggle button (for pages other than index.html)
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle && !themeToggle.hasAttribute('data-theme-listener')) {
+        themeToggle.addEventListener('click', () => window.themeManager.toggleTheme());
+        themeToggle.setAttribute('data-theme-listener', 'true');
+    }
 }

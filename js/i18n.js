@@ -556,3 +556,20 @@ class I18n {
 
 // Export for use in other scripts
 window.i18n = new I18n();
+
+// Setup langToggle button click listener (for pages other than index.html)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const langToggle = document.getElementById('langToggle');
+    if (langToggle && !langToggle.hasAttribute('data-lang-listener')) {
+      langToggle.addEventListener('click', () => window.i18n.toggleLanguage());
+      langToggle.setAttribute('data-lang-listener', 'true');
+    }
+  });
+} else {
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle && !langToggle.hasAttribute('data-lang-listener')) {
+    langToggle.addEventListener('click', () => window.i18n.toggleLanguage());
+    langToggle.setAttribute('data-lang-listener', 'true');
+  }
+}
