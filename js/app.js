@@ -2,6 +2,7 @@
 
 class App {
     constructor() {
+        this.currentFilter = 'all'; // Track current active filter
         this.init();
     }
 
@@ -40,6 +41,10 @@ class App {
             langBtn.addEventListener('click', () => {
                 if (window.i18n) {
                     window.i18n.toggleLanguage();
+                    // Reload manual if a specific AI filter is active
+                    if (this.currentFilter !== 'all') {
+                        this.loadAndDisplayManual(this.currentFilter);
+                    }
                 }
             });
         }
@@ -102,6 +107,9 @@ class App {
 
     // Sprint 2: Handle filter button clicks
     handleFilterClick(filterType) {
+        // Update current filter
+        this.currentFilter = filterType;
+
         // Update active button
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
