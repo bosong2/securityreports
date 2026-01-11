@@ -547,12 +547,6 @@ class I18n {
       if (langText) {
         langText.textContent = this.currentLang === 'ko' ? 'EN' : 'KO';
       }
-
-      // Auto-setup click listener if not already set
-      if (!langBtn.hasAttribute('data-lang-listener')) {
-        langBtn.addEventListener('click', () => this.toggleLanguage());
-        langBtn.setAttribute('data-lang-listener', 'true');
-      }
     }
 
     // Update HTML lang attribute

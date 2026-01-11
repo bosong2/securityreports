@@ -62,12 +62,6 @@ class ThemeManager {
                 if (text) text.textContent = window.i18n ? window.i18n.t('btnDark') : 'Dark';
             }
         }
-
-        // Setup click listener if not already set
-        if (themeBtn && !themeBtn.hasAttribute('data-theme-listener')) {
-            themeBtn.addEventListener('click', () => this.toggleTheme());
-            themeBtn.setAttribute('data-theme-listener', 'true');
-        }
     }
 
     setupSystemThemeListener() {
