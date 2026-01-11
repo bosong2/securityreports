@@ -248,18 +248,18 @@
     <!-- Main Content -->
     <div class="submit-container">
         <div class="submit-header">
-            <h1>📝 Share Your Security Report</h1>
-            <p>Help the community by sharing your security scan findings</p>
+            <h1 data-i18n="submitTitle">📝 보안 리포트 공유하기</h1>
+            <p data-i18n="submitSubtitle">커뮤니티에 보안 스캔 결과를 공유해주세요</p>
         </div>
 
         <!-- Info Box -->
         <div class="info-box">
-            <h3>📋 How it works</h3>
+            <h3 data-i18n="howItWorks">📋 작동 방식</h3>
             <ol>
-                <li>Fill out the form below with your report details</li>
-                <li>Upload your JSON security scan report</li>
-                <li>Download the generated files (ZIP)</li>
-                <li>Submit via GitHub Pull Request</li>
+                <li data-i18n="howItWorksStep1">아래 양식을 작성하세요</li>
+                <li data-i18n="howItWorksStep2">JSON 보안 스캔 리포트를 업로드하세요</li>
+                <li data-i18n="howItWorksStep3">생성된 파일(ZIP)을 다운로드하세요</li>
+                <li data-i18n="howItWorksStep4">GitHub Pull Request로 제출하세요</li>
             </ol>
         </div>
 
@@ -336,6 +336,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
+        // Initialize i18n
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.i18n) {
+                window.i18n.updatePageLanguage();
+            }
+        });
+
         // Tags management
         const tags = [];
         const tagInput = document.getElementById('tagInput');
