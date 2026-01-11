@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Security Report - Security Reports</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>
+        .submit-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .submit-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .submit-header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .submit-header p {
+            color: var(--text-secondary);
+        }
+
+        .form-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--accent-red);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-top: 0.25rem;
+        }
+
+        .tag-input-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tag-chip {
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tag-remove:hover {
+            opacity: 0.7;
+        }
+
+        .file-upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-upload-zone:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .file-upload-zone.has-file {
+            border-color: var(--accent-primary);
+            background: rgba(var(--accent-primary-rgb), 0.1);
+        }
+
+        .file-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 2rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 2rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .info-box {
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .info-box ol {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .info-box li {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="emoji-logo">🛡️</div>
+                <div>
+                    <div class="logo-text" data-i18n="appTitle">Security Reports</div>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <a href="index.html" class="nav-tab" data-i18n="tabHome">HOME</a>
+                <a href="blog.html" class="nav-tab" data-i18n="tabBlog">BLOG</a>
+                <a href="reports.html" class="nav-tab" data-i18n="tabReports">REPORTS</a>
+            </nav>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="lang-toggle" id="langToggle">
+                    <span id="currentLang">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="submit-container">
+        <div class="submit-header">
+            <h1>📝 Share Your Security Report</h1>
+            <p>Help the community by sharing your security scan findings</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>📋 How it works</h3>
+            <ol>
+                <li>Fill out the form below with your report details</li>
+                <li>Upload your JSON security scan report</li>
+                <li>Download the generated files (ZIP)</li>
+                <li>Submit via GitHub Pull Request</li>
+            </ol>
+        </div>
+
+        <!-- Form -->
+        <form id="submitForm" class="form-card">
+            <!-- Title -->
+            <div class="form-group">
+                <label class="form-label required" for="title">Title</label>
+                <input type="text" id="title" class="form-input" placeholder="e.g., React Application Security Audit"
+                    required>
+                <div class="form-help">A clear, descriptive title for your security report</div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label class="form-label required" for="description">Description</label>
+                <textarea id="description" class="form-textarea" placeholder="Brief summary of your findings..."
+                    required></textarea>
+                <div class="form-help">Short summary (1-2 sentences)</div>
+            </div>
+
+            <!-- Author -->
+            <div class="form-group">
+                <label class="form-label required" for="author">Your Name</label>
+                <input type="text" id="author" class="form-input" placeholder="e.g., Security Research Team" required>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group">
+                <label class="form-label required">Tags</label>
+                <div class="tag-input-container" id="tagContainer">
+                    <input type="text" id="tagInput" class="form-input" placeholder="Type tag and press Enter"
+                        style="flex: 1; min-width: 200px;">
+                </div>
+                <div class="form-help">Add tags like: security, react, critical, sql-injection (press Enter to add)
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="form-group">
+                <label class="form-label required" for="content">Detailed Report</label>
+                <textarea id="content" class="form-textarea" style="min-height: 300px;"
+                    placeholder="# Your Detailed Analysis&#10;&#10;## Key Findings&#10;&#10;### 1. Critical Vulnerability&#10;&#10;..."
+                    required></textarea>
+                <div class="form-help">Markdown supported - detailed analysis, findings, recommendations</div>
+            </div>
+
+            <!-- JSON File Upload -->
+            <div class="form-group">
+                <label class="form-label required">JSON Security Report</label>
+                <div class="file-upload-zone" id="uploadZone">
+                    <div class="file-icon">📄</div>
+                    <div><strong>Click to upload</strong> or drag and drop</div>
+                    <div class="form-help">JSON file from your security scan</div>
+                </div>
+                <input type="file" id="jsonFile" accept=".json" style="display: none;" required>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="window.location.href='blog.html'">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    Generate Files 📦
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+        // Tags management
+        const tags = [];
+        const tagInput = document.getElementById('tagInput');
+        const tagContainer = document.getElementById('tagContainer');
+
+        tagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = tagInput.value.trim().toLowerCase();
+                if (tag && !tags.includes(tag)) {
+                    tags.push(tag);
+                    renderTags();
+                    tagInput.value = '';
+                }
+            }
+        });
+
+        function renderTags() {
+            const existing = tagContainer.querySelectorAll('.tag-chip');
+            existing.forEach(el => el.remove());
+
+            tags.forEach(tag => {
+                const chip = document.createElement('div');
+                chip.className = 'tag-chip';
+                chip.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove" onclick="removeTag('${tag}')">×</span>
+                `;
+                tagContainer.insertBefore(chip, tagInput);
+            });
+        }
+
+        function removeTag(tag) {
+            const index = tags.indexOf(tag);
+            if (index > -1) {
+                tags.splice(index, 1);
+                renderTags();
+            }
+        }
+
+        // File upload
+        const uploadZone = document.getElementById('uploadZone');
+        const jsonFile = document.getElementById('jsonFile');
+        let selectedFile = null;
+
+        uploadZone.addEventListener('click', () => jsonFile.click());
+
+        jsonFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                uploadZone.classList.add('has-file');
+                uploadZone.innerHTML = `
+                    <div class="file-icon">✅</div>
+                    <div><strong>${selectedFile.name}</strong></div>
+                    <div class="form-help">${(selectedFile.size / 1024).toFixed(2)} KB</div>
+                `;
+            }
+        });
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].name.endsWith('.json')) {
+                jsonFile.files = files;
+                selectedFile = files[0];
+                uploadZone.classList.add('has-file');
+                uploadZone.innerHTML = `
+                    <div class="file-icon">✅</div>
+                    <div><strong>${selectedFile.name}</strong></div>
+                    <div class="form-help">${(selectedFile.size / 1024).toFixed(2)} KB</div>
+                `;
+            }
+        });
+
+        // Form submission
+        document.getElementById('submitForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (tags.length === 0) {
+                alert('Please add at least one tag');
+                return;
+            }
+
+            if (!selectedFile) {
+                alert('Please upload a JSON file');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating... ⏳';
+
+            try {
+                // Get form data
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const author = document.getElementById('author').value;
+                const content = document.getElementById('content').value;
+
+                // Generate post ID
+                const postId = `post-${Date.now()}`;
+                const date = new Date().toISOString().split('T')[0];
+
+                // Create MD file content with frontmatter
+                const mdContent = `---
+id: ${postId}
+title: "${title}"
+author: "${author}"
+date: "${date}"
+tags: [${tags.map(t => `"${t}"`).join(', ')}]
+description: "${description}"
+jsonFile: "report.json"
+---
+
+${content}
+`;
+
+                // Read JSON file
+                const jsonContent = await selectedFile.text();
+
+                // Create ZIP file
+                const zip = new JSZip();
+                const folder = zip.folder(postId);
+                folder.file('post.md', mdContent);
+                folder.file('report.json', jsonContent);
+
+                // Generate ZIP
+                const blob = await zip.generateAsync({ type: 'blob' });
+
+                // Download ZIP
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${postId}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Show success message
+                alert(`✅ Files generated successfully!
+
+Next steps:
+1. Extract ${postId}.zip
+2. Fork https://github.com/bosong2/securityreports
+3. Upload folder to /upload/${postId}/
+4. Create Pull Request
+5. Wait for approval
+
+Thank you for sharing! 🎉`);
+
+                // Reset form
+                document.getElementById('submitForm').reset();
+                tags.length = 0;
+                renderTags();
+                selectedFile = null;
+                uploadZone.classList.remove('has-file');
+                uploadZone.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div><strong>Click to upload</strong> or drag and drop</div>
+                    <div class="form-help">JSON file from your security scan</div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error generating files. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Generate Files 📦';
+            }
+        });
+    </script>
+</body>
+
+</html>
