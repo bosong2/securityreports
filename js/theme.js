@@ -89,5 +89,14 @@ class ThemeManager {
     }
 }
 
-// Export for use in other scripts
+// Initialize theme manager
 window.themeManager = new ThemeManager();
+
+// Setup button click listeners after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.themeManager.updateThemeButton();
+    });
+} else {
+    window.themeManager.updateThemeButton();
+}
