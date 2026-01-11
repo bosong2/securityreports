@@ -177,11 +177,15 @@ class BlogSystem {
     }
 }
 
-// Initialize blog system
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+// Initialize blog system (but don't overwrite if already exists)
+if (!window.blogSystem) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.blogSystem) {
+                window.blogSystem = new BlogSystem();
+            }
+        });
+    } else {
         window.blogSystem = new BlogSystem();
-    });
-} else {
-    window.blogSystem = new BlogSystem();
+    }
 }
