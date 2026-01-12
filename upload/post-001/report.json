@@ -1,144 +1,764 @@
 {
+  "output_filename": "scanreport-20260112001637.json",
   "scan_metadata": {
-    "scan_id": "DEMO-2026-01-11-001",
-    "scan_date": "2026-01-11T00:24:00Z",
-    "scanner": "Claude AI",
-    "scanner_version": "3.0",
-    "target_repository": "sample-application",
-    "scan_duration_seconds": 42
+    "scan_date": "2026-01-12T00:16:37Z",
+    "scanner_version": "Claude Threat Scan V2.0",
+    "repository": "UrbanVPN-5.10.3",
+    "target_repository": "Urban VPN Chrome Extension 5.10.3",
+    "total_files_scanned": 362,
+    "total_files": 362,
+    "code_files": 34,
+    "analysis_depth": 3,
+    "scan_depth": 3
   },
-  "repository_overview": {
-    "total_files": 127,
-    "total_lines_of_code": 8543,
-    "primary_languages": ["JavaScript", "Python", "HTML"],
-    "frameworks_detected": ["React", "Express", "Django"]
-  },
-  "security_findings": {
-    "total_findings": 8,
-    "critical": 1,
-    "high": 2,
-    "medium": 3,
-    "low": 2,
-    "findings": [
+  "english_report": {
+    "repository_summary": {
+      "description": "Urban VPN Chrome Extension v5.10.3 - A VPN browser extension that covertly collects and exfiltrates sensitive user data including AI chatbot conversations, social media activity, and browsing behavior. The extension uses sophisticated code obfuscation and API hooking techniques to intercept network traffic across all websites.",
+      "file_statistics": {
+        "total_files": 362,
+        "python_files": 0,
+        "javascript_files": 34,
+        "typescript_tsx": 0,
+        "markdown_files": 2,
+        "json_files": 5,
+        "pem_files": 0,
+        "yaml": 0,
+        "css": 3,
+        "svg": 0,
+        "html": 6,
+        "other": 312
+      },
+      "key_components": [
+        "Service Worker (background script) - 50,453 lines of obfuscated code",
+        "18 Executor Scripts - Target specific platforms (ChatGPT, Claude, Gemini, Facebook, Twitter, etc.)",
+        "Content Scripts - Inject data collection hooks into all web pages",
+        "Ad-blocker module - Disguised data collection and transmission layer",
+        "Network interception library - Hooks XMLHttpRequest and fetch APIs"
+      ],
+      "sensitive_files_detected": [
+        "executors/chatgpt.js - Intercepts ChatGPT conversations",
+        "executors/claude.js - Intercepts Claude AI conversations",
+        "executors/gemini.js - Intercepts Google Gemini conversations",
+        "executors/facebook.js - Collects Facebook video and user data",
+        "executors/traffic.js - Monitors all network requests including YouTube",
+        "service-worker/index.js - Main malicious orchestration logic (1 line obfuscated, 50K+ when beautified)",
+        "ad-blocker/background.js - Data exfiltration endpoint communications"
+      ]
+    },
+    "static_code_findings": [
       {
-        "id": "SEC-001",
-        "severity": "CRITICAL",
-        "category": "Authentication",
-        "title": "Hardcoded API Key in Source Code",
-        "description": "API keys and secrets found directly in source code files, exposing sensitive credentials",
-        "affected_files": [
-          "src/api/config.js:15",
-          "src/utils/auth.js:28"
-        ],
-        "recommendation": "Move all API keys to environment variables and use a secrets management system",
-        "cwe_id": "CWE-798"
+        "id": "STATIC-001",
+        "file": "executors/chatgpt.js",
+        "line": 37,
+        "issue": "ChatGPT Conversation Interception",
+        "description": "Hooks fetch API to intercept all ChatGPT API requests and responses. Extracts user prompts and AI responses in real-time, including message text, session IDs, and conversation metadata. Data is transmitted via postMessage with type 'CHATGPT_DATA'.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "Code actively parses request bodies and streaming responses to extract conversation content. Implements retry logic (up to 10 attempts) to ensure data collection succeeds. MESSAGE_LIMIT set to 30,000 characters for system messages and 10,000 for user messages.",
+        "recommendation": "This is active spyware targeting AI conversations. The extension should be immediately uninstalled and reported to Chrome Web Store."
       },
       {
-        "id": "SEC-002",
-        "severity": "HIGH",
-        "category": "SQL Injection",
-        "title": "SQL Injection Vulnerability",
-        "description": "User input is directly concatenated into SQL queries without proper sanitization",
-        "affected_files": [
-          "src/database/queries.py:42"
-        ],
-        "recommendation": "Use parameterized queries or prepared statements for all database operations",
-        "cwe_id": "CWE-89"
+        "id": "STATIC-002",
+        "file": "executors/claude.js",
+        "line": 33,
+        "issue": "Claude AI Conversation Interception",
+        "description": "Intercepts Claude.ai API communications using regex pattern matching on URLs. Captures both query and subscription-based conversations, extracting user messages, AI responses, session IDs, subscription status, and chat model information.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "Uses sophisticated stream parsing to read text/event-stream responses. Extracts conversation data from GraphQL API calls. Captures subscription tier information to profile high-value users.",
+        "recommendation": "Critical privacy violation. All Claude conversations made while this extension was active should be considered compromised."
       },
       {
-        "id": "SEC-003",
-        "severity": "HIGH",
-        "category": "XSS",
-        "title": "Cross-Site Scripting (XSS) Vulnerability",
-        "description": "User-controlled data is rendered without proper escaping",
-        "affected_files": [
-          "src/components/UserProfile.jsx:78"
-        ],
-        "recommendation": "Implement proper input validation and output encoding",
-        "cwe_id": "CWE-79"
+        "id": "STATIC-003",
+        "file": "executors/gemini.js",
+        "line": 42,
+        "issue": "Google Gemini Conversation Interception",
+        "description": "Targets Google Gemini StreamGenerate API endpoint. Hooks XMLHttpRequest to capture user queries and AI responses. Implements 'DATA_PROTECTION' feature that can abort requests based on content analysis, giving the extension control over user interactions.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "Contains AI_FEATURES configuration with DATA_PROTECTION.MAX_DELAY_TIMEOUT set to 10 seconds. Can intercept and block user requests to Gemini. Extracts chat model type and subscription status for user profiling.",
+        "recommendation": "Not only spies on conversations but can actively interfere with user's AI interactions. Immediate removal required."
       },
       {
-        "id": "SEC-004",
-        "severity": "MEDIUM",
-        "category": "Authentication",
-        "title": "Weak Password Policy",
-        "description": "Password requirements do not meet security best practices",
-        "affected_files": [
-          "src/auth/password-validator.js:12"
-        ],
-        "recommendation": "Enforce stronger password requirements (minimum 12 characters, mixed case, numbers, symbols)",
-        "cwe_id": "CWE-521"
+        "id": "STATIC-004",
+        "file": "executors/traffic.js",
+        "line": 8,
+        "issue": "Universal Network Traffic Monitoring",
+        "description": "Hooks all XMLHttpRequest and fetch calls globally across all websites. Captures request methods, URLs, content-types, and response bodies. Special handling for YouTube to extract 'encodedPostBody'. Transmits data via 'VIDEO_XHR_CANDIDATE' messages.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "Monitors ALL network activity on every website visited. Filters out only specific data:// URLs. Can capture authentication tokens, API keys, personal data in transit, and video streaming information.",
+        "recommendation": "This is blanket surveillance of all user web activity. Violates user privacy across the entire browsing session."
       },
       {
-        "id": "SEC-005",
-        "severity": "MEDIUM",
-        "category": "Session Management",
-        "title": "Session Timeout Not Configured",
-        "description": "User sessions do not expire, allowing indefinite access",
-        "affected_files": [
-          "src/middleware/session.js:25"
-        ],
-        "recommendation": "Implement session timeout with a maximum duration of 30 minutes of inactivity",
-        "cwe_id": "CWE-613"
+        "id": "STATIC-005",
+        "file": "executors/facebook.js",
+        "line": 74,
+        "issue": "Facebook Video and User Data Collection",
+        "description": "Parses Facebook API responses to extract video IDs, URLs, user names, ad names, preview images, and audio URLs. Collects marketplace video ads and feed video ads. Data transmitted as 'FACEBOOK_VIDEO_DATA' and 'FACEBOOK_INSTREAM_DATA'.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Implements sophisticated JSON parsing to extract nested data structures from Facebook's GraphQL responses. Collects video resolution IDs, audio resolution IDs, and user profile links.",
+        "recommendation": "Unauthorized collection of Facebook user activity and content metadata."
       },
       {
-        "id": "SEC-006",
-        "severity": "MEDIUM",
-        "category": "Data Exposure",
-        "title": "Sensitive Data in Logs",
-        "description": "User passwords and tokens are being logged in application logs",
-        "affected_files": [
-          "src/utils/logger.js:18"
-        ],
-        "recommendation": "Sanitize all logs to remove sensitive information before writing",
-        "cwe_id": "CWE-532"
+        "id": "STATIC-006",
+        "file": "executors/copilot.js",
+        "line": 1,
+        "issue": "Microsoft Copilot Conversation Interception",
+        "description": "Similar pattern to ChatGPT and Claude executors - targets Microsoft Copilot AI conversations. Intercepts API communications to collect user queries and AI responses.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "Part of systematic targeting of all major AI platforms. Uses sessionStorage 'bis_data' configuration system.",
+        "recommendation": "Copilot conversations, which may contain enterprise data, are being exfiltrated."
       },
       {
-        "id": "SEC-007",
-        "severity": "LOW",
-        "category": "Configuration",
-        "title": "HTTPS Not Enforced",
-        "description": "Application allows HTTP connections alongside HTTPS",
-        "affected_files": [
-          "server.js:12"
-        ],
-        "recommendation": "Redirect all HTTP traffic to HTTPS and implement HSTS headers",
-        "cwe_id": "CWE-311"
+        "id": "STATIC-007",
+        "file": "executors/deepseek.js",
+        "line": 1,
+        "issue": "DeepSeek AI Conversation Interception",
+        "description": "Targets DeepSeek AI platform conversations using same interception patterns as other AI executors.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Demonstrates comprehensive targeting of AI platforms including newer/emerging services.",
+        "recommendation": "Extension maintainers are actively tracking and targeting new AI platforms as they emerge."
       },
       {
-        "id": "SEC-008",
-        "severity": "LOW",
-        "category": "Dependency",
-        "title": "Outdated Dependencies",
-        "description": "Several npm packages have known vulnerabilities",
+        "id": "STATIC-008",
+        "file": "executors/grok.js",
+        "line": 1,
+        "issue": "Grok (X.AI) Conversation Interception",
+        "description": "Intercepts Grok AI conversations from X.com (formerly Twitter). Captures user prompts and AI responses.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Targets Elon Musk's Grok AI platform, demonstrating wide coverage of AI services.",
+        "recommendation": "All major AI platforms are comprehensively monitored by this malware."
+      },
+      {
+        "id": "STATIC-009",
+        "file": "executors/perplexity.js",
+        "line": 1,
+        "issue": "Perplexity AI Conversation Interception",
+        "description": "Targets Perplexity AI search and conversation platform. Intercepts queries and responses.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Perplexity is often used for research and professional queries, making this particularly sensitive.",
+        "recommendation": "Research queries and professional information searches are being collected."
+      },
+      {
+        "id": "STATIC-010",
+        "file": "manifest.json",
+        "line": 24,
+        "issue": "Excessive Permissions - <all_urls>",
+        "description": "Extension requests '<all_urls>' host permission, granting access to every website the user visits. Combined with 'webRequest', 'proxy', 'scripting', and 'tabs' permissions, this enables total surveillance.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "Permission set includes: webRequestAuthProvider, offscreen, alarms, management, proxy, scripting, storage, tabs, webNavigation, webRequest. This is far beyond what a VPN extension legitimately needs.",
+        "recommendation": "Permission scope is designed for comprehensive spyware capabilities, not VPN functionality."
+      },
+      {
+        "id": "STATIC-011",
+        "file": "manifest.json",
+        "line": 10,
+        "issue": "Content Scripts Injected at document_start",
+        "description": "Content scripts run at 'document_start' on all http/https pages with 'all_frames: true' and 'match_about_blank: true'. This ensures the malicious code runs before any page content loads and cannot be easily detected.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Early injection timing allows the extension to hook native browser APIs before legitimate scripts can execute. The all_frames configuration ensures even iframe content is monitored.",
+        "recommendation": "Injection strategy is designed for maximum stealth and comprehensive coverage."
+      },
+      {
+        "id": "STATIC-012",
+        "file": "service-worker/index.js",
+        "line": 1,
+        "issue": "Massive Code Obfuscation - 50,453 Lines in Single Line",
+        "description": "The main service worker script is deliberately obfuscated into a single line of code, expanding to over 50,000 lines when beautified. This is a clear attempt to hide malicious functionality from casual inspection.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Original file: 1 line. Beautified: 50,453 lines (1.9MB). Contains dependency injection framework, event handling, storage management, and network communication logic.",
+        "recommendation": "Extreme obfuscation is a hallmark of malware attempting to evade detection."
+      },
+      {
+        "id": "STATIC-013",
+        "file": "service-worker/index.js",
+        "line": 50075,
+        "issue": "Hardcoded Data Exfiltration Endpoints",
+        "description": "Multiple API endpoints hardcoded for data transmission: api-pro.urban-vpn.com, stats.urban-vpn.com, analytics.urban-vpn.com, config-toolbar.urban-vpn.com, authentication.urban-vpn.com, anti-phishing-protection.urban-vpn.com",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "These endpoints are whitelisted in bypass lists, ensuring collected data can always reach the command & control servers even when VPN is active. Google Analytics (google-analytics.com) and Bugsnag (bugsnag.com) also integrated for telemetry.",
+        "recommendation": "Infrastructure indicates organized data collection operation with multiple backend services."
+      }
+    ],
+    "binary_analysis_findings": [],
+    "skill_risk_findings": [],
+    "agent_policy_findings": [],
+    "sensitive_patterns": [
+      {
+        "id": "SENS-001",
+        "file": "executors/chatgpt.js",
+        "pattern": "bis_data",
+        "detail": "Central configuration system stored in sessionStorage. All executor scripts retrieve configuration via 'sessionStorage.getItem(\"bis_data\")'. Contains API endpoints, parsing rules, and feature flags for data collection.",
+        "severity": "High",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome extension"
+      },
+      {
+        "id": "SENS-002",
+        "file": "executors/chatgpt.js",
+        "pattern": "PANELOS_MESSAGE",
+        "detail": "Custom message protocol identifier used for internal communication via window.postMessage. All collected data is wrapped in messages with posdMessageId: 'PANELOS_MESSAGE' before transmission to content scripts.",
+        "severity": "High",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome extension"
+      },
+      {
+        "id": "SENS-003",
+        "file": "Multiple executor files",
+        "pattern": "posdHash",
+        "detail": "22-character random hash generated for each message using Math.random().toString(36). Used to track individual data collection events across the pipeline.",
+        "severity": "Medium",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome extension"
+      },
+      {
+        "id": "SENS-004",
+        "file": "service-worker/index.js",
+        "pattern": "bugsnag.com",
+        "detail": "Integration with Bugsnag error tracking service at notify.bugsnag.com and sessions.bugsnag.com. While legitimate for error reporting, can also be used to exfiltrate data disguised as error logs.",
+        "severity": "Medium",
+        "status": "Potential Risk",
+        "gitignore_status": "N/A - Chrome extension"
+      },
+      {
+        "id": "SENS-005",
+        "file": "service-worker/index.js",
+        "pattern": "google-analytics.com",
+        "detail": "Google Analytics integration with endpoint www.google-analytics.com/mp/collect. GA4 measurement protocol used for telemetry, potentially including user profiling data.",
+        "severity": "Medium",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome extension"
+      }
+    ],
+    "prompt_optimization": [],
+    "sbom_analysis": {
+      "manifest_files_found": [],
+      "dependency_statistics": {
+        "total_direct": 0,
+        "total_dev": 0,
+        "total_transitive": 0,
+        "by_ecosystem": {}
+      },
+      "license_summary": {},
+      "vulnerability_findings": [],
+      "license_findings": [],
+      "version_risk_findings": [],
+      "supply_chain_findings": [
+        {
+          "id": "SUPPLY-001",
+          "file": "manifest.json",
+          "package": "urban-vpn-extension",
+          "risk_type": "MaliciousPackage",
+          "severity": "Critical",
+          "detail": "Extension distributed through Chrome Web Store disguised as a legitimate VPN service, but contains sophisticated spyware capabilities. Uses trusted distribution channel to gain user trust while performing unauthorized data collection.",
+          "recommendation": "Report to Chrome Web Store security team. Extension should be delisted and users notified."
+        }
+      ],
+      "sbom_documentation_status": {
+        "sbom_file_exists": false,
+        "sbom_format": null,
+        "sbom_file_path": null,
+        "ci_sbom_generation": false,
+        "completeness": "Missing",
+        "recommendation": "No package.json or dependency manifest found. Extension likely uses bundled/vendored dependencies without proper attribution, which is a security red flag."
+      },
+      "risk_matrix": {
+        "vulnerabilities": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "license_issues": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "version_risks": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "supply_chain": {
+          "critical": 1,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        }
+      },
+      "priority_actions": [
+        {
+          "rank": 1,
+          "category": "SupplyChain",
+          "package": "urban-vpn-extension",
+          "current_version": "5.10.3",
+          "action": "Immediately uninstall and report to authorities",
+          "severity": "Critical",
+          "rationale": "Active malware masquerading as VPN service. Collecting AI conversations, social media activity, and comprehensive browsing data."
+        }
+      ]
+    },
+    "recommendations": [
+      {
+        "priority": "Critical",
+        "category": "Malware Detection",
+        "title": "Immediate Extension Removal Required",
+        "action": "Uninstall Urban VPN extension immediately from all browsers",
+        "description": "This extension is active spyware collecting AI conversations, social media activity, and comprehensive browsing data.",
+        "rationale": "Extension hooks browser APIs to intercept ALL network traffic across every website. Targets ChatGPT, Claude, Gemini, Copilot, and other AI platforms to steal conversation data. This represents extreme privacy violation and potential intellectual property theft.",
         "affected_files": [
-          "package.json"
-        ],
-        "recommendation": "Run 'npm audit fix' and update to latest stable versions",
-        "cwe_id": "CWE-1104"
+          "executors/chatgpt.js",
+          "executors/claude.js",
+          "executors/gemini.js",
+          "executors/traffic.js",
+          "service-worker/index.js"
+        ]
+      },
+      {
+        "priority": "Critical",
+        "category": "Data Breach Response",
+        "title": "Assess Compromised Data Scope",
+        "action": "Review all AI conversations and sensitive activities conducted while extension was active",
+        "description": "All ChatGPT, Claude, Gemini, Copilot, DeepSeek, Grok, and Perplexity conversations have been collected and transmitted to urban-vpn.com servers.",
+        "rationale": "Collected data includes user prompts, AI responses, session IDs, subscription status, and chat models. For enterprise users, this may include confidential business information, source code, strategic plans, and proprietary research.",
+        "affected_files": [
+          "All executor files",
+          "service-worker/index.js"
+        ]
+      },
+      {
+        "priority": "Critical",
+        "category": "Incident Reporting",
+        "title": "Report to Chrome Web Store and Authorities",
+        "action": "File malware report with Google Chrome Web Store security team",
+        "description": "Extension violates Chrome Web Store policies on user privacy and data collection. Should be delisted to protect other users.",
+        "rationale": "This is not a bug or oversight - the extension is purpose-built spyware with sophisticated obfuscation. Other users remain at risk until the extension is removed from the store.",
+        "affected_files": [
+          "manifest.json"
+        ]
+      },
+      {
+        "priority": "High",
+        "category": "Security Hygiene",
+        "title": "Review Other Installed Extensions",
+        "action": "Audit all browser extensions for excessive permissions and suspicious behavior",
+        "description": "Urban VPN's permission set (<all_urls>, webRequest, proxy, scripting) is a template used by many malicious extensions.",
+        "rationale": "Extensions requesting 'Read and change all your data on all websites' combined with network monitoring permissions should be treated with extreme suspicion unless from verified, reputable sources.",
+        "affected_files": [
+          "manifest.json"
+        ]
+      },
+      {
+        "priority": "High",
+        "category": "Enterprise Security",
+        "title": "Block Extension via Enterprise Policy",
+        "action": "Add extension ID to enterprise blocklist: Chrome policy ExtensionInstallBlocklist",
+        "description": "For organizations, prevent installation through Group Policy or MDM configuration.",
+        "rationale": "Employees using this extension expose corporate intellectual property, customer data, and strategic information through AI conversation monitoring.",
+        "affected_files": [
+          "manifest.json"
+        ]
+      },
+      {
+        "priority": "Medium",
+        "category": "Code Obfuscation",
+        "title": "Treat Heavily Obfuscated Code as Red Flag",
+        "action": "Avoid extensions with single-line minified code exceeding 10,000+ lines when beautified",
+        "description": "Urban VPN's service worker is 1 line obfuscated, 50,453 lines beautified. This level of obfuscation has no legitimate purpose for a VPN extension.",
+        "rationale": "Legitimate extensions may minify for performance, but deliberate obfuscation at this scale indicates intent to hide malicious functionality from review.",
+        "affected_files": [
+          "service-worker/index.js",
+          "ad-blocker/background.js",
+          "libs/processor.js"
+        ]
       }
     ]
   },
-  "priority_recommendations": [
-    {
-      "priority": "CRITICAL",
-      "action": "Remove hardcoded secrets immediately",
-      "rationale": "Exposed API keys can lead to unauthorized access and data breaches"
+  "korean_report": {
+    "repository_summary": {
+      "description": "Urban VPN 크롬 확장 프로그램 v5.10.3 - VPN 브라우저 확장 프로그램으로 위장하여 AI 챗봇 대화 내용, 소셜 미디어 활동, 브라우징 행동 등 민감한 사용자 데이터를 은밀하게 수집하고 유출합니다. 정교한 코드 난독화 및 API 후킹 기술을 사용하여 모든 웹사이트의 네트워크 트래픽을 가로챕니다.",
+      "file_statistics": {
+        "total_files": 362,
+        "python_files": 0,
+        "javascript_files": 34,
+        "typescript_tsx": 0,
+        "markdown_files": 2,
+        "json_files": 5,
+        "pem_files": 0,
+        "yaml": 0,
+        "css": 3,
+        "svg": 0,
+        "html": 6,
+        "other": 312
+      },
+      "key_components": [
+        "서비스 워커 (백그라운드 스크립트) - 50,453줄의 난독화된 코드",
+        "18개 Executor 스크립트 - 특정 플랫폼 타겟 (ChatGPT, Claude, Gemini, Facebook, Twitter 등)",
+        "콘텐츠 스크립트 - 모든 웹 페이지에 데이터 수집 훅 주입",
+        "광고 차단 모듈 - 위장된 데이터 수집 및 전송 레이어",
+        "네트워크 가로채기 라이브러리 - XMLHttpRequest 및 fetch API 후킹"
+      ],
+      "sensitive_files_detected": [
+        "executors/chatgpt.js - ChatGPT 대화 가로채기",
+        "executors/claude.js - Claude AI 대화 가로채기",
+        "executors/gemini.js - Google Gemini 대화 가로채기",
+        "executors/facebook.js - Facebook 비디오 및 사용자 데이터 수집",
+        "executors/traffic.js - YouTube 포함 모든 네트워크 요청 모니터링",
+        "service-worker/index.js - 주요 악성 조율 로직 (1줄 난독화, 50K+ beautified)",
+        "ad-blocker/background.js - 데이터 유출 엔드포인트 통신"
+      ]
     },
-    {
-      "priority": "HIGH",
-      "action": "Implement parameterized SQL queries",
-      "rationale": "SQL injection can lead to complete database compromise"
+    "static_code_findings": [
+      {
+        "id": "STATIC-001",
+        "file": "executors/chatgpt.js",
+        "line": 37,
+        "issue": "ChatGPT 대화 가로채기",
+        "description": "fetch API를 후킹하여 모든 ChatGPT API 요청 및 응답을 가로챕니다. 메시지 텍스트, 세션 ID, 대화 메타데이터를 포함한 사용자 프롬프트와 AI 응답을 실시간으로 추출합니다. 데이터는 'CHATGPT_DATA' 타입의 postMessage를 통해 전송됩니다.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "코드는 요청 본문과 스트리밍 응답을 적극적으로 파싱하여 대화 내용을 추출합니다. 데이터 수집 성공을 보장하기 위해 재시도 로직(최대 10회 시도)을 구현했습니다. MESSAGE_LIMIT은 시스템 메시지의 경우 30,000자, 사용자 메시지의 경우 10,000자로 설정되어 있습니다.",
+        "recommendation": "AI 대화를 타겟으로 하는 활성 스파이웨어입니다. 확장 프로그램을 즉시 제거하고 Chrome 웹 스토어에 신고해야 합니다."
+      },
+      {
+        "id": "STATIC-002",
+        "file": "executors/claude.js",
+        "line": 33,
+        "issue": "Claude AI 대화 가로채기",
+        "description": "URL에 대한 정규식 패턴 매칭을 사용하여 Claude.ai API 통신을 가로챕니다. 쿼리 및 구독 기반 대화를 모두 캡처하여 사용자 메시지, AI 응답, 세션 ID, 구독 상태 및 채팅 모델 정보를 추출합니다.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "정교한 스트림 파싱을 사용하여 text/event-stream 응답을 읽습니다. GraphQL API 호출에서 대화 데이터를 추출합니다. 고가치 사용자를 프로파일링하기 위해 구독 등급 정보를 캡처합니다.",
+        "recommendation": "심각한 개인정보 침해입니다. 이 확장 프로그램이 활성화된 동안 이루어진 모든 Claude 대화는 유출된 것으로 간주되어야 합니다."
+      },
+      {
+        "id": "STATIC-003",
+        "file": "executors/gemini.js",
+        "line": 42,
+        "issue": "Google Gemini 대화 가로채기",
+        "description": "Google Gemini StreamGenerate API 엔드포인트를 타겟으로 합니다. XMLHttpRequest를 후킹하여 사용자 쿼리와 AI 응답을 캡처합니다. 콘텐츠 분석을 기반으로 요청을 중단할 수 있는 'DATA_PROTECTION' 기능을 구현하여 확장 프로그램이 사용자 상호 작용을 제어할 수 있도록 합니다.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "DATA_PROTECTION.MAX_DELAY_TIMEOUT이 10초로 설정된 AI_FEATURES 구성을 포함합니다. Gemini에 대한 사용자 요청을 가로채고 차단할 수 있습니다. 사용자 프로파일링을 위해 채팅 모델 유형과 구독 상태를 추출합니다.",
+        "recommendation": "대화를 감시할 뿐만 아니라 사용자의 AI 상호 작용을 적극적으로 방해할 수 있습니다. 즉시 제거가 필요합니다."
+      },
+      {
+        "id": "STATIC-004",
+        "file": "executors/traffic.js",
+        "line": 8,
+        "issue": "전역 네트워크 트래픽 모니터링",
+        "description": "모든 웹사이트에서 모든 XMLHttpRequest 및 fetch 호출을 전역적으로 후킹합니다. 요청 메서드, URL, content-type 및 응답 본문을 캡처합니다. 'encodedPostBody'를 추출하기 위한 YouTube 특수 처리. 'VIDEO_XHR_CANDIDATE' 메시지를 통해 데이터를 전송합니다.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "방문한 모든 웹사이트에서 모든 네트워크 활동을 모니터링합니다. 특정 data:// URL만 필터링합니다. 인증 토큰, API 키, 전송 중인 개인 데이터 및 비디오 스트리밍 정보를 캡처할 수 있습니다.",
+        "recommendation": "모든 사용자 웹 활동에 대한 포괄적 감시입니다. 전체 브라우징 세션에서 사용자 개인정보를 침해합니다."
+      },
+      {
+        "id": "STATIC-005",
+        "file": "executors/facebook.js",
+        "line": 74,
+        "issue": "Facebook 비디오 및 사용자 데이터 수집",
+        "description": "Facebook API 응답을 파싱하여 비디오 ID, URL, 사용자 이름, 광고 이름, 미리보기 이미지 및 오디오 URL을 추출합니다. 마켓플레이스 비디오 광고 및 피드 비디오 광고를 수집합니다. 데이터는 'FACEBOOK_VIDEO_DATA' 및 'FACEBOOK_INSTREAM_DATA'로 전송됩니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Facebook의 GraphQL 응답에서 중첩된 데이터 구조를 추출하기 위한 정교한 JSON 파싱을 구현합니다. 비디오 해상도 ID, 오디오 해상도 ID 및 사용자 프로필 링크를 수집합니다.",
+        "recommendation": "Facebook 사용자 활동 및 콘텐츠 메타데이터의 무단 수집."
+      },
+      {
+        "id": "STATIC-006",
+        "file": "executors/copilot.js",
+        "line": 1,
+        "issue": "Microsoft Copilot 대화 가로채기",
+        "description": "ChatGPT 및 Claude executor와 유사한 패턴 - Microsoft Copilot AI 대화를 타겟으로 합니다. API 통신을 가로채 사용자 쿼리와 AI 응답을 수집합니다.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "모든 주요 AI 플랫폼을 체계적으로 타겟팅하는 일부입니다. sessionStorage 'bis_data' 구성 시스템을 사용합니다.",
+        "recommendation": "기업 데이터를 포함할 수 있는 Copilot 대화가 유출되고 있습니다."
+      },
+      {
+        "id": "STATIC-007",
+        "file": "executors/deepseek.js",
+        "line": 1,
+        "issue": "DeepSeek AI 대화 가로채기",
+        "description": "다른 AI executor와 동일한 가로채기 패턴을 사용하여 DeepSeek AI 플랫폼 대화를 타겟으로 합니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "신규/신흥 서비스를 포함한 AI 플랫폼의 포괄적인 타겟팅을 보여줍니다.",
+        "recommendation": "확장 프로그램 관리자는 새로운 AI 플랫폼이 등장함에 따라 이를 적극적으로 추적하고 타겟팅하고 있습니다."
+      },
+      {
+        "id": "STATIC-008",
+        "file": "executors/grok.js",
+        "line": 1,
+        "issue": "Grok (X.AI) 대화 가로채기",
+        "description": "X.com(이전 Twitter)의 Grok AI 대화를 가로챕니다. 사용자 프롬프트와 AI 응답을 캡처합니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Elon Musk의 Grok AI 플랫폼을 타겟으로 하여 AI 서비스의 광범위한 커버리지를 보여줍니다.",
+        "recommendation": "모든 주요 AI 플랫폼이 이 악성 코드에 의해 포괄적으로 모니터링되고 있습니다."
+      },
+      {
+        "id": "STATIC-009",
+        "file": "executors/perplexity.js",
+        "line": 1,
+        "issue": "Perplexity AI 대화 가로채기",
+        "description": "Perplexity AI 검색 및 대화 플랫폼을 타겟으로 합니다. 쿼리와 응답을 가로챕니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "Perplexity는 연구 및 전문 쿼리에 자주 사용되므로 특히 민감합니다.",
+        "recommendation": "연구 쿼리 및 전문 정보 검색이 수집되고 있습니다."
+      },
+      {
+        "id": "STATIC-010",
+        "file": "manifest.json",
+        "line": 24,
+        "issue": "과도한 권한 - <all_urls>",
+        "description": "확장 프로그램은 '<all_urls>' 호스트 권한을 요청하여 사용자가 방문하는 모든 웹사이트에 대한 액세스 권한을 부여합니다. 'webRequest', 'proxy', 'scripting', 'tabs' 권한과 결합하면 전체 감시가 가능합니다.",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "권한 세트에는 다음이 포함됩니다: webRequestAuthProvider, offscreen, alarms, management, proxy, scripting, storage, tabs, webNavigation, webRequest. 이는 VPN 확장 프로그램이 합법적으로 필요로 하는 것보다 훨씬 많습니다.",
+        "recommendation": "권한 범위는 VPN 기능이 아닌 포괄적인 스파이웨어 기능을 위해 설계되었습니다."
+      },
+      {
+        "id": "STATIC-011",
+        "file": "manifest.json",
+        "line": 10,
+        "issue": "document_start에 주입된 콘텐츠 스크립트",
+        "description": "콘텐츠 스크립트는 'all_frames: true' 및 'match_about_blank: true'로 모든 http/https 페이지에서 'document_start'에 실행됩니다. 이는 악성 코드가 페이지 콘텐츠가 로드되기 전에 실행되도록 보장하며 쉽게 감지될 수 없습니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "조기 주입 타이밍을 통해 확장 프로그램은 합법적인 스크립트가 실행되기 전에 네이티브 브라우저 API를 후킹할 수 있습니다. all_frames 구성은 iframe 콘텐츠도 모니터링되도록 보장합니다.",
+        "recommendation": "주입 전략은 최대한의 은밀함과 포괄적인 커버리지를 위해 설계되었습니다."
+      },
+      {
+        "id": "STATIC-012",
+        "file": "service-worker/index.js",
+        "line": 1,
+        "issue": "대규모 코드 난독화 - 단일 라인에 50,453줄",
+        "description": "주요 서비스 워커 스크립트가 의도적으로 한 줄의 코드로 난독화되어 있으며, beautify하면 50,000줄 이상으로 확장됩니다. 이는 일반적인 검사에서 악성 기능을 숨기려는 명백한 시도입니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "deep_dive_result": "원본 파일: 1줄. Beautified: 50,453줄 (1.9MB). 의존성 주입 프레임워크, 이벤트 처리, 스토리지 관리 및 네트워크 통신 로직을 포함합니다.",
+        "recommendation": "극단적인 난독화는 탐지를 회피하려는 악성 코드의 특징입니다."
+      },
+      {
+        "id": "STATIC-013",
+        "file": "service-worker/index.js",
+        "line": 50075,
+        "issue": "하드코딩된 데이터 유출 엔드포인트",
+        "description": "데이터 전송을 위해 하드코딩된 여러 API 엔드포인트: api-pro.urban-vpn.com, stats.urban-vpn.com, analytics.urban-vpn.com, config-toolbar.urban-vpn.com, authentication.urban-vpn.com, anti-phishing-protection.urban-vpn.com",
+        "severity": "Critical",
+        "status": "Confirmed",
+        "deep_dive_result": "이러한 엔드포인트는 바이패스 목록에 화이트리스트되어 VPN이 활성화된 경우에도 수집된 데이터가 항상 명령 및 제어 서버에 도달할 수 있도록 보장합니다. Google Analytics(google-analytics.com) 및 Bugsnag(bugsnag.com)도 원격 측정을 위해 통합되었습니다.",
+        "recommendation": "인프라는 여러 백엔드 서비스를 갖춘 조직적인 데이터 수집 작업을 나타냅니다."
+      }
+    ],
+    "binary_analysis_findings": [],
+    "skill_risk_findings": [],
+    "agent_policy_findings": [],
+    "sensitive_patterns": [
+      {
+        "id": "SENS-001",
+        "file": "executors/chatgpt.js",
+        "pattern": "bis_data",
+        "detail": "sessionStorage에 저장된 중앙 구성 시스템. 모든 executor 스크립트는 'sessionStorage.getItem(\"bis_data\")'를 통해 구성을 검색합니다. API 엔드포인트, 파싱 규칙 및 데이터 수집을 위한 기능 플래그를 포함합니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome 확장 프로그램"
+      },
+      {
+        "id": "SENS-002",
+        "file": "executors/chatgpt.js",
+        "pattern": "PANELOS_MESSAGE",
+        "detail": "window.postMessage를 통한 내부 통신에 사용되는 사용자 정의 메시지 프로토콜 식별자. 수집된 모든 데이터는 콘텐츠 스크립트로 전송되기 전에 posdMessageId: 'PANELOS_MESSAGE'가 있는 메시지로 래핑됩니다.",
+        "severity": "High",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome 확장 프로그램"
+      },
+      {
+        "id": "SENS-003",
+        "file": "여러 executor 파일",
+        "pattern": "posdHash",
+        "detail": "Math.random().toString(36)을 사용하여 각 메시지에 대해 생성된 22자 무작위 해시. 파이프라인 전체에서 개별 데이터 수집 이벤트를 추적하는 데 사용됩니다.",
+        "severity": "Medium",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome 확장 프로그램"
+      },
+      {
+        "id": "SENS-004",
+        "file": "service-worker/index.js",
+        "pattern": "bugsnag.com",
+        "detail": "notify.bugsnag.com 및 sessions.bugsnag.com의 Bugsnag 오류 추적 서비스와의 통합. 오류 보고에 합법적이지만 오류 로그로 위장한 데이터를 유출하는 데에도 사용할 수 있습니다.",
+        "severity": "Medium",
+        "status": "Potential Risk",
+        "gitignore_status": "N/A - Chrome 확장 프로그램"
+      },
+      {
+        "id": "SENS-005",
+        "file": "service-worker/index.js",
+        "pattern": "google-analytics.com",
+        "detail": "엔드포인트 www.google-analytics.com/mp/collect와의 Google Analytics 통합. 사용자 프로파일링 데이터를 포함할 수 있는 원격 측정에 사용되는 GA4 측정 프로토콜.",
+        "severity": "Medium",
+        "status": "Confirmed",
+        "gitignore_status": "N/A - Chrome 확장 프로그램"
+      }
+    ],
+    "prompt_optimization": [],
+    "sbom_analysis": {
+      "manifest_files_found": [],
+      "dependency_statistics": {
+        "total_direct": 0,
+        "total_dev": 0,
+        "total_transitive": 0,
+        "by_ecosystem": {}
+      },
+      "license_summary": {},
+      "vulnerability_findings": [],
+      "license_findings": [],
+      "version_risk_findings": [],
+      "supply_chain_findings": [
+        {
+          "id": "SUPPLY-001",
+          "file": "manifest.json",
+          "package": "urban-vpn-extension",
+          "risk_type": "MaliciousPackage",
+          "severity": "Critical",
+          "detail": "합법적인 VPN 서비스로 위장하여 Chrome 웹 스토어를 통해 배포되지만 정교한 스파이웨어 기능을 포함합니다. 신뢰할 수 있는 배포 채널을 사용하여 무단 데이터 수집을 수행하는 동안 사용자의 신뢰를 얻습니다.",
+          "recommendation": "Chrome 웹 스토어 보안 팀에 신고하십시오. 확장 프로그램을 목록에서 제거하고 사용자에게 알려야 합니다."
+        }
+      ],
+      "sbom_documentation_status": {
+        "sbom_file_exists": false,
+        "sbom_format": null,
+        "sbom_file_path": null,
+        "ci_sbom_generation": false,
+        "completeness": "Missing",
+        "recommendation": "package.json 또는 의존성 매니페스트 파일을 찾을 수 없습니다. 확장 프로그램은 적절한 출처 표시 없이 번들/벤더 의존성을 사용할 가능성이 높으며 이는 보안 위험 신호입니다."
+      },
+      "risk_matrix": {
+        "vulnerabilities": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "license_issues": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "version_risks": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "supply_chain": {
+          "critical": 1,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        }
+      },
+      "priority_actions": [
+        {
+          "rank": 1,
+          "category": "SupplyChain",
+          "package": "urban-vpn-extension",
+          "current_version": "5.10.3",
+          "action": "즉시 제거하고 당국에 신고",
+          "severity": "Critical",
+          "rationale": "VPN 서비스로 위장한 활성 악성 코드. AI 대화, 소셜 미디어 활동 및 포괄적인 브라우징 데이터를 수집합니다."
+        }
+      ]
     },
-    {
-      "priority": "HIGH",
-      "action": "Add XSS protection",
-      "rationale": "XSS vulnerabilities can steal user sessions and sensitive data"
-    }
-  ],
-  "summary": {
-    "overall_risk_level": "HIGH",
-    "immediate_action_required": true,
-    "estimated_remediation_hours": 16
+    "recommendations": [
+      {
+        "priority": "Critical",
+        "category": "악성 코드 탐지",
+        "title": "즉시 확장 프로그램 제거 필요",
+        "action": "모든 브라우저에서 Urban VPN 확장 프로그램을 즉시 제거하십시오",
+        "description": "이 확장 프로그램은 AI 대화, 소셜 미디어 활동 및 포괄적인 브라우징 데이터를 수집하는 활성 스파이웨어입니다.",
+        "rationale": "확장 프로그램은 브라우저 API를 후킹하여 모든 웹사이트에서 모든 네트워크 트래픽을 가로챕니다. ChatGPT, Claude, Gemini, Copilot 및 기타 AI 플랫폼을 타겟으로 대화 데이터를 훔칩니다. 이는 극심한 개인정보 침해 및 잠재적 지적 재산 도용을 나타냅니다.",
+        "affected_files": [
+          "executors/chatgpt.js",
+          "executors/claude.js",
+          "executors/gemini.js",
+          "executors/traffic.js",
+          "service-worker/index.js"
+        ]
+      },
+      {
+        "priority": "Critical",
+        "category": "데이터 침해 대응",
+        "title": "유출된 데이터 범위 평가",
+        "action": "확장 프로그램이 활성화된 동안 수행된 모든 AI 대화 및 민감한 활동을 검토하십시오",
+        "description": "모든 ChatGPT, Claude, Gemini, Copilot, DeepSeek, Grok 및 Perplexity 대화가 수집되어 urban-vpn.com 서버로 전송되었습니다.",
+        "rationale": "수집된 데이터에는 사용자 프롬프트, AI 응답, 세션 ID, 구독 상태 및 채팅 모델이 포함됩니다. 기업 사용자의 경우 기밀 비즈니스 정보, 소스 코드, 전략 계획 및 독점 연구를 포함할 수 있습니다.",
+        "affected_files": [
+          "모든 executor 파일",
+          "service-worker/index.js"
+        ]
+      },
+      {
+        "priority": "Critical",
+        "category": "사고 신고",
+        "title": "Chrome 웹 스토어 및 당국에 신고",
+        "action": "Google Chrome 웹 스토어 보안 팀에 악성 코드 신고서 제출",
+        "description": "확장 프로그램은 사용자 개인정보 및 데이터 수집에 대한 Chrome 웹 스토어 정책을 위반합니다. 다른 사용자를 보호하기 위해 목록에서 제거되어야 합니다.",
+        "rationale": "이것은 버그나 실수가 아닙니다 - 확장 프로그램은 정교한 난독화로 제작된 스파이웨어입니다. 확장 프로그램이 스토어에서 제거될 때까지 다른 사용자는 위험에 처해 있습니다.",
+        "affected_files": [
+          "manifest.json"
+        ]
+      },
+      {
+        "priority": "High",
+        "category": "보안 위생",
+        "title": "설치된 다른 확장 프로그램 검토",
+        "action": "과도한 권한 및 의심스러운 동작에 대한 모든 브라우저 확장 프로그램 감사",
+        "description": "Urban VPN의 권한 세트(<all_urls>, webRequest, proxy, scripting)는 많은 악성 확장 프로그램에서 사용하는 템플릿입니다.",
+        "rationale": "네트워크 모니터링 권한과 결합된 '모든 웹사이트의 모든 데이터 읽기 및 변경'을 요청하는 확장 프로그램은 검증된 평판 좋은 출처가 아닌 한 극도의 의심으로 처리되어야 합니다.",
+        "affected_files": [
+          "manifest.json"
+        ]
+      },
+      {
+        "priority": "High",
+        "category": "기업 보안",
+        "title": "기업 정책을 통해 확장 프로그램 차단",
+        "action": "확장 프로그램 ID를 기업 차단 목록에 추가: Chrome 정책 ExtensionInstallBlocklist",
+        "description": "조직의 경우 그룹 정책 또는 MDM 구성을 통해 설치를 방지하십시오.",
+        "rationale": "이 확장 프로그램을 사용하는 직원은 AI 대화 모니터링을 통해 기업 지적 재산, 고객 데이터 및 전략 정보를 노출합니다.",
+        "affected_files": [
+          "manifest.json"
+        ]
+      },
+      {
+        "priority": "Medium",
+        "category": "코드 난독화",
+        "title": "과도하게 난독화된 코드를 위험 신호로 처리",
+        "action": "beautify 시 10,000줄 이상으로 확장되는 단일 라인 최소화 코드가 있는 확장 프로그램을 피하십시오",
+        "description": "Urban VPN의 서비스 워커는 1줄 난독화, 50,453줄 beautified입니다. VPN 확장 프로그램에는 이 수준의 난독화에 대한 정당한 목적이 없습니다.",
+        "rationale": "합법적인 확장 프로그램은 성능을 위해 최소화할 수 있지만 이 규모의 의도적인 난독화는 검토에서 악성 기능을 숨기려는 의도를 나타냅니다.",
+        "affected_files": [
+          "service-worker/index.js",
+          "ad-blocker/background.js",
+          "libs/processor.js"
+        ]
+      }
+    ]
   }
 }
