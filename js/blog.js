@@ -136,19 +136,20 @@ class BlogSystem {
             return;
         }
 
-        // Store in localStorage
+        // Store in localStorage for backward compatibility
         localStorage.setItem('securityReportData', JSON.stringify({
             data: reportData,
             metadata: {
                 fileName: fileName || `${postId}.json`,
                 fileSize: JSON.stringify(reportData).length,
                 uploadTime: new Date().toISOString(),
-                version: '1.0'
+                version: '1.0',
+                postId: postId
             }
         }));
 
-        // Redirect to reports page
-        window.location.href = 'reports.html';
+        // Redirect to reports page with post ID for shareable URL
+        window.location.href = `reports.html?post=${encodeURIComponent(postId)}`;
     }
 
     /**

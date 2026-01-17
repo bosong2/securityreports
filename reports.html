@@ -263,6 +263,81 @@
             transform: translateY(-1px);
         }
 
+        /* SNS Share Buttons */
+        .share-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 16px;
+            padding-left: 16px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .share-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .share-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-btn.facebook {
+            background: #1877F2;
+        }
+
+        .share-btn.linkedin {
+            background: #0A66C2;
+        }
+
+        .share-btn.twitter {
+            background: #000000;
+        }
+
+        .share-btn.kakao {
+            background: #FEE500;
+            color: #000;
+        }
+
+        .share-btn.copy {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .share-btn.copy.copied {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .share-section {
+                display: none;
+            }
+        }
+
         .main-content {
             max-width: 1400px;
             margin: 0 auto;
@@ -1092,6 +1167,37 @@
                     </svg>
                     <span data-en="Home" data-ko="홈">Home</span>
                 </a>
+                <!-- SNS Share Buttons -->
+                <div id="shareSection" class="share-section" style="display: none;">
+                    <span class="share-label" data-en="Share" data-ko="공유">Share</span>
+                    <div class="share-buttons">
+                        <button class="share-btn facebook" onclick="shareToFacebook()" title="Facebook">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn linkedin" onclick="shareToLinkedIn()" title="LinkedIn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn twitter" onclick="shareToTwitter()" title="X (Twitter)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn kakao" onclick="shareToKakao()" title="KakaoTalk">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn copy" onclick="copyShareLink()" title="Copy Link">🔗</button>
+                    </div>
+                </div>
                 <button class="action-btn" id="printBtn" style="display:none;" onclick="printReport()">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                         <path
@@ -2296,6 +2402,7 @@
 
                     const jsonData = reportData.data;
                     const fileName = reportData.metadata.fileName || 'Uploaded Report';
+                    window.currentPostId = reportData.metadata.postId || null;
 
                     console.log('📊 Loading report:', fileName);
 
@@ -2312,6 +2419,7 @@
                     console.log('🗑️ Cleared localStorage');
 
                     console.log('✅ Auto-loaded report from localStorage successfully!');
+                    updateShareButtons();
                 } catch (error) {
                     console.error('❌ Failed to load from localStorage:', error);
                     // Clear corrupted data
@@ -2322,10 +2430,106 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // Load report from URL parameter
+        async function loadFromUrlParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+
+            if (postId) {
+                console.log('📌 Loading report from URL param:', postId);
+                window.currentPostId = postId;
+
+                try {
+                    const response = await fetch(`/upload/${postId}/report.json`);
+                    if (!response.ok) throw new Error('Report not found');
+
+                    const data = await response.json();
+                    const jsonString = JSON.stringify(data);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const file = new File([blob], `${postId}.json`, { type: 'application/json' });
+
+                    loadReports([file]);
+                    console.log('✅ Loaded report from URL param');
+                    updateShareButtons();
+                    return true;
+                } catch (error) {
+                    console.error('❌ Failed to load from URL:', error);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Update share buttons with current URL
+        function updateShareButtons() {
+            const shareSection = document.getElementById('shareSection');
+            if (shareSection && window.currentPostId) {
+                shareSection.style.display = 'flex';
+            }
+        }
+
+        // SNS Share Functions
+        function getShareUrl() {
+            return window.location.href;
+        }
+
+        function getShareTitle() {
+            return document.title || 'Security Report';
+        }
+
+        function shareToFacebook() {
+            const url = encodeURIComponent(getShareUrl());
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareToLinkedIn() {
+            const url = encodeURIComponent(getShareUrl());
+            const title = encodeURIComponent(getShareTitle());
+            window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareToTwitter() {
+            const url = encodeURIComponent(getShareUrl());
+            const text = encodeURIComponent(`${getShareTitle()} - AI Security Scan Report`);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareToKakao() {
+            const url = getShareUrl();
+            const title = getShareTitle();
+            // KakaoTalk Web Share (fallback to copy)
+            if (navigator.share) {
+                navigator.share({ title: title, url: url });
+            } else {
+                copyShareLink();
+            }
+        }
+
+        function copyShareLink() {
+            const url = getShareUrl();
+            navigator.clipboard.writeText(url).then(() => {
+                const copyBtn = document.querySelector('.share-btn.copy');
+                if (copyBtn) {
+                    copyBtn.classList.add('copied');
+                    copyBtn.innerHTML = '✓';
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyBtn.innerHTML = '🔗';
+                    }, 2000);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
             // Check localStorage on page load (MUST RUN FIRST!)
             console.log('🚀 Reports page initialized');
-            checkAndLoadFromLocalStorage();
+
+            // Try URL param first, then localStorage
+            const loadedFromUrl = await loadFromUrlParam();
+            if (!loadedFromUrl) {
+                checkAndLoadFromLocalStorage();
+            }
+
             updateNavigation();
         });
     </script>
