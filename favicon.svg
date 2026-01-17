@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Red Shield Shape -->
+  <path d="M32 2 L58 12 L58 28 C58 44 46 56 32 62 C18 56 6 44 6 28 L6 12 Z" 
+        fill="#dc3545" 
+        stroke="#b02a37" 
+        stroke-width="2"/>
+  
+  <!-- Gradient overlay for depth -->
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff4d5a;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#8b1a25;stop-opacity:0.3"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 2 L58 12 L58 28 C58 44 46 56 32 62 C18 56 6 44 6 28 L6 12 Z" 
+        fill="url(#shieldGradient)"/>
+  
+  <!-- RP Text -->
+  <text x="32" y="42" 
+        font-family="Arial, sans-serif" 
+        font-size="24" 
+        font-weight="bold" 
+        fill="white" 
+        text-anchor="middle">RP</text>
+</svg>
