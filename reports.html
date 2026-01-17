@@ -2322,13 +2322,12 @@
             }
         }
 
-        // Check localStorage on page load (MUST RUN FIRST!)
-        // Use setTimeout to ensure all functions are defined
-        console.log('🚀 Reports page initialized');
-        setTimeout(() => {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check localStorage on page load (MUST RUN FIRST!)
+            console.log('🚀 Reports page initialized');
             checkAndLoadFromLocalStorage();
-        }, 0);
-        updateNavigation();
+            updateNavigation();
+        });
     </script>
 </body>
 

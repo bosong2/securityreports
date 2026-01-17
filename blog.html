@@ -368,17 +368,20 @@
     <script src="js/blog.js" defer></script>
 
     <script>
-        // Ensure blogSystem is initialized
-        if (!window.blogSystem) {
-            console.log('Creating BlogSystem instance');
-            window.blogSystem = new BlogSystem();
-        }
-
         // Render blog posts
         async function renderPosts() {
             const container = document.getElementById('blogPosts');
 
             try {
+                // Ensure blogSystem exists
+                if (!window.blogSystem) {
+                    if (window.BlogSystem) {
+                        window.blogSystem = new BlogSystem();
+                    } else {
+                        throw new Error('BlogSystem not loaded');
+                    }
+                }
+
                 await window.blogSystem.loadPosts();
                 const posts = window.blogSystem.filteredPosts;
 
@@ -430,6 +433,8 @@
         // Render tag filters
         async function renderTagFilters() {
             const container = document.getElementById('tagFilters');
+            if (!container) return;
+
             const tags = window.blogSystem.getAllTags();
 
             container.innerHTML = tags.map(tag => `
@@ -463,7 +468,14 @@
             await renderTagFilters();
         }
 
-        init();
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure blogSystem is initialized after deferred scripts run
+            if (!window.blogSystem && window.BlogSystem) {
+                console.log('Creating BlogSystem instance after DOMContentLoaded');
+                window.blogSystem = new BlogSystem();
+            }
+            init();
+        });
 
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
