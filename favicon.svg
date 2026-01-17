@@ -1,25 +1,133 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Red Shield Shape -->
-  <path d="M32 2 L58 12 L58 28 C58 44 46 56 32 62 C18 56 6 44 6 28 L6 12 Z" 
-        fill="#dc3545" 
-        stroke="#b02a37" 
-        stroke-width="2"/>
-  
-  <!-- Gradient overlay for depth -->
   <defs>
-    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ff4d5a;stop-opacity:0.3"/>
-      <stop offset="100%" style="stop-color:#8b1a25;stop-opacity:0.3"/>
+    <!-- Main gradient for shield body -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b"/>
+      <stop offset="50%" style="stop-color:#dc3545"/>
+      <stop offset="100%" style="stop-color:#a71d2a"/>
     </linearGradient>
+    
+    <!-- Shine/highlight effect -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.4)"/>
+      <stop offset="50%" style="stop-color:rgba(255,255,255,0.1)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+    </linearGradient>
+    
+    <!-- Inner shadow gradient -->
+    <linearGradient id="innerShadow" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(0,0,0,0.3)"/>
+      <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
+    </linearGradient>
+    
+    <!-- Text gradient - gold/silver metallic -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="25%" style="stop-color:#f8f8f8"/>
+      <stop offset="50%" style="stop-color:#e0e0e0"/>
+      <stop offset="75%" style="stop-color:#f0f0f0"/>
+      <stop offset="100%" style="stop-color:#ffffff"/>
+    </linearGradient>
+    
+    <!-- Text stroke gradient -->
+    <linearGradient id="textStroke" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#666"/>
+      <stop offset="100%" style="stop-color:#333"/>
+    </linearGradient>
+    
+    <!-- Drop shadow filter -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-color="rgba(0,0,0,0.4)"/>
+    </filter>
+    
+    <!-- Text glow effect -->
+    <filter id="textGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Emboss effect for text -->
+    <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="-0.5" dy="-0.5" stdDeviation="0" flood-color="rgba(255,255,255,0.8)"/>
+      <feDropShadow dx="1" dy="1" stdDeviation="0.5" flood-color="rgba(0,0,0,0.5)"/>
+    </filter>
   </defs>
-  <path d="M32 2 L58 12 L58 28 C58 44 46 56 32 62 C18 56 6 44 6 28 L6 12 Z" 
-        fill="url(#shieldGradient)"/>
   
-  <!-- RP Text -->
-  <text x="32" y="42" 
-        font-family="Arial, sans-serif" 
-        font-size="24" 
-        font-weight="bold" 
-        fill="white" 
-        text-anchor="middle">RP</text>
+  <!-- Shield shadow -->
+  <path d="M32 4 L56 13 L56 28 C56 43 45 54 32 60 C19 54 8 43 8 28 L8 13 Z" 
+        fill="rgba(0,0,0,0.25)" 
+        transform="translate(2, 2)"/>
+  
+  <!-- Main shield body -->
+  <path d="M32 4 L56 13 L56 28 C56 43 45 54 32 60 C19 54 8 43 8 28 L8 13 Z" 
+        fill="url(#shieldGrad)"
+        filter="url(#dropShadow)"/>
+  
+  <!-- Shield border/rim (3D effect) -->
+  <path d="M32 4 L56 13 L56 28 C56 43 45 54 32 60 C19 54 8 43 8 28 L8 13 Z" 
+        fill="none"
+        stroke="#8b1a25"
+        stroke-width="1.5"/>
+  
+  <!-- Inner shield face -->
+  <path d="M32 8 L52 15.5 L52 28 C52 41 42 51 32 56 C22 51 12 41 12 28 L12 15.5 Z" 
+        fill="url(#shieldGrad)"
+        opacity="0.9"/>
+  
+  <!-- Top highlight (glass effect) -->
+  <path d="M32 8 L52 15.5 L52 22 C40 20 24 20 12 22 L12 15.5 Z" 
+        fill="url(#shineGrad)"/>
+  
+  <!-- Bottom inner shadow -->
+  <path d="M32 56 C22 51 12 41 12 28 L12 25 C12 38 20 46 32 52 C44 46 52 38 52 25 L52 28 C52 41 42 51 32 56 Z" 
+        fill="url(#innerShadow)"/>
+  
+  <!-- RPT Text - stretched vertically with styling -->
+  <g transform="translate(32, 36)">
+    <!-- Text shadow layer -->
+    <text x="0" y="0" 
+          font-family="Impact, Arial Black, sans-serif" 
+          font-size="18" 
+          font-weight="900" 
+          fill="rgba(0,0,0,0.4)" 
+          text-anchor="middle"
+          transform="scale(1, 1.4) translate(1, 1)"
+          style="letter-spacing: 1px;">RPT</text>
+    
+    <!-- Text outline -->
+    <text x="0" y="0" 
+          font-family="Impact, Arial Black, sans-serif" 
+          font-size="18" 
+          font-weight="900" 
+          fill="none"
+          stroke="url(#textStroke)"
+          stroke-width="2"
+          text-anchor="middle"
+          transform="scale(1, 1.4)"
+          style="letter-spacing: 1px;">RPT</text>
+    
+    <!-- Main text with gradient -->
+    <text x="0" y="0" 
+          font-family="Impact, Arial Black, sans-serif" 
+          font-size="18" 
+          font-weight="900" 
+          fill="url(#textGrad)" 
+          text-anchor="middle"
+          transform="scale(1, 1.4)"
+          filter="url(#emboss)"
+          style="letter-spacing: 1px;">RPT</text>
+    
+    <!-- Highlight line on text -->
+    <text x="0" y="-2" 
+          font-family="Impact, Arial Black, sans-serif" 
+          font-size="18" 
+          font-weight="900" 
+          fill="rgba(255,255,255,0.3)" 
+          text-anchor="middle"
+          transform="scale(1, 1.4)"
+          style="letter-spacing: 1px;">RPT</text>
+  </g>
 </svg>
