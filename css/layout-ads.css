@@ -5,9 +5,10 @@
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 2rem 4vw;
 }
 
 .main-content-area {
