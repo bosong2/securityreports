@@ -1,0 +1,46 @@
+# Security Reports - robots.txt
+# https://securityreports.pages.dev
+
+User-agent: *
+
+# Allow main pages
+Allow: /
+Allow: /index.html
+Allow: /blog.html
+Allow: /reports.html
+Allow: /about.html
+Allow: /contact.html
+Allow: /privacy.html
+Allow: /blog-submit.html
+
+# Allow CSS and JS for rendering
+Allow: /css/
+Allow: /js/
+
+# Allow favicon
+Allow: /favicon.svg
+
+# Disallow resources folder (prompt templates - prevent direct indexing)
+Disallow: /resources/
+Disallow: /resources/*
+
+# Disallow upload folder (user-submitted content - prevent direct indexing)
+Disallow: /upload/
+Disallow: /upload/*
+
+# Disallow manual folder
+Disallow: /manual/
+Disallow: /manual/*
+
+# Disallow sample files
+Disallow: /sample-report.json
+
+# Disallow git and dev folders
+Disallow: /.git/
+Disallow: /.devdocs/
+
+# Crawl delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://securityreports.pages.dev/sitemap.xml
