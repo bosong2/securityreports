@@ -1,0 +1,7 @@
+# Redirect all traffic to the primary domain (canonicalization)
+https://security-reports.pages.dev/* https://securityreports.pages.dev/:splat 301
+http://securityreports.pages.dev/* https://securityreports.pages.dev/:splat 301
+
+# Handle common variations
+/index.html / 301
+/index / 301
