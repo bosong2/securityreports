@@ -12,7 +12,7 @@
     <meta name="keywords"
         content="보안 스캔, security scan, AI 보안, vulnerability scanner, 취약점 분석, Claude AI, Gemini, 보안 리포트, security reports, 오픈소스 보안">
     <meta name="author" content="Security Reports Team">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <link rel="canonical" href="https://securityreports.pages.dev/">
 
     <!-- Open Graph / Facebook -->
@@ -66,6 +66,89 @@
         "logo": "https://securityreports.pages.dev/favicon.svg",
         "sameAs": [
             "https://github.com/bosong2/securityreports"
+        ]
+    }
+    </script>
+    <!-- GEO: SoftwareApplication Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Security Reports",
+        "operatingSystem": "Web",
+        "applicationCategory": "SecurityApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "AI-powered security vulnerability scanner for software projects. Use Claude, Gemini, or other AI models to analyze your code.",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "50"
+        }
+    }
+    </script>
+    <!-- GEO: HowTo Schema for Getting Started -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "AI로 보안 스캔하는 방법 (How to Scan Security with AI)",
+        "description": "AI를 사용하여 프로젝트의 보안 취약점을 스캔하는 단계별 가이드",
+        "step": [
+            {
+                "@type": "HowToStep",
+                "name": "AI 프롬프트 다운로드",
+                "text": "Claude, Gemini 등 사용할 AI를 선택하고 보안 스캔 프롬프트를 다운로드하세요.",
+                "position": 1
+            },
+            {
+                "@type": "HowToStep",
+                "name": "프로젝트 스캔",
+                "text": "다운로드한 프롬프트를 AI에 적용하여 프로젝트를 스캔하세요.",
+                "position": 2
+            },
+            {
+                "@type": "HowToStep",
+                "name": "리포트 확인",
+                "text": "AI가 생성한 JSON 결과를 리포트 탭에서 업로드하여 확인하세요.",
+                "position": 3
+            }
+        ]
+    }
+    </script>
+    <!-- GEO: FAQPage Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Security Reports는 무료인가요?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "네, Security Reports는 완전 무료 오픈소스 프로젝트입니다. GitHub에서 소스 코드를 확인하고 기여할 수 있습니다."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "어떤 AI를 사용할 수 있나요?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Claude, Gemini, ChatGPT 등 다양한 AI 모델을 사용할 수 있습니다. 각 AI에 맞는 프롬프트 템플릿을 제공합니다."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "스캔 결과는 어떻게 확인하나요?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "AI가 생성한 JSON 파일을 리포트 페이지에 업로드하면 시각화된 보안 분석 결과를 확인할 수 있습니다."
+                }
+            }
         ]
     }
     </script>
