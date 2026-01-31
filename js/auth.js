@@ -1,9 +1,11 @@
-// Auth Logic using Supabase
+// Auth Logic v7 - Deactivated Account Reactivation Support
+// Features: signup, email verification, login, logout, withdrawal, reactivation
 
 document.addEventListener('DOMContentLoaded', () => {
-    // UI Elements
+    // ========== UI Elements ==========
     const authBtn = document.getElementById('authBtn');
     const authModal = document.getElementById('authModal');
+    const authModalContent = document.getElementById('authModalContent');
     const authCloseBtn = document.getElementById('authCloseBtn');
     const authForm = document.getElementById('authForm');
     const authTitle = document.getElementById('authTitle');
@@ -15,238 +17,670 @@ document.addEventListener('DOMContentLoaded', () => {
     const authError = document.getElementById('authError');
     const authEmail = document.getElementById('authEmail');
     const authPassword = document.getElementById('authPassword');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    const authWelcomeBanner = document.getElementById('authWelcomeBanner');
+    const privacyConsentGroup = document.getElementById('privacyConsentGroup');
+    const privacyConsent = document.getElementById('privacyConsent');
 
-    // State
+    // My Page Elements
+    const mypageModal = document.getElementById('mypageModal');
+    const mypageCloseBtn = document.getElementById('mypageCloseBtn');
+    const mypageUserEmail = document.getElementById('mypageUserEmail');
+    const mypageJoinDate = document.getElementById('mypageJoinDate');
+    const mypageError = document.getElementById('mypageError');
+    const mypageSuccess = document.getElementById('mypageSuccess');
+    const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const logoutFromMypageBtn = document.getElementById('logoutFromMypageBtn');
+    const mypagePrivacyToggle = document.getElementById('mypagePrivacyToggle');
+    const mypageConsentStatus = document.getElementById('mypageConsentStatus');
+
+    // ========== State ==========
     let isLoginMode = true;
     let currentUser = null;
+    let currentProfile = null;
 
-    // Check Supabase initialization
-    function isSupabaseReady() {
-        return typeof supabase !== 'undefined' && supabase !== null;
+    // ========== Helpers ==========
+    const isSupabaseReady = () => window.supabaseClient != null;
+    const t = (key) => window.i18n?.t(key) || key;
+
+    // ========== Database Operations ==========
+    async function fetchProfile(userId) {
+        if (!isSupabaseReady() || !userId) return null;
+
+        const { data, error } = await window.supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+        if (error && error.code !== 'PGRST116') {
+            console.error('[DB] fetchProfile error:', error);
+        }
+        return data || null;
     }
 
-    // Initialize Auth UI
-    async function initAuth() {
-        if (!isSupabaseReady()) {
-            console.log('Waiting for Supabase...');
-            // Wait for event or retry logic could be here, but simple check is enough for now
-            // If it initializes later, we might miss the initial check.
-            // But usually scripts load sequentially.
-        }
+    async function fetchProfileByEmail(email) {
+        if (!isSupabaseReady() || !email) return null;
 
-        if (isSupabaseReady()) {
-            const { data: { session } } = await supabase.auth.getSession();
-            updateAuthUI(session?.user);
+        const { data, error } = await window.supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('email', email)
+            .single();
 
-            // Listen for auth changes
-            supabase.auth.onAuthStateChange((_event, session) => {
-                updateAuthUI(session?.user);
-            });
+        if (error && error.code !== 'PGRST116') {
+            console.error('[DB] fetchProfileByEmail error:', error);
         }
+        return data || null;
     }
 
-    // Update Header UI based on Auth State
-    function updateAuthUI(user) {
-        currentUser = user;
-        const btnText = authBtn.querySelector('.btn-text');
+    async function createProfile(userId, email, privacyAgreed) {
+        if (!isSupabaseReady() || !userId) return null;
 
-        if (user) {
+        const existing = await fetchProfile(userId);
+        if (existing) return existing;
+
+        const { data, error } = await window.supabaseClient
+            .from('profiles')
+            .insert({
+                id: userId,
+                email: email,
+                privacy_agreed: privacyAgreed,
+                privacy_agreed_at: privacyAgreed ? new Date().toISOString() : null,
+                is_active: true
+            })
+            .select()
+            .single();
+
+        if (error) {
+            console.error('[DB] createProfile error:', error);
+            return null;
+        }
+        console.log('[DB] Profile created:', email);
+        return data;
+    }
+
+    async function reactivateProfile(userId, privacyAgreed = false) {
+        if (!isSupabaseReady() || !userId) return false;
+
+        const { error } = await window.supabaseClient
+            .from('profiles')
+            .update({
+                is_active: true,
+                privacy_agreed: privacyAgreed,
+                privacy_agreed_at: privacyAgreed ? new Date().toISOString() : null,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('[DB] reactivateProfile error:', error);
+            return false;
+        }
+        console.log('[DB] Profile reactivated:', userId);
+        return true;
+    }
+
+    async function updatePrivacyConsent(userId, agreed) {
+        if (!isSupabaseReady() || !userId) return false;
+
+        const { error } = await window.supabaseClient
+            .from('profiles')
+            .update({
+                privacy_agreed: agreed,
+                privacy_agreed_at: agreed ? new Date().toISOString() : null,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('[DB] updatePrivacyConsent error:', error);
+            return false;
+        }
+        return true;
+    }
+
+    async function deactivateAccount(userId) {
+        if (!isSupabaseReady() || !userId) return false;
+
+        const { error } = await window.supabaseClient
+            .from('profiles')
+            .update({
+                is_active: false,
+                privacy_agreed: false,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('[DB] deactivateAccount error:', error);
+            return false;
+        }
+        console.log('[DB] Account deactivated:', userId);
+        return true;
+    }
+
+    // ========== UI Functions ==========
+    function updateHeaderButton(isLoggedIn) {
+        const btnText = authBtn?.querySelector('.btn-text');
+        if (!btnText) return;
+
+        if (isLoggedIn && currentProfile?.is_active) {
             authBtn.classList.add('logged-in');
-            // Check translation key or direct text
-            // Using direct text manipulation for dynamic content like email might be tricky with i18n class
-            // But we can just set textContent if we don't need it translated, or use a key if we do.
-            // Let's use 'Logout' translation
-            btnText.setAttribute('data-i18n', 'btnLogout');
-            if (window.i18n) {
-                btnText.textContent = window.i18n.t('btnLogout');
-            }
-            authBtn.title = user.email;
+            btnText.setAttribute('data-i18n', 'btnMypage');
+            btnText.textContent = t('btnMypage');
+            authBtn.title = currentUser?.email || '';
         } else {
             authBtn.classList.remove('logged-in');
             btnText.setAttribute('data-i18n', 'btnLogin');
-            if (window.i18n) {
-                btnText.textContent = window.i18n.t('btnLogin');
-            }
-            authBtn.title = "Login / Sign Up";
+            btnText.textContent = t('btnLogin');
+            authBtn.title = 'Login / Sign Up';
         }
     }
 
-    // Toggle Modal
-    function openModal() {
-        if (currentUser) {
-            // Already logged in -> Confirm Logout? Or just logout?
-            // Let's just logout for simplicity or ask confirmation.
-            // Simple logout:
-            handleLogout();
-        } else {
-            // Not logged in -> Show Login Modal
-            resetForm();
-            authModal.classList.add('active');
-            authEmail.focus();
-        }
-    }
-
-    function closeModal() {
-        authModal.classList.remove('active');
-    }
-
-    // Toggle Login/Signup Mode
-    function toggleAuthMode() {
-        isLoginMode = !isLoginMode;
-
+    function updateAuthModeUI() {
         if (isLoginMode) {
-            // Switch to Login
-            authTitle.setAttribute('data-i18n', 'loginTitle');
-            authSubtitle.setAttribute('data-i18n', 'loginSubtitle');
-            authSubmitText.setAttribute('data-i18n', 'btnLogin');
-            authFooterText.setAttribute('data-i18n', 'noAccount');
-            authToggleBtn.setAttribute('data-i18n', 'linkSignup');
+            authTitle?.setAttribute('data-i18n', 'loginTitle');
+            authSubtitle?.setAttribute('data-i18n', 'loginSubtitle');
+            authSubmitText?.setAttribute('data-i18n', 'btnLogin');
+            authFooterText?.setAttribute('data-i18n', 'noAccount');
+            authToggleBtn?.setAttribute('data-i18n', 'linkSignup');
+            if (authWelcomeBanner) authWelcomeBanner.style.display = 'none';
+            if (privacyConsentGroup) privacyConsentGroup.style.display = 'none';
+            authModalContent?.classList.remove('signup-mode');
         } else {
-            // Switch to Signup
-            authTitle.setAttribute('data-i18n', 'signupTitle');
-            authSubtitle.setAttribute('data-i18n', 'signupSubtitle');
-            authSubmitText.setAttribute('data-i18n', 'btnSignup');
-            authFooterText.setAttribute('data-i18n', 'hasAccount');
-            authToggleBtn.setAttribute('data-i18n', 'linkLogin');
+            authTitle?.setAttribute('data-i18n', 'signupTitle');
+            authSubtitle?.setAttribute('data-i18n', 'signupSubtitle');
+            authSubmitText?.setAttribute('data-i18n', 'btnSignup');
+            authFooterText?.setAttribute('data-i18n', 'hasAccount');
+            authToggleBtn?.setAttribute('data-i18n', 'linkLogin');
+            if (authWelcomeBanner) authWelcomeBanner.style.display = 'block';
+            if (privacyConsentGroup) privacyConsentGroup.style.display = 'block';
+            authModalContent?.classList.add('signup-mode');
         }
-
-        // Refresh translations
-        if (window.i18n) window.i18n.updatePageLanguage(); // Should work or manually update
-
-        // Clear errors
-        showError(null);
+        window.i18n?.updatePageLanguage();
+        hideAuthError();
     }
 
-    function resetForm() {
+    function updateConsentStatusUI() {
+        if (!mypageConsentStatus || !currentProfile) return;
+
+        const isAgreed = currentProfile.privacy_agreed === true;
+        mypageConsentStatus.textContent = isAgreed
+            ? t('mypageConsentActive')
+            : t('mypageConsentInactive');
+        mypageConsentStatus.className = 'mypage-consent-status ' + (isAgreed ? 'active' : 'inactive');
+    }
+
+    // ========== Modal Functions ==========
+    function openAuthModal() {
+        resetAuthForm();
+        authModal?.classList.add('active');
+        authEmail?.focus();
+    }
+
+    function closeAuthModal() {
+        authModal?.classList.remove('active');
+    }
+
+    function openMypageModal() {
+        if (!currentUser || !currentProfile || !currentProfile.is_active) return;
+
+        if (mypageUserEmail) mypageUserEmail.textContent = currentUser.email || '-';
+        if (mypageJoinDate) {
+            mypageJoinDate.textContent = currentUser.created_at
+                ? new Date(currentUser.created_at).toLocaleDateString('ko-KR')
+                : '-';
+        }
+
+        if (mypagePrivacyToggle) {
+            mypagePrivacyToggle.checked = currentProfile.privacy_agreed === true;
+        }
+        updateConsentStatusUI();
+        hideMypageMessages();
+        mypageModal?.classList.add('active');
+    }
+
+    function closeMypageModal() {
+        mypageModal?.classList.remove('active');
+    }
+
+    function resetAuthForm() {
         isLoginMode = true;
-        authForm.reset();
-        showError(null);
-        // Reset translations to login mode
-        authTitle.setAttribute('data-i18n', 'loginTitle');
-        authSubtitle.setAttribute('data-i18n', 'loginSubtitle');
-        authSubmitText.setAttribute('data-i18n', 'btnLogin');
-        authFooterText.setAttribute('data-i18n', 'noAccount');
-        authToggleBtn.setAttribute('data-i18n', 'linkSignup');
-        if (window.i18n) window.i18n.updatePageLanguage();
+        authForm?.reset();
+        updateAuthModeUI();
     }
 
-    function showError(messageKey) {
-        if (messageKey) {
+    // ========== Message Helpers ==========
+    function showAuthError(msg) {
+        if (authError) {
+            authError.textContent = msg;
             authError.style.display = 'block';
-            authError.setAttribute('data-i18n', messageKey);
-            // Also set text immediately in case i18n update lags or key is raw text
-            if (window.i18n) {
-                authError.textContent = window.i18n.t(messageKey) || messageKey;
+        }
+    }
+
+    function hideAuthError() {
+        if (authError) authError.style.display = 'none';
+    }
+
+    function showMypageError(msg) {
+        if (mypageError) {
+            mypageError.textContent = msg;
+            mypageError.style.display = 'block';
+        }
+        if (mypageSuccess) mypageSuccess.style.display = 'none';
+    }
+
+    function showMypageSuccess(msg) {
+        if (mypageSuccess) {
+            mypageSuccess.textContent = msg;
+            mypageSuccess.style.display = 'block';
+        }
+        if (mypageError) mypageError.style.display = 'none';
+    }
+
+    function hideMypageMessages() {
+        if (mypageError) mypageError.style.display = 'none';
+        if (mypageSuccess) mypageSuccess.style.display = 'none';
+    }
+
+    function setAuthLoading(loading) {
+        if (authSubmitBtn) {
+            authSubmitBtn.disabled = loading;
+            authSubmitBtn.style.opacity = loading ? '0.7' : '1';
+        }
+    }
+
+    // ========== Auth Handlers ==========
+
+    // 이메일 로그인
+    async function handleEmailLogin(email, password) {
+        console.log('[Auth] Email login attempt:', email);
+
+        const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+            console.error('[Auth] Login failed:', error.message);
+            showAuthError(t('authErrorInvalidCredentials'));
+            return false;
+        }
+
+        // 프로필 조회
+        let profile = await fetchProfile(data.user.id);
+
+        // 비활성 계정 체크: 자동 재활성화
+        if (profile && profile.is_active === false) {
+            console.log('[Auth] Reactivating deactivated email account');
+            const reactivated = await reactivateProfile(data.user.id, false);
+
+            if (reactivated) {
+                profile = await fetchProfile(data.user.id);
+                currentUser = data.user;
+                currentProfile = profile;
+                updateHeaderButton(true);
+                closeAuthModal();
+                alert(t('authAccountReactivated'));
+                return true;
             } else {
-                authError.textContent = messageKey;
+                await window.supabaseClient.auth.signOut();
+                showAuthError(t('authErrorDefault'));
+                return false;
             }
-        } else {
-            authError.style.display = 'none';
         }
+
+        // 프로필이 없으면 생성 (이메일 인증 후 첫 로그인)
+        if (!profile) {
+            profile = await createProfile(data.user.id, email, false);
+        }
+
+        currentUser = data.user;
+        currentProfile = profile;
+        updateHeaderButton(true);
+        closeAuthModal();
+        console.log('[Auth] Login successful:', email);
+        return true;
     }
 
-    function showRawError(message) {
-        authError.style.display = 'block';
-        authError.removeAttribute('data-i18n');
-        authError.textContent = message;
+    // 이메일 회원가입
+    async function handleEmailSignup(email, password, agreedToPrivacy) {
+        console.log('[Auth] Email signup attempt:', email);
+
+        // 먼저 기존 프로필 확인 (탈퇴 계정 여부)
+        const existingProfile = await fetchProfileByEmail(email);
+
+        if (existingProfile) {
+            if (existingProfile.is_active === false) {
+                // 탈퇴된 계정: 재활성화 후 바로 로그인 시도
+                console.log('[Auth] Deactivated account found, reactivating and logging in...');
+
+                // 프로필 재활성화
+                const reactivated = await reactivateProfile(existingProfile.id, agreedToPrivacy);
+
+                if (reactivated) {
+                    // 바로 로그인 시도 (입력한 비밀번호로)
+                    const { data: loginData, error: loginError } = await window.supabaseClient.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (loginError) {
+                        console.log('[Auth] Password mismatch, sending reset email');
+                        // 비밀번호가 다르면 재설정 이메일 발송
+                        await window.supabaseClient.auth.resetPasswordForEmail(
+                            email,
+                            { redirectTo: window.location.origin }
+                        );
+                        showAuthError(t('authAccountReactivated') + ' ' + t('authCheckEmail'));
+                        return true;
+                    }
+
+                    // 로그인 성공
+                    currentUser = loginData.user;
+                    currentProfile = await fetchProfile(loginData.user.id);
+                    updateHeaderButton(true);
+                    closeAuthModal();
+                    alert(t('authAccountReactivated'));
+                    return true;
+                } else {
+                    showAuthError(t('authErrorDefault'));
+                    return false;
+                }
+            } else {
+                // 활성 계정: 이미 가입된 이메일
+                showAuthError(t('authErrorSignupFailed'));
+                return false;
+            }
+        }
+
+        // 새 계정 생성
+        const { data, error } = await window.supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                emailRedirectTo: window.location.origin
+            }
+        });
+
+        if (error) {
+            console.error('[Auth] Signup failed:', error.message);
+
+            // 이미 등록된 사용자 에러 처리
+            if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+                showAuthError(t('authErrorSignupFailed'));
+            } else {
+                showAuthError(t('authErrorSignupFailed'));
+            }
+            return false;
+        }
+
+        // 프로필 생성
+        if (data.user) {
+            await createProfile(data.user.id, email, agreedToPrivacy);
+        }
+
+        // 이메일 인증 필요 (session이 null이면)
+        if (!data.session) {
+            showAuthError(t('authCheckEmail'));
+            return true;
+        }
+
+        // 바로 로그인된 경우
+        currentUser = data.user;
+        currentProfile = await fetchProfile(data.user.id);
+        updateHeaderButton(true);
+        closeAuthModal();
+        return true;
     }
 
-    // Handlers
-    async function handleAuth(e) {
-        e.preventDefault();
-
+    // Google 로그인 (OAuth)
+    async function handleGoogleAuth() {
         if (!isSupabaseReady()) {
-            showRawError('Supabase client not ready. Please check configuration.');
+            showAuthError(t('authErrorSupabaseNotReady'));
             return;
         }
 
-        const email = authEmail.value;
-        const password = authPassword.value;
+        // 회원가입 모드에서 동의 체크
+        if (!isLoginMode && !privacyConsent?.checked) {
+            showAuthError(t('authErrorPrivacyRequired'));
+            return;
+        }
 
-        // Basic validation
+        const { error } = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin }
+        });
+
+        if (error) {
+            showAuthError(t('authErrorGoogleFailed'));
+        }
+    }
+
+    // OAuth 사용자 세션 처리 (Google 로그인 후)
+    async function handleOAuthSession(user) {
+        console.log('[Auth] Processing OAuth session:', user.email);
+
+        let profile = await fetchProfile(user.id);
+
+        // 프로필이 없으면 생성
+        if (!profile) {
+            profile = await createProfile(user.id, user.email, false);
+        }
+
+        // 비활성 계정: 자동 재활성화
+        if (profile && profile.is_active === false) {
+            console.log('[Auth] Reactivating deactivated OAuth account');
+            const reactivated = await reactivateProfile(user.id, false);
+            if (reactivated) {
+                profile = await fetchProfile(user.id);
+                alert(t('authAccountReactivated'));
+            }
+        }
+
+        currentUser = user;
+        currentProfile = profile;
+        updateHeaderButton(true);
+        closeAuthModal();
+    }
+
+    // 폼 제출 핸들러
+    async function handleAuthFormSubmit(e) {
+        e.preventDefault();
+        if (!isSupabaseReady()) {
+            showAuthError(t('authErrorSupabaseNotReady'));
+            return;
+        }
+
+        const email = authEmail?.value?.trim();
+        const password = authPassword?.value;
+
+        if (!email || !password) {
+            showAuthError(t('authErrorDefault'));
+            return;
+        }
+
         if (password.length < 6) {
-            showError('authErrorPasswordShort');
+            showAuthError(t('authErrorPasswordShort'));
             return;
         }
 
-        setLoading(true);
-        showError(null);
+        if (!isLoginMode && !privacyConsent?.checked) {
+            showAuthError(t('authErrorPrivacyRequired'));
+            return;
+        }
+
+        setAuthLoading(true);
+        hideAuthError();
 
         try {
-            let result;
             if (isLoginMode) {
-                // Login
-                result = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
+                await handleEmailLogin(email, password);
             } else {
-                // Sign Up
-                result = await supabase.auth.signUp({
-                    email,
-                    password
-                });
+                await handleEmailSignup(email, password, privacyConsent?.checked || false);
             }
-
-            const { data, error } = result;
-
-            if (error) {
-                console.error('Auth Error:', error);
-                showRawError(error.message); // Show raw error from Supabase (usually English)
-            } else {
-                // Success
-                if (!isLoginMode && data.user && !data.session) {
-                    // Sign up successful but email confirmation needed (default Supabase setting often)
-                    showRawError('Check your email for confirmation link!');
-                    return; // Don't close modal yet
-                }
-
-                closeModal();
-                updateAuthUI(data.user);
-            }
-        } catch (err) {
-            console.error('Unexpected error:', err);
-            showError('authErrorDefault');
         } finally {
-            setLoading(false);
+            setAuthLoading(false);
         }
     }
 
+    // 로그아웃
     async function handleLogout() {
-        if (confirm('Are you sure you want to logout?')) {
-            if (isSupabaseReady()) {
-                await supabase.auth.signOut();
-                updateAuthUI(null);
+        if (!confirm(t('logoutConfirm'))) return;
+
+        await window.supabaseClient?.auth.signOut();
+        currentUser = null;
+        currentProfile = null;
+        closeMypageModal();
+        updateHeaderButton(false);
+    }
+
+    // ========== My Page Handlers ==========
+
+    // 동의 토글 변경
+    async function handlePrivacyToggleChange() {
+        if (!currentUser || !currentProfile) return;
+
+        const newValue = mypagePrivacyToggle?.checked || false;
+
+        // 동의 해제 시 확인
+        if (!newValue && !confirm(t('mypageConsentRevokeConfirm'))) {
+            if (mypagePrivacyToggle) mypagePrivacyToggle.checked = true;
+            return;
+        }
+
+        const success = await updatePrivacyConsent(currentUser.id, newValue);
+
+        if (success) {
+            currentProfile.privacy_agreed = newValue;
+
+            // UI 즉시 갱신
+            if (mypageConsentStatus) {
+                mypageConsentStatus.textContent = newValue
+                    ? t('mypageConsentActive')
+                    : t('mypageConsentInactive');
+                mypageConsentStatus.className = 'mypage-consent-status ' + (newValue ? 'active' : 'inactive');
             }
+
+            showMypageSuccess(newValue ? t('mypageConsentGranted') : t('mypageConsentRevoked'));
+        } else {
+            if (mypagePrivacyToggle) mypagePrivacyToggle.checked = !newValue;
+            showMypageError(t('authErrorDefault'));
         }
     }
 
-    function setLoading(isLoading) {
-        authSubmitBtn.disabled = isLoading;
-        authSubmitBtn.style.opacity = isLoading ? '0.7' : '1';
-        // Could change text to "Processing..."
+    // 비밀번호 재설정
+    async function handlePasswordReset() {
+        if (!currentUser?.email) return;
+
+        const { error } = await window.supabaseClient.auth.resetPasswordForEmail(
+            currentUser.email,
+            { redirectTo: window.location.origin }
+        );
+
+        if (error) {
+            showMypageError(error.message);
+        } else {
+            showMypageSuccess(t('mypageResetEmailSent'));
+        }
     }
 
-    // Event Listeners
-    if (authBtn) authBtn.addEventListener('click', openModal);
-    if (authCloseBtn) authCloseBtn.addEventListener('click', closeModal);
-    if (authToggleBtn) authToggleBtn.addEventListener('click', toggleAuthMode);
-    if (authForm) authForm.addEventListener('submit', handleAuth);
+    // 회원 탈퇴
+    async function handleAccountDeletion() {
+        if (!confirm(t('mypageDeleteConfirmMsg'))) return;
 
-    // Close on click outside
-    if (authModal) {
-        authModal.addEventListener('click', (e) => {
-            if (e.target === authModal) closeModal();
+        const confirmWord = t('mypageDeleteConfirmWord');
+        const userInput = prompt(t('mypageDeletePrompt'));
+
+        if (userInput !== confirmWord) {
+            showMypageError(t('mypageDeleteCancelled'));
+            return;
+        }
+
+        console.log('[Auth] Deactivating account:', currentUser.id);
+        const success = await deactivateAccount(currentUser.id);
+
+        if (success) {
+            // 즉시 로그아웃 및 UI 업데이트
+            await window.supabaseClient.auth.signOut();
+            currentUser = null;
+            currentProfile = null;
+            closeMypageModal();
+            updateHeaderButton(false);
+
+            // 사용자에게 즉시 알림
+            alert(t('mypageDeleteComplete'));
+        } else {
+            showMypageError(t('mypageDeleteError'));
+        }
+    }
+
+    // ========== Event Listeners ==========
+    authBtn?.addEventListener('click', () => {
+        if (currentUser && currentProfile?.is_active) {
+            openMypageModal();
+        } else {
+            openAuthModal();
+        }
+    });
+
+    authCloseBtn?.addEventListener('click', closeAuthModal);
+    authModal?.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuthModal();
+    });
+
+    authToggleBtn?.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        updateAuthModeUI();
+    });
+
+    authForm?.addEventListener('submit', handleAuthFormSubmit);
+    googleLoginBtn?.addEventListener('click', handleGoogleAuth);
+
+    mypageCloseBtn?.addEventListener('click', closeMypageModal);
+    mypageModal?.addEventListener('click', (e) => {
+        if (e.target === mypageModal) closeMypageModal();
+    });
+
+    mypagePrivacyToggle?.addEventListener('change', handlePrivacyToggleChange);
+    resetPasswordBtn?.addEventListener('click', handlePasswordReset);
+    deleteAccountBtn?.addEventListener('click', handleAccountDeletion);
+    logoutFromMypageBtn?.addEventListener('click', handleLogout);
+
+    // ========== Initialize ==========
+    async function initAuth() {
+        if (!isSupabaseReady()) {
+            console.log('[Auth] Supabase not ready');
+            return;
+        }
+
+        console.log('[Auth] Initializing...');
+
+        // 현재 세션 확인
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        console.log('[Auth] Current session:', session?.user?.email || 'none');
+
+        if (session?.user) {
+            await handleOAuthSession(session.user);
+        }
+
+        // Auth 상태 변경 리스너
+        window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            console.log('[Auth] State change:', event, session?.user?.email || 'none');
+
+            if (event === 'SIGNED_IN' && session?.user) {
+                await handleOAuthSession(session.user);
+            } else if (event === 'SIGNED_OUT') {
+                currentUser = null;
+                currentProfile = null;
+                updateHeaderButton(false);
+            }
         });
     }
 
-    // Initialize
-    // If supabase loads later, we can listen for event or just poll/timeout
-    // But since scripts are defer/ordered, client.js should run first or parallel.
-    // client.js dispatches 'supabaseReady' event.
-
+    // Start
     window.addEventListener('supabaseReady', initAuth);
-
-    // Also try init immediately in case it's already ready
-    initAuth();
+    if (isSupabaseReady()) initAuth();
 });

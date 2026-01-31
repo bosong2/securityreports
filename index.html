@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
-    <title>Security Reports - AI 기반 보안 스캔 리포트 | AI Security Scan</title>
+    <title>Security Reports - AI 기반 보안 스캔 리포트 | AI Security Scan (시범페이지입니다)</title>
     <meta name="description"
         content="AI를 활용한 프로젝트 보안 취약점 분석 플랫폼. Claude, Gemini 등 AI로 소프트웨어 보안을 스캔하고 상세 리포트를 확인하세요. Free AI-powered security vulnerability scanner.">
     <meta name="keywords"
@@ -389,13 +389,40 @@
 
     <!-- Auth Modal -->
     <div id="authModal" class="auth-modal-overlay">
-        <div class="auth-modal">
+        <div class="auth-modal" id="authModalContent">
             <button class="auth-close-btn" id="authCloseBtn">&times;</button>
+
+            <!-- Welcome Banner (회원가입 시에만 표시) -->
+            <div id="authWelcomeBanner" class="auth-welcome-banner" style="display: none;">
+                <span class="welcome-emoji">🎉</span>
+                <span data-i18n="signupWelcome">환영합니다! 새로운 계정을 만들어보세요</span>
+            </div>
 
             <h2 class="auth-title" id="authTitle" data-i18n="loginTitle">로그인</h2>
             <p class="auth-subtitle" id="authSubtitle" data-i18n="loginSubtitle">계정에 로그인하여 리포트를 관리하세요</p>
 
             <div id="authError" class="auth-error"></div>
+
+            <!-- Social Login Buttons -->
+            <div class="auth-social-buttons">
+                <button type="button" id="googleLoginBtn" class="auth-social-btn google-btn">
+                    <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4"
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853"
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05"
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#EA4335"
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    <span data-i18n="btnGoogleLogin">Google로 계속</span>
+                </button>
+            </div>
+
+            <div class="auth-divider">
+                <span data-i18n="authDivider">또는 이메일로</span>
+            </div>
 
             <form id="authForm">
                 <div class="auth-form-group">
@@ -409,6 +436,18 @@
                         minlength="6">
                 </div>
 
+                <!-- 개인정보 동의 체크박스 (회원가입 시에만 표시) -->
+                <div id="privacyConsentGroup" class="auth-form-group privacy-consent-group" style="display: none;">
+                    <label class="privacy-consent-label">
+                        <input type="checkbox" id="privacyConsent" class="privacy-consent-checkbox">
+                        <span class="privacy-consent-text">
+                            <span data-i18n="privacyConsentText">개인정보 수집 및 이용에 동의합니다.</span>
+                            <a href="privacy.html" target="_blank" class="privacy-policy-link"
+                                data-i18n="privacyPolicyLink">[개인정보처리방침]</a>
+                        </span>
+                    </label>
+                </div>
+
                 <button type="submit" class="auth-submit-btn" id="authSubmitBtn">
                     <span id="authSubmitText" data-i18n="btnLogin">로그인</span>
                 </button>
@@ -417,6 +456,77 @@
             <div class="auth-footer">
                 <span id="authFooterText" data-i18n="noAccount">계정이 없으신가요?</span>
                 <button id="authToggleBtn" class="auth-toggle-btn" data-i18n="linkSignup">회원가입</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Page Modal -->
+    <div id="mypageModal" class="auth-modal-overlay">
+        <div class="auth-modal mypage-modal">
+            <button class="auth-close-btn" id="mypageCloseBtn">&times;</button>
+
+            <h2 class="auth-title" data-i18n="mypageTitle">마이페이지</h2>
+            <p class="auth-subtitle" id="mypageEmail"></p>
+
+            <div id="mypageError" class="auth-error" style="display: none;"></div>
+            <div id="mypageSuccess" class="auth-success" style="display: none;"></div>
+
+            <!-- 내 정보 섹션 -->
+            <div class="mypage-section">
+                <h3 class="mypage-section-title" data-i18n="mypageInfoTitle">내 정보</h3>
+                <div class="mypage-info-row">
+                    <span class="mypage-info-label" data-i18n="labelEmail">이메일</span>
+                    <span class="mypage-info-value" id="mypageUserEmail">-</span>
+                </div>
+                <div class="mypage-info-row">
+                    <span class="mypage-info-label" data-i18n="mypageJoinDate">가입일</span>
+                    <span class="mypage-info-value" id="mypageJoinDate">-</span>
+                </div>
+            </div>
+
+            <!-- 개인정보 동의 섹션 -->
+            <div class="mypage-section" id="mypageConsentSection">
+                <h3 class="mypage-section-title" data-i18n="mypageConsentTitle">개인정보 동의 관리</h3>
+                <p class="mypage-section-desc" data-i18n="mypageConsentDesc">
+                    개인정보 수집 및 이용에 동의해야 콘텐츠 작성 등의 서비스를 이용할 수 있습니다.
+                </p>
+                <div class="mypage-toggle-row">
+                    <span class="mypage-toggle-label" data-i18n="mypageConsentLabel">개인정보 수집 및 이용 동의</span>
+                    <label class="mypage-toggle-switch">
+                        <input type="checkbox" id="mypagePrivacyToggle">
+                        <span class="mypage-toggle-slider"></span>
+                    </label>
+                </div>
+                <p class="mypage-consent-status" id="mypageConsentStatus"></p>
+            </div>
+
+            <!-- 비밀번호 재설정 섹션 -->
+            <div class="mypage-section">
+                <h3 class="mypage-section-title" data-i18n="mypagePasswordTitle">비밀번호 변경</h3>
+                <p class="mypage-section-desc" data-i18n="mypagePasswordDesc">이메일로 비밀번호 재설정 링크를 보내드립니다.</p>
+                <button type="button" id="resetPasswordBtn" class="mypage-btn mypage-btn-secondary"
+                    data-i18n="mypageResetPasswordBtn">
+                    비밀번호 재설정 메일 받기
+                </button>
+            </div>
+
+            <!-- 회원 탈퇴 섹션 -->
+            <div class="mypage-section mypage-danger-section">
+                <h3 class="mypage-section-title" data-i18n="mypageDeleteTitle">회원 탈퇴</h3>
+                <p class="mypage-section-desc mypage-warning-text" data-i18n="mypageDeleteWarning">
+                    ⚠️ 탈퇴 시 계정이 비활성화됩니다. 작성하신 콘텐츠(블로그 글, 리포트 등)는 삭제되지 않습니다.
+                </p>
+                <button type="button" id="deleteAccountBtn" class="mypage-btn mypage-btn-danger"
+                    data-i18n="mypageDeleteBtn">
+                    회원 탈퇴
+                </button>
+            </div>
+
+            <div class="mypage-footer">
+                <button type="button" id="logoutFromMypageBtn" class="mypage-btn mypage-btn-outline"
+                    data-i18n="btnLogout">
+                    로그아웃
+                </button>
             </div>
         </div>
     </div>

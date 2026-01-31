@@ -3,8 +3,8 @@
 // You can find these in your Supabase Dashboard -> Project Settings -> API
 
 const SUPABASE_CONFIG = {
-    url: 'YOUR_SUPABASE_PROJECT_URL',
-    key: 'YOUR_SUPABASE_ANON_KEY'
+    url: 'https://fzkywwerhyihseranqey.supabase.co',
+    key: 'sb_publishable_swvlJstbJyzjwcoxerYzXA_w3p8Q9NN'
 };
 
 // Prevent accidental modification

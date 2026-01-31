@@ -1,40 +1,50 @@
 // Initialize Supabase Client
 // Dependencies: supabase-js (CDN), supabase-config.js
 
-let supabase;
+// Global client instance - accessible from other scripts
+window.supabaseClient = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof supabase === 'undefined') {
-        if (typeof createClient === 'undefined' && window.supabase) {
-            // Ifloaded via CDN, strictly speaking the global might be `supabase.createClient` 
-            // but usually strictly it is `supabase` object from window if using umd
-            // Let's check how the CDN script exposes it. 
-            // The v2 script exposes `supabase.createClient`.
-        }
-
-        // Check if config is loaded
-        if (typeof SUPABASE_CONFIG === 'undefined' || !SUPABASE_CONFIG.url || SUPABASE_CONFIG.url === 'YOUR_SUPABASE_PROJECT_URL') {
-            console.warn('Supabase configuration is missing or invalid. Please check js/supabase-config.js');
-            return;
-        }
-
-        try {
-            // The supabase-js v2 CDN exposes a global variable `supabase` which has `createClient`
-            // But wait, the CDN script usually sets `window.supabase` (lowercase) or `const { createClient } = supabase`.
-            // Let's assume standard usage: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-            // This usually exposes `supabase` global object.
-
-            if (window.supabase && window.supabase.createClient) {
-                supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
-                console.log('Supabase client initialized');
-
-                // Dispatch event so other scripts know supabase is ready
-                window.dispatchEvent(new Event('supabaseReady'));
-            } else {
-                console.error('Supabase library not loaded.');
-            }
-        } catch (error) {
-            console.error('Failed to initialize Supabase:', error);
-        }
+function initSupabaseClient() {
+    // Check if config is loaded and valid
+    if (typeof SUPABASE_CONFIG === 'undefined') {
+        console.error('Supabase: SUPABASE_CONFIG not defined. Check js/supabase-config.js');
+        return false;
     }
-});
+
+    if (!SUPABASE_CONFIG.url || SUPABASE_CONFIG.url.includes('YOUR_SUPABASE')) {
+        console.error('Supabase: Invalid URL in config. Please set your actual Supabase Project URL.');
+        return false;
+    }
+
+    if (!SUPABASE_CONFIG.key || SUPABASE_CONFIG.key.includes('YOUR_SUPABASE')) {
+        console.error('Supabase: Invalid Key in config. Please set your actual Supabase Anon/Publishable Key.');
+        return false;
+    }
+
+    // Check if library is loaded
+    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+        console.error('Supabase: Library not loaded. CDN script may be blocked or failed to load.');
+        return false;
+    }
+
+    try {
+        // Create the client
+        window.supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+        console.log('Supabase client initialized successfully!');
+
+        // Dispatch event so other scripts know supabase is ready
+        window.dispatchEvent(new Event('supabaseReady'));
+        return true;
+    } catch (error) {
+        console.error('Supabase: Failed to create client:', error);
+        return false;
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSupabaseClient);
+} else {
+    // DOM already loaded
+    initSupabaseClient();
+}
