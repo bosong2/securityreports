@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>보안 리포트 제출 | Submit Security Report - Security Reports</title>
+    <meta name="description" content="커뮤니티에 보안 스캔 결과를 공유하세요. AI로 분석한 보안 취약점 리포트를 제출하고 다른 개발자들과 공유할 수 있습니다.">
+    <meta name="keywords" content="보안 리포트 제출, submit report, 취약점 공유, security contribution, 커뮤니티 기여">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://securityreports.pages.dev/blog-submit.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://securityreports.pages.dev/blog-submit.html">
+    <meta property="og:title" content="보안 리포트 제출 - Security Reports">
+    <meta property="og:description" content="커뮤니티에 보안 스캔 결과를 공유하세요.">
+    <meta property="og:image" content="https://securityreports.pages.dev/favicon.svg">
+    <meta property="og:site_name" content="Security Reports">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S410S37PMX"></script>
+    <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-S410S37PMX');
+    </script>
+
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "v2u86ujuew");
+    </script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/app.bundle.css">
+
+    <style is:global>
+        .submit-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .submit-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .submit-header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .submit-header p {
+            color: var(--text-secondary);
+        }
+
+        .form-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--accent-red);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-top: 0.25rem;
+        }
+
+        .tag-input-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tag-chip {
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tag-remove:hover {
+            opacity: 0.7;
+        }
+
+        .file-upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-upload-zone:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .file-upload-zone.has-file {
+            border-color: var(--accent-primary);
+            background: rgba(var(--accent-primary-rgb), 0.1);
+        }
+
+        .file-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 2rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 2rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .info-box {
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .info-box ol {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .info-box li {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span>
+                <div class="logo-text">
+                    <h1 data-i18n="siteTitle">Security Reports</h1>
+                    <p data-i18n="siteSubtitle">AI 기반 보안 스캔 리포트</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="langToggle" class="btn" title="Change Language">
+                    <span>🌐</span>
+                    <span class="btn-text">KO</span>
+                </button>
+
+                <button id="themeToggle" class="btn" title="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                    <span class="btn-text" data-i18n="btnDark">다크</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-container">
+            <a href="index.html" class="nav-tab" data-i18n="navHome">홈</a>
+            <a href="blog.html" class="nav-tab" data-i18n="tabBlog">블로그</a>
+            <a href="reports.html" class="nav-tab" data-i18n="navReports">리포트</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="submit-container">
+        <div class="submit-header">
+            <h1 data-i18n="submitTitle">📝 보안 리포트 공유하기</h1>
+            <p data-i18n="submitSubtitle">커뮤니티에 보안 스캔 결과를 공유해주세요</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3 data-i18n="howItWorks">📋 작동 방식</h3>
+            <ol>
+                <li data-i18n="howItWorksStep1">아래 양식을 작성하세요</li>
+                <li data-i18n="howItWorksStep2">JSON 보안 스캔 리포트를 업로드하세요</li>
+                <li data-i18n="howItWorksStep3">생성된 파일(ZIP)을 다운로드하세요</li>
+                <li data-i18n="howItWorksStep4">GitHub Pull Request로 제출하세요</li>
+            </ol>
+        </div>
+
+        <!-- Form -->
+        <form id="submitForm" class="form-card">
+            <!-- Title -->
+            <div class="form-group">
+                <label class="form-label required" for="title" data-i18n="formTitle">제목</label>
+                <input type="text" id="title" class="form-input" data-i18n-placeholder="formTitlePlaceholder"
+                    placeholder="예: React 애플리케이션 보안 감사" required>
+                <div class="form-help" data-i18n="formTitleHelp">보안 리포트를 명확하게 설명하는 제목</div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label class="form-label required" for="description" data-i18n="formDescription">설명</label>
+                <textarea id="description" class="form-textarea" data-i18n-placeholder="formDescriptionPlaceholder"
+                    placeholder="발견된 내용에 대한 간략한 요약..." required></textarea>
+                <div class="form-help" data-i18n="formDescriptionHelp">짧은 요약 (1-2문장)</div>
+            </div>
+
+            <!-- Author -->
+            <div class="form-group">
+                <label class="form-label required" for="author" data-i18n="formAuthor">작성자</label>
+                <input type="text" id="author" class="form-input" data-i18n-placeholder="formAuthorPlaceholder"
+                    placeholder="예: 보안 연구팀" required>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group">
+                <label class="form-label required" data-i18n="formTags">태그</label>
+                <div class="tag-input-container" id="tagContainer">
+                    <input type="text" id="tagInput" class="form-input" data-i18n-placeholder="formTagPlaceholder"
+                        placeholder="태그를 입력하고 Enter를 누르세요" style="flex: 1; min-width: 200px;">
+                </div>
+                <div class="form-help" data-i18n="formTagHelp">태그 추가 예: security, react, critical, sql-injection (Enter로
+                    추가)</div>
+            </div>
+
+            <!-- Content -->
+            <div class="form-group">
+                <label class="form-label required" for="content" data-i18n="formContent">상세 리포트</label>
+                <textarea id="content" class="form-textarea" style="min-height: 300px;"
+                    data-i18n-placeholder="formContentPlaceholder"
+                    placeholder="# 상세 분석&#10;&#10;## 주요 발견사항&#10;&#10;### 1. 심각한 취약점&#10;&#10;..." required></textarea>
+                <div class="form-help" data-i18n="formContentHelp">Markdown 지원 - 상세 분석, 발견사항, 권장사항</div>
+            </div>
+
+            <!-- JSON File Upload -->
+            <div class="form-group">
+                <label class="form-label required" data-i18n="formJsonFile">JSON 보안 리포트</label>
+                <div class="file-upload-zone" id="uploadZone">
+                    <div class="file-icon">📄</div>
+                    <div><strong data-i18n="formJsonFileUpload">클릭하여 업로드</strong> <span
+                            data-i18n="formJsonFileDragDrop">또는 드래그 앤 드롭</span></div>
+                    <div class="form-help" data-i18n="formJsonFileHelp">보안 스캔에서 생성된 JSON 파일</div>
+                </div>
+                <input type="file" id="jsonFile" accept=".json" style="display: none;" required>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="window.location.href='blog.html'"
+                    data-i18n="btnCancel">
+                    취소
+                </button>
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <span data-i18n="btnGenerate">파일 생성</span> 📦
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script is:inline src="/js/i18n.js" defer></script>
+    <script is:inline src="/js/theme.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+
+    <script is:inline>
+        // Initialize i18n
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.i18n) {
+                window.i18n.updatePageLanguage();
+            }
+        });
+
+        // Tags management
+        const tags = [];
+        const tagInput = document.getElementById('tagInput');
+        const tagContainer = document.getElementById('tagContainer');
+
+        tagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = tagInput.value.trim().toLowerCase();
+                if (tag && !tags.includes(tag)) {
+                    tags.push(tag);
+                    renderTags();
+                    tagInput.value = '';
+                }
+            }
+        });
+
+        function renderTags() {
+            const existing = tagContainer.querySelectorAll('.tag-chip');
+            existing.forEach(el => el.remove());
+
+            tags.forEach(tag => {
+                const chip = document.createElement('div');
+                chip.className = 'tag-chip';
+                chip.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove" onclick="removeTag('${tag}')">×</span>
+                `;
+                tagContainer.insertBefore(chip, tagInput);
+            });
+        }
+
+        function removeTag(tag) {
+            const index = tags.indexOf(tag);
+            if (index > -1) {
+                tags.splice(index, 1);
+                renderTags();
+            }
+        }
+
+        // File upload
+        const uploadZone = document.getElementById('uploadZone');
+        const jsonFile = document.getElementById('jsonFile');
+        let selectedFile = null;
+
+        uploadZone.addEventListener('click', () => jsonFile.click());
+
+        jsonFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                uploadZone.classList.add('has-file');
+                uploadZone.innerHTML = `
+                    <div class="file-icon">✅</div>
+                    <div><strong>${selectedFile.name}</strong></div>
+                    <div class="form-help">${(selectedFile.size / 1024).toFixed(2)} KB</div>
+                `;
+            }
+        });
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].name.endsWith('.json')) {
+                jsonFile.files = files;
+                selectedFile = files[0];
+                uploadZone.classList.add('has-file');
+                uploadZone.innerHTML = `
+                    <div class="file-icon">✅</div>
+                    <div><strong>${selectedFile.name}</strong></div>
+                    <div class="form-help">${(selectedFile.size / 1024).toFixed(2)} KB</div>
+                `;
+            }
+        });
+
+        // Form submission
+        document.getElementById('submitForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const t = window.i18n?.translations[window.i18n?.currentLanguage] || {};
+
+            if (tags.length === 0) {
+                alert(t.alertNoTags || '최소 하나의 태그를 추가해주세요');
+                return;
+            }
+
+            if (!selectedFile) {
+                alert(t.alertNoFile || 'JSON 파일을 업로드해주세요');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.querySelector('span').textContent = t.btnGenerating || '생성 중...';
+
+            try {
+                // Get form data
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const author = document.getElementById('author').value;
+                const content = document.getElementById('content').value;
+
+                // Generate post ID
+                const postId = `post-${Date.now()}`;
+                const date = new Date().toISOString().split('T')[0];
+
+                // Create MD file content with frontmatter
+                const mdContent = `---
+id: ${postId}
+title: "${title}"
+author: "${author}"
+date: "${date}"
+tags: [${tags.map(t => `"${t}"`).join(', ')}]
+description: "${description}"
+jsonFile: "report.json"
+---
+
+${content}
+`;
+
+                // Read JSON file
+                const jsonContent = await selectedFile.text();
+
+                // Create ZIP file
+                const zip = new JSZip();
+                const folder = zip.folder(postId);
+                folder.file('post.md', mdContent);
+                folder.file('report.json', jsonContent);
+
+                // Generate ZIP
+                const blob = await zip.generateAsync({ type: 'blob' });
+
+                // Download ZIP
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${postId}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Show success message
+                const successMsg = t.alertSuccess || '파일이 성공적으로 생성되었습니다!';
+                const nextSteps = t.alertNextSteps || '다음 단계';
+                alert(`✅ ${successMsg}
+
+${nextSteps}:
+1. ${postId}.zip 압축 해제
+2. https://github.com/bosong2/securityreports Fork
+3. /upload/${postId}/ 폴더에 업로드
+4. Pull Request 생성
+5. 승인 대기
+
+감사합니다! 🎉`);
+
+                // Reset form
+                document.getElementById('submitForm').reset();
+                tags.length = 0;
+                renderTags();
+                selectedFile = null;
+                uploadZone.classList.remove('has-file');
+
+                const uploadText = t.formJsonFileUpload || '클릭하여 업로드';
+                const dragText = t.formJsonFileDragDrop || '또는 드래그 앤 드롭';
+                const helpText = t.formJsonFileHelp || '보안 스캔에서 생성된 JSON 파일';
+
+                uploadZone.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div><strong data-i18n="formJsonFileUpload">${uploadText}</strong> <span data-i18n="formJsonFileDragDrop">${dragText}</span></div>
+                    <div class="form-help" data-i18n="formJsonFileHelp">${helpText}</div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                const errorMsg = t.alertError || '파일 생성 중 오류가 발생했습니다. 다시 시도해주세요.';
+                alert(`❌ ${errorMsg}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.querySelector('span').textContent = t.btnGenerate || '파일 생성';
+            }
+        });
+    </script>
+</body>
+
+</html>

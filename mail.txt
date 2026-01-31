@@ -1,0 +1,6 @@
+From: onboarding@securityreports.pages.dev
+To: bosong2@live.co.kr
+Subject: SMTP Test from Security Reports
+
+This is a test email to verify Resend SMTP configuration.
+Sent at: Sat Jan 31 20:00:58 KST 2026

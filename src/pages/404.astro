@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Security Reports</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style is:global>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--accent-primary);
+            margin: 0;
+            line-height: 1;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="/"
+                    style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.75rem;">
+                    <span class="logo-icon">🛡️</span>
+                    <div class="logo-text">
+                        <h1>Security Reports</h1>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="error-container">
+        <p class="error-code">404</p>
+        <h2 class="error-title">길을 잃으셨나요?</h2>
+        <p class="error-message">찾으시는 페이지가 삭제되었거나 주소가 변경되었을 수 있습니다. 아래 링크를 통해 원하시는 정보를 찾아보세요.</p>
+
+        <div class="error-actions">
+            <a href="index.html" class="btn btn-primary">🏠 홈으로 가기</a>
+            <a href="blog.html" class="btn btn-secondary">📰 블로그 보기</a>
+            <a href="reports.html" class="btn btn-secondary">📊 리포트 뷰어</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Security Reports. 오픈소스 프로젝트</p>
+    </footer>
+
+    <script is:inline src="/js/theme.js"></script>
+</body>
+
+</html>

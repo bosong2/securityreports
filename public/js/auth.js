@@ -102,24 +102,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function reactivateProfile(userId, privacyAgreed = false) {
-        if (!isSupabaseReady() || !userId) return false;
+        if (!userId) return false;
 
-        const { error } = await window.supabaseClient
-            .from('profiles')
-            .update({
-                is_active: true,
-                privacy_agreed: privacyAgreed,
-                privacy_agreed_at: privacyAgreed ? new Date().toISOString() : null,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', userId);
+        try {
+            const response = await fetch('/api/auth/reactivate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, privacyAgreed })
+            });
 
-        if (error) {
-            console.error('[DB] reactivateProfile error:', error);
+            if (!response.ok) {
+                const error = await response.json();
+                console.error('[API] reactivateProfile error:', error);
+                return false;
+            }
+
+            console.log('[API] Profile reactivated:', userId);
+            return true;
+        } catch (error) {
+            console.error('[API] reactivateProfile exception:', error);
             return false;
         }
-        console.log('[DB] Profile reactivated:', userId);
-        return true;
     }
 
     async function updatePrivacyConsent(userId, agreed) {
@@ -142,23 +145,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function deactivateAccount(userId) {
-        if (!isSupabaseReady() || !userId) return false;
+        if (!userId) return false;
 
-        const { error } = await window.supabaseClient
-            .from('profiles')
-            .update({
-                is_active: false,
-                privacy_agreed: false,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', userId);
+        try {
+            const response = await fetch('/api/auth/deactivate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            });
 
-        if (error) {
-            console.error('[DB] deactivateAccount error:', error);
+            if (!response.ok) {
+                const error = await response.json();
+                console.error('[API] deactivateAccount error:', error);
+                return false;
+            }
+
+            console.log('[API] Account deactivated:', userId);
+            return true;
+        } catch (error) {
+            console.error('[API] deactivateAccount exception:', error);
             return false;
         }
-        console.log('[DB] Account deactivated:', userId);
-        return true;
     }
 
     // ========== UI Functions ==========

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>Security Reports - AI 기반 보안 스캔 리포트 | AI Security Scan (시범페이지입니다)</title>
+    <meta name="description"
+        content="AI를 활용한 프로젝트 보안 취약점 분석 플랫폼. Claude, Gemini 등 AI로 소프트웨어 보안을 스캔하고 상세 리포트를 확인하세요. Free AI-powered security vulnerability scanner.">
+    <meta name="keywords"
+        content="보안 스캔, security scan, AI 보안, vulnerability scanner, 취약점 분석, Claude AI, Gemini, 보안 리포트, security reports, 오픈소스 보안">
+    <meta name="author" content="Security Reports Team">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://securityreports.pages.dev/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://securityreports.pages.dev/">
+    <meta property="og:title" content="Security Reports - AI 기반 보안 스캔 리포트">
+    <meta property="og:description"
+        content="AI를 활용한 프로젝트 보안 취약점 분석 플랫폼. Claude, Gemini 등 AI로 소프트웨어 보안을 스캔하고 상세 리포트를 확인하세요.">
+    <meta property="og:image" content="https://securityreports.pages.dev/favicon.svg">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:site_name" content="Security Reports">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="https://securityreports.pages.dev/">
+    <meta name="twitter:title" content="Security Reports - AI 기반 보안 스캔 리포트">
+    <meta name="twitter:description" content="AI를 활용한 프로젝트 보안 취약점 분석 플랫폼. 무료 오픈소스 보안 스캐너.">
+    <meta name="twitter:image" content="https://securityreports.pages.dev/favicon.svg">
+
+    <!-- Naver -->
+    <meta name="naver-site-verification" content="">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Security Reports",
+        "alternateName": "AI Security Scan Reports",
+        "url": "https://securityreports.pages.dev/",
+        "description": "AI를 활용한 프로젝트 보안 취약점 분석 플랫폼",
+        "inLanguage": ["ko", "en"],
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://securityreports.pages.dev/blog.html?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Security Reports",
+        "url": "https://securityreports.pages.dev/",
+        "logo": "https://securityreports.pages.dev/favicon.svg",
+        "sameAs": [
+            "https://github.com/bosong2/securityreports"
+        ]
+    }
+    </script>
+    <!-- GEO: SoftwareApplication Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Security Reports",
+        "operatingSystem": "Web",
+        "applicationCategory": "SecurityApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "AI-powered security vulnerability scanner for software projects. Use Claude, Gemini, or other AI models to analyze your code.",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "50"
+        }
+    }
+    </script>
+    <!-- GEO: HowTo Schema for Getting Started -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "AI로 보안 스캔하는 방법 (How to Scan Security with AI)",
+        "description": "AI를 사용하여 프로젝트의 보안 취약점을 스캔하는 단계별 가이드",
+        "step": [
+            {
+                "@type": "HowToStep",
+                "name": "AI 프롬프트 다운로드",
+                "text": "Claude, Gemini 등 사용할 AI를 선택하고 보안 스캔 프롬프트를 다운로드하세요.",
+                "position": 1
+            },
+            {
+                "@type": "HowToStep",
+                "name": "프로젝트 스캔",
+                "text": "다운로드한 프롬프트를 AI에 적용하여 프로젝트를 스캔하세요.",
+                "position": 2
+            },
+            {
+                "@type": "HowToStep",
+                "name": "리포트 확인",
+                "text": "AI가 생성한 JSON 결과를 리포트 탭에서 업로드하여 확인하세요.",
+                "position": 3
+            }
+        ]
+    }
+    </script>
+    <!-- GEO: FAQPage Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Security Reports는 무료인가요?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "네, Security Reports는 완전 무료 오픈소스 프로젝트입니다. GitHub에서 소스 코드를 확인하고 기여할 수 있습니다."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "어떤 AI를 사용할 수 있나요?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Claude, Gemini, ChatGPT 등 다양한 AI 모델을 사용할 수 있습니다. 각 AI에 맞는 프롬프트 템플릿을 제공합니다."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "스캔 결과는 어떻게 확인하나요?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "AI가 생성한 JSON 파일을 리포트 페이지에 업로드하면 시각화된 보안 분석 결과를 확인할 수 있습니다."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5068642866393193"
+        crossorigin="anonymous"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S410S37PMX"></script>
+    <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-S410S37PMX');
+    </script>
+
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "v2u86ujuew");
+    </script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/app.bundle.css">
+    <link rel="stylesheet" href="/css/auth.css">
+
+    <!-- Markdown Parser Library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span>
+                <div class="logo-text">
+                    <h1 data-i18n="siteTitle">Security Reports</h1>
+                    <p data-i18n="siteSubtitle">AI 기반 보안 스캔 리포트</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="languageBtn" class="btn" title="Change Language">
+                    <span>🌐</span>
+                    <span class="btn-text">EN</span>
+                </button>
+
+                <button id="authBtn" class="btn" title="Login / Sign Up">
+                    <span>👤</span>
+                    <span class="btn-text" data-i18n="btnLogin">로그인</span>
+                </button>
+
+                <button id="themeBtn" class="btn" title="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                    <span class="btn-text" data-i18n="btnDark">다크</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-container">
+            <button class=" nav-tab active" data-tab="home" data-i18n="navHome">홈</button>
+            <a href="blog.html" class="nav-tab" data-i18n="tabBlog">블로그</a>
+            <a href="reports.html" class="nav-tab" data-i18n="navReports">리포트</a>
+        </div>
+    </nav>
+
+    <!-- Main Content with Sidebar Layout -->
+    <div class="main-content-wrapper">
+        <!-- Main Content Area -->
+        <div class="main-content-area">
+            <!-- Compact Welcome Banner -->
+            <div class="welcome-banner-compact">
+                <h2 data-i18n="welcomeTitle">AI 보안 스캔 리포트에 오신 것을 환영합니다</h2>
+                <p data-i18n="welcomeSubtitle">프로젝트의 보안 취약점을 AI로 분석하고, 상세한 리포트를 확인하세요</p>
+            </div>
+
+            <!-- News Section - Latest Community Reports -->
+            <div class="news-section">
+                <div class="news-container">
+                    <div class="news-icon">📰</div>
+                    <div class="news-content">
+                        <span class="news-label" data-i18n="latestReports">최신 리포트</span>
+                        <div class="news-text" id="newsRotation">
+                            <span data-i18n="loading">로딩 중...</span>
+                        </div>
+                    </div>
+                    <a href="blog.html" class="news-link">전체 보기 →</a>
+                </div>
+            </div>
+
+            <!-- Getting Started Section (Compact) -->
+            <div class="content-section">
+                <h3 class="section-title" data-i18n="instructionsTitle">시작하기</h3>
+                <div class="getting-started-compact">
+                    <!-- Step 1 -->
+                    <div class="step-card-compact">
+                        <h4 data-i18n="step1Title">1. AI 프롬프트 다운로드</h4>
+                        <p data-i18n="step1Desc">사용할 AI(Claude, Gemini 등)를 선택하고 보안 스캔 프롬프트를 다운로드하세요</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card-compact">
+                        <h4 data-i18n="step2Title">2. 프로젝트 스캔</h4>
+                        <p data-i18n="step2Desc">다운로드한 프롬프트를 AI에 적용하여 프로젝트를 스캔하세요</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card-compact">
+                        <h4 data-i18n="step3Title">3. 리포트 확인</h4>
+                        <p data-i18n="step3Desc">AI가 생성한 JSON 결과를 리포트 탭에서 업로드하여 확인하세요</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Filter Section (Sprint 2) -->
+            <div class="content-section">
+                <h3 class="section-title">AI Prompt Templates</h3>
+                <div class="filter-section">
+                    <span class="filter-label" data-i18n="filterLabel">AI 선택:</span>
+                    <div id="filterButtons" class="filter-buttons">
+                        <!-- Filter buttons will be dynamically generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- File List -->
+                <div id="fileList" class="file-list">
+                    <!-- File list will be dynamically generated by JavaScript -->
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 1rem;">Loading resources...</p>
+                    </div>
+                </div>
+
+                <!-- Sprint 3: Manual Section (Hidden by default) -->
+                <div id="manualSection" class="manual-section hidden">
+                    <div class="manual-header">
+                        <h4 id="manualTitle" class="manual-title">📖 Usage Manual</h4>
+                    </div>
+                    <div id="manualContent" class="manual-content">
+                        <!-- Manual content will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inline Ad (between content) -->
+            <div class="ad-inline">
+                <!-- AdSense 광고 코드가 여기에 들어갑니다 -->
+                <div class="ad-placeholder">Ad Banner (728x90)</div>
+            </div>
+
+            <!-- Sprint 5: JSON Upload (ACTIVE) -->
+            <div class="content-section">
+                <h3 class="section-title">
+                    <span data-i18n="uploadTitle">JSON 리포트 업로드</span>
+                </h3>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <!-- Upload Card -->
+                    <div class="quick-action-card upload-section" id="uploadZone">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-title" data-i18n="uploadTitle">JSON 리포트 업로드</div>
+                        <div class="upload-description" data-i18n="uploadDesc">스캔 결과 JSON 파일을 업로드하여 상세 리포트를 확인하세요</div>
+
+                        <!-- Hidden File Input -->
+                        <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+
+                        <!-- Upload Button (NOW ACTIVE!) -->
+                        <button class="upload-button" id="uploadJsonBtn">
+                            <span>📁</span>
+                            <span data-i18n="uploadButton">파일 선택</span>
+                        </button>
+                        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary);"
+                            data-i18n="uploadDragDrop">또는 파일을 여기로 드래그하세요</p>
+                    </div>
+
+                    <!-- Reports Link Card -->
+                    <div class="quick-action-card">
+                        <div class="quick-action-icon">📊</div>
+                        <div class="quick-action-title" data-i18n="reportsLinkTitle">REPORTS 페이지로 이동</div>
+                        <div class="quick-action-desc" data-i18n="reportsLinkDesc">리포트 페이지에서 더 많은 기능을 사용하실 수 있습니다</div>
+                        <a href="reports.html" class="btn btn-primary" style="margin-top: 1rem; text-decoration: none;">
+                            <span>🔗</span>
+                            <span data-i18n="reportsLinkButton">REPORTS 열기</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <span>💡</span>
+                        <span data-i18n="infoBoxTitle">향후 기능</span>
+                    </div>
+                    <div class="info-box-content">
+                        <p data-i18n="infoBoxContent">다음 업데이트에서 추가될 예정입니다:</p>
+                        <ul>
+                            <li data-i18n="infoFeature1">JSON 업로드 시 자동 리포트 팝업</li>
+                            <li data-i18n="infoFeature2">드래그 앤 드롭 파일 업로드</li>
+                            <li data-i18n="infoFeature3">리포트 미리보기</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar with Ads -->
+    <aside class="sidebar">
+        <!-- Ad Space 1 -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">ADVERTISEMENT</div>
+            <div class="ad-container">
+                <!-- AdSense 광고 코드가 여기에 들어갑니다 -->
+                <div class="ad-placeholder">Ad Space (300x250)</div>
+            </div>
+        </div>
+
+        <!-- Ad Space 2 -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">SPONSORED</div>
+            <div class="ad-container">
+                <!-- AdSense 광고 코드가 여기에 들어갑니다 -->
+                <div class="ad-placeholder">Ad Space (300x600)</div>
+            </div>
+        </div>
+    </aside>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal" id="authModalContent">
+            <button class="auth-close-btn" id="authCloseBtn">&times;</button>
+
+            <!-- Welcome Banner (회원가입 시에만 표시) -->
+            <div id="authWelcomeBanner" class="auth-welcome-banner" style="display: none;">
+                <span class="welcome-emoji">🎉</span>
+                <span data-i18n="signupWelcome">환영합니다! 새로운 계정을 만들어보세요</span>
+            </div>
+
+            <h2 class="auth-title" id="authTitle" data-i18n="loginTitle">로그인</h2>
+            <p class="auth-subtitle" id="authSubtitle" data-i18n="loginSubtitle">계정에 로그인하여 리포트를 관리하세요</p>
+
+            <div id="authError" class="auth-error"></div>
+
+            <!-- Social Login Buttons -->
+            <div class="auth-social-buttons">
+                <button type="button" id="googleLoginBtn" class="auth-social-btn google-btn">
+                    <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4"
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853"
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05"
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#EA4335"
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    <span data-i18n="btnGoogleLogin">Google로 계속</span>
+                </button>
+            </div>
+
+            <div class="auth-divider">
+                <span data-i18n="authDivider">또는 이메일로</span>
+            </div>
+
+            <form id="authForm">
+                <div class="auth-form-group">
+                    <label for="authEmail" class="auth-label" data-i18n="labelEmail">이메일</label>
+                    <input type="email" id="authEmail" class="auth-input" placeholder="name@example.com" required>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="authPassword" class="auth-label" data-i18n="labelPassword">비밀번호</label>
+                    <input type="password" id="authPassword" class="auth-input" placeholder="••••••••" required
+                        minlength="6">
+                </div>
+
+                <!-- 개인정보 동의 체크박스 (회원가입 시에만 표시) -->
+                <div id="privacyConsentGroup" class="auth-form-group privacy-consent-group" style="display: none;">
+                    <label class="privacy-consent-label">
+                        <input type="checkbox" id="privacyConsent" class="privacy-consent-checkbox">
+                        <span class="privacy-consent-text">
+                            <span data-i18n="privacyConsentText">개인정보 수집 및 이용에 동의합니다.</span>
+                            <a href="privacy.html" target="_blank" class="privacy-policy-link"
+                                data-i18n="privacyPolicyLink">[개인정보처리방침]</a>
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-submit-btn" id="authSubmitBtn">
+                    <span id="authSubmitText" data-i18n="btnLogin">로그인</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span id="authFooterText" data-i18n="noAccount">계정이 없으신가요?</span>
+                <button id="authToggleBtn" class="auth-toggle-btn" data-i18n="linkSignup">회원가입</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Page Modal -->
+    <div id="mypageModal" class="auth-modal-overlay">
+        <div class="auth-modal mypage-modal">
+            <button class="auth-close-btn" id="mypageCloseBtn">&times;</button>
+
+            <h2 class="auth-title" data-i18n="mypageTitle">마이페이지</h2>
+            <p class="auth-subtitle" id="mypageEmail"></p>
+
+            <div id="mypageError" class="auth-error" style="display: none;"></div>
+            <div id="mypageSuccess" class="auth-success" style="display: none;"></div>
+
+            <!-- 내 정보 섹션 -->
+            <div class="mypage-section">
+                <h3 class="mypage-section-title" data-i18n="mypageInfoTitle">내 정보</h3>
+                <div class="mypage-info-row">
+                    <span class="mypage-info-label" data-i18n="labelEmail">이메일</span>
+                    <span class="mypage-info-value" id="mypageUserEmail">-</span>
+                </div>
+                <div class="mypage-info-row">
+                    <span class="mypage-info-label" data-i18n="mypageJoinDate">가입일</span>
+                    <span class="mypage-info-value" id="mypageJoinDate">-</span>
+                </div>
+            </div>
+
+            <!-- 개인정보 동의 섹션 -->
+            <div class="mypage-section" id="mypageConsentSection">
+                <h3 class="mypage-section-title" data-i18n="mypageConsentTitle">개인정보 동의 관리</h3>
+                <p class="mypage-section-desc" data-i18n="mypageConsentDesc">
+                    개인정보 수집 및 이용에 동의해야 콘텐츠 작성 등의 서비스를 이용할 수 있습니다.
+                </p>
+                <div class="mypage-toggle-row">
+                    <span class="mypage-toggle-label" data-i18n="mypageConsentLabel">개인정보 수집 및 이용 동의</span>
+                    <label class="mypage-toggle-switch">
+                        <input type="checkbox" id="mypagePrivacyToggle">
+                        <span class="mypage-toggle-slider"></span>
+                    </label>
+                </div>
+                <p class="mypage-consent-status" id="mypageConsentStatus"></p>
+            </div>
+
+            <!-- 비밀번호 재설정 섹션 -->
+            <div class="mypage-section">
+                <h3 class="mypage-section-title" data-i18n="mypagePasswordTitle">비밀번호 변경</h3>
+                <p class="mypage-section-desc" data-i18n="mypagePasswordDesc">이메일로 비밀번호 재설정 링크를 보내드립니다.</p>
+                <button type="button" id="resetPasswordBtn" class="mypage-btn mypage-btn-secondary"
+                    data-i18n="mypageResetPasswordBtn">
+                    비밀번호 재설정 메일 받기
+                </button>
+            </div>
+
+            <!-- 회원 탈퇴 섹션 -->
+            <div class="mypage-section mypage-danger-section">
+                <h3 class="mypage-section-title" data-i18n="mypageDeleteTitle">회원 탈퇴</h3>
+                <p class="mypage-section-desc mypage-warning-text" data-i18n="mypageDeleteWarning">
+                    ⚠️ 탈퇴 시 계정이 비활성화됩니다. 작성하신 콘텐츠(블로그 글, 리포트 등)는 삭제되지 않습니다.
+                </p>
+                <button type="button" id="deleteAccountBtn" class="mypage-btn mypage-btn-danger"
+                    data-i18n="mypageDeleteBtn">
+                    회원 탈퇴
+                </button>
+            </div>
+
+            <div class="mypage-footer">
+                <button type="button" id="logoutFromMypageBtn" class="mypage-btn mypage-btn-outline"
+                    data-i18n="btnLogout">
+                    로그아웃
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            <span data-i18n="footerText">© 2026 Security Reports. 오픈소스 프로젝트</span>
+            <br>
+            <a href="https://github.com/bosong2/securityreports" target="_blank" rel="noopener noreferrer"
+                data-i18n="footerGithub">GitHub에서 보기</a>
+            |
+            <a href="privacy.html" data-i18n="footerPrivacy">개인정보 처리방침</a>
+            |
+            <a href="about.html" data-i18n="footerAbout">About</a>
+            |
+            <a href="contact.html" data-i18n="footerContact">Contact</a>
+        </p>
+    </footer>
+
+    <!-- Scripts (Order matters: i18n and theme before app) -->
+    <script is:inline src="/js/i18n.js" defer></script>
+    <script is:inline src="/js/theme.js" defer></script>
+    <script is:inline src="/js/resources.js" defer></script>
+    <script is:inline src="/js/cookie-consent.js" defer></script>
+    <script is:inline src="/js/upload-handler.js" defer></script>
+    <script is:inline src="/js/blog.js" defer></script>
+
+    <!-- Supabase Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script is:inline src="/js/supabase-config.js"></script>
+    <script is:inline src="/js/supabase-client.js"></script>
+    <script is:inline src="/js/auth.js"></script>
+    <script is:inline src="/js/app.js" defer></script>
+
+    <!-- News Rotation -->
+    <script is:inline>
+        async function initNewsRotation() {
+            try {
+                const response = await fetch('/upload/index.json');
+                if (!response.ok) return;
+
+                const posts = await response.json();
+                const latest = posts.slice(0, 3);
+
+                if (latest.length === 0) {
+                    document.getElementById('newsRotation').textContent = 'No posts yet';
+                    return;
+                }
+
+                let currentIndex = 0;
+
+                function updateNews() {
+                    const post = latest[currentIndex];
+                    const newsText = document.getElementById('newsRotation');
+                    newsText.style.opacity = '0';
+
+                    setTimeout(() => {
+                        newsText.innerHTML = `<strong>${post.title}</strong> - ${post.description.substring(0, 80)}...`;
+                        newsText.style.opacity = '1';
+                    }, 300);
+
+                    currentIndex = (currentIndex + 1) % latest.length;
+                }
+
+                updateNews();
+                setInterval(updateNews, 4000);
+
+            } catch (error) {
+                console.log('News rotation not available');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initNewsRotation();
+        });
+    </script>
+</body>
+
+</html>

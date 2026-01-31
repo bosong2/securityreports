@@ -1,0 +1,14 @@
+name = "securityreports"
+compatibility_date = "2024-12-01"
+
+# Cloudflare Pages adapter requires this
+pages_build_output_dir = "./dist"
+
+# Environment variables (secrets are set in Dashboard)
+[vars]
+SUPABASE_URL = "https://fzkywwerhyihseranqey.supabase.co"
+
+# Astro session uses KV binding
+[[kv_namespaces]]
+binding = "SESSION"
+id = "" # Will be set in Dashboard or wrangler deploy

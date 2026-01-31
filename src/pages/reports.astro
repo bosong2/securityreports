@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>보안 리포트 뷰어 | Security Report Viewer - Security Reports</title>
+    <meta name="description"
+        content="AI 보안 스캔 결과 JSON을 시각화하는 리포트 뷰어. 취약점 분석, 심각도 분류, 권장 조치 사항을 한눈에 확인하세요. Security scan report visualization tool.">
+    <meta name="keywords"
+        content="보안 리포트 뷰어, report viewer, 취약점 시각화, vulnerability visualization, JSON 리포트, security dashboard">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://securityreports.pages.dev/reports.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://securityreports.pages.dev/reports.html">
+    <meta property="og:title" content="보안 리포트 뷰어 - Security Reports">
+    <meta property="og:description" content="AI 보안 스캔 결과를 시각화하는 리포트 뷰어. 취약점 분석 결과를 한눈에 확인하세요.">
+    <meta property="og:image" content="https://securityreports.pages.dev/favicon.svg">
+    <meta property="og:site_name" content="Security Reports">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="보안 리포트 뷰어 - Security Reports">
+    <meta name="twitter:description" content="AI 보안 스캔 결과를 시각화하는 리포트 뷰어.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S410S37PMX"></script>
+    <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-S410S37PMX');
+    </script>
+
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "v2u86ujuew");
+    </script>
+
+    <style is:global>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-yellow: #d29922;
+            --accent-orange: #db6d28;
+            --accent-red: #f85149;
+            --accent-purple: #a371f7;
+            --accent-cyan: #39c5cf;
+            --severity-critical: #ff4757;
+            --severity-high: #f85149;
+            --severity-medium: #d29922;
+            --severity-low: #3fb950;
+            --severity-none: #8b949e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .version-badge {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: var(--border-color);
+        }
+
+        .report-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--border-color);
+            border-color: var(--text-secondary);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .report-indicator {
+            font-size: 13px;
+            color: var(--text-secondary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            background: var(--border-color);
+        }
+
+        .action-btn.primary {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #4c96eb;
+        }
+
+        .home-btn {
+            padding: 8px 16px;
+            background: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .home-btn:hover {
+            background: #35a346;
+            transform: translateY(-1px);
+        }
+
+        /* SNS Share Buttons */
+        .share-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 16px;
+            padding-left: 16px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .share-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .share-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-btn.facebook {
+            background: #1877F2;
+        }
+
+        .share-btn.linkedin {
+            background: #0A66C2;
+        }
+
+        .share-btn.twitter {
+            background: #000000;
+        }
+
+        .share-btn.kakao {
+            background: #FEE500;
+            color: #000;
+        }
+
+        .share-btn.copy {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .share-btn.copy.copied {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .share-section {
+                display: none;
+            }
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .summary-section {
+            margin-bottom: 32px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .summary-card-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card-value {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .summary-card-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .severity-critical {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--severity-critical);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .severity-high {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--severity-high);
+            border: 1px solid rgba(248, 81, 73, 0.3);
+        }
+
+        .severity-medium {
+            background: rgba(210, 153, 34, 0.15);
+            color: var(--severity-medium);
+            border: 1px solid rgba(210, 153, 34, 0.3);
+        }
+
+        .severity-low {
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--severity-low);
+            border: 1px solid rgba(63, 185, 80, 0.3);
+        }
+
+        .severity-none,
+        .severity-info {
+            background: rgba(139, 148, 158, 0.15);
+            color: var(--severity-none);
+            border: 1px solid rgba(139, 148, 158, 0.3);
+        }
+
+        .section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            background: var(--border-color);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-count {
+            background: var(--bg-primary);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .section-toggle {
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+
+        .section.collapsed .section-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            padding: 16px 20px;
+        }
+
+        .section.collapsed .section-content {
+            display: none;
+        }
+
+        .finding-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .finding-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .finding-id {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--accent-purple);
+            background: rgba(163, 113, 247, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .finding-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .finding-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .finding-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+
+        .finding-meta-label {
+            color: var(--text-muted);
+        }
+
+        .finding-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .finding-detail {
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .finding-detail-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .finding-detail-content {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            color: var(--text-secondary);
+        }
+
+        .repo-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .repo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .repo-stat {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .repo-stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        .repo-stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .components-list,
+        .sensitive-files-list {
+            list-style: none;
+        }
+
+        .components-list li,
+        .sensitive-files-list li {
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+        }
+
+        .sensitive-files-list li {
+            color: var(--accent-orange);
+        }
+
+        .recommendation-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .recommendation-card.priority-critical {
+            border-left-color: var(--severity-critical);
+        }
+
+        .recommendation-card.priority-high {
+            border-left-color: var(--severity-high);
+        }
+
+        .recommendation-card.priority-medium {
+            border-left-color: var(--severity-medium);
+        }
+
+        .recommendation-card.priority-low {
+            border-left-color: var(--severity-low);
+        }
+
+        .recommendation-priority {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .recommendation-action {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .recommendation-rationale {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .recommendation-files {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'SF Mono', 'Consolas', monospace;
+        }
+
+        .disallowed-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .tool-badge {
+            background: rgba(248, 81, 73, 0.1);
+            color: var(--severity-high);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state-desc {
+            font-size: 14px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .severity-summary {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .severity-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .severity-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .severity-dot.critical {
+            background: var(--severity-critical);
+        }
+
+        .severity-dot.high {
+            background: var(--severity-high);
+        }
+
+        .severity-dot.medium {
+            background: var(--severity-medium);
+        }
+
+        .severity-dot.low {
+            background: var(--severity-low);
+        }
+
+        .severity-dot.none {
+            background: var(--severity-none);
+        }
+
+        .scan-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+
+        .scan-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .scan-meta-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .scan-meta-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* SBOM Specific Styles */
+        .sbom-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .sbom-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .sbom-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .license-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+
+        .license-item {
+            background: var(--bg-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .license-name {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .license-count {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        .risk-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .risk-matrix th,
+        .risk-matrix td {
+            padding: 10px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .risk-matrix th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .risk-matrix td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .risk-matrix .count-critical {
+            color: var(--severity-critical);
+            font-weight: 600;
+        }
+
+        .risk-matrix .count-high {
+            color: var(--severity-high);
+            font-weight: 600;
+        }
+
+        .risk-matrix .count-medium {
+            color: var(--severity-medium);
+            font-weight: 600;
+        }
+
+        .risk-matrix .count-low {
+            color: var(--severity-low);
+            font-weight: 600;
+        }
+
+        .priority-action-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .priority-rank {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .priority-content {
+            flex: 1;
+        }
+
+        .priority-package {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .priority-version {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .priority-action-text {
+            font-size: 13px;
+            color: var(--accent-green);
+            margin-bottom: 4px;
+        }
+
+        .priority-rationale {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
+        .category-vulnerability {
+            background: rgba(248, 81, 73, 0.2);
+            color: var(--severity-high);
+        }
+
+        .category-license {
+            background: rgba(163, 113, 247, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .category-version {
+            background: rgba(210, 153, 34, 0.2);
+            color: var(--severity-medium);
+        }
+
+        .category-supplychain {
+            background: rgba(57, 197, 207, 0.2);
+            color: var(--accent-cyan);
+        }
+
+        .manifest-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .manifest-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-secondary);
+            padding: 10px 14px;
+            border-radius: 6px;
+        }
+
+        .manifest-file {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .manifest-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .ecosystem-badge {
+            background: var(--accent-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .cve-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .cve-badge {
+            background: rgba(248, 81, 73, 0.1);
+            color: var(--severity-high);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+        }
+
+        .sbom-status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .sbom-status-item {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .sbom-status-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .sbom-status-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sbom-status-value.status-yes {
+            color: var(--accent-green);
+        }
+
+        .sbom-status-value.status-no {
+            color: var(--severity-high);
+        }
+
+        .sbom-status-value.status-na {
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-controls {
+                justify-content: center;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .finding-header {
+                flex-direction: column;
+            }
+
+            .sbom-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Watermark for Print/Export */
+        .report-watermark {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            font-size: 10px;
+            color: #888;
+            opacity: 0.7;
+            z-index: 1000;
+            font-family: monospace;
+            display: none;
+            /* Hidden by default, shown in print */
+        }
+
+        @media print {
+            .header {
+                position: relative;
+            }
+
+            .nav-btn,
+            .action-btn,
+            .lang-toggle {
+                display: none;
+            }
+
+            .section.collapsed .section-content {
+                display: block;
+            }
+
+            .report-watermark {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Watermark (shown only in print/export) -->
+    <div class="report-watermark" id="reportWatermark">
+        Generated by: <span id="siteUrl">https://securityreports.pages.dev</span>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">CS</div>
+                <span class="logo-text">Claude Threat Scan Report</span>
+                <span class="version-badge">V2.0</span>
+            </div>
+            <div class="header-controls">
+                <div class="report-nav">
+                    <button class="nav-btn" id="prevReport" title="Previous Report">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M11 2L5 8l6 6" stroke="currentColor" stroke-width="2" fill="none" />
+                        </svg>
+                    </button>
+                    <span class="report-indicator" id="reportIndicator">1 / 1</span>
+                    <button class="nav-btn" id="nextReport" title="Next Report">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="lang-toggle">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="ko">KO</button>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".json" multiple>
+                <button class="action-btn" onclick="document.getElementById('fileInput').click()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M3.5 12.5a.5.5 0 0 1-1 0V3.5a.5.5 0 0 1 1 0v9zm1-9a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                    Load JSON
+                </button>
+                <a href="index.html" class="home-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z" />
+                    </svg>
+                    <span data-en="Home" data-ko="홈">Home</span>
+                </a>
+                <!-- SNS Share Buttons -->
+                <div id="shareSection" class="share-section" style="display: none;">
+                    <span class="share-label" data-en="Share" data-ko="공유">Share</span>
+                    <div class="share-buttons">
+                        <button class="share-btn facebook" onclick="shareToFacebook()" title="Facebook">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn linkedin" onclick="shareToLinkedIn()" title="LinkedIn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn twitter" onclick="shareToTwitter()" title="X (Twitter)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn kakao" onclick="shareToKakao()" title="KakaoTalk">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3z" />
+                            </svg>
+                        </button>
+                        <button class="share-btn copy" onclick="copyShareLink()" title="Copy Link">🔗</button>
+                    </div>
+                </div>
+                <button class="action-btn" id="printBtn" style="display:none;" onclick="printReport()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                        <path
+                            d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                    </svg>
+                    <span data-en="Print PDF" data-ko="PDF 인쇄">Print PDF</span>
+                </button>
+                <button class="action-btn primary" id="exportBtn" style="display:none;" onclick="exportHTML()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                        <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                    </svg>
+                    <span data-en="Export HTML" data-ko="HTML 내보내기">Export HTML</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <div class="empty-state" id="emptyState">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-title" data-en="No Report Loaded" data-ko="보고서가 로드되지 않았습니다">No Report Loaded</div>
+            <div class="empty-state-desc"
+                data-en="Click 'Load JSON' to select one or more JSON report files, or drag and drop files here."
+                data-ko="'Load JSON' 버튼을 클릭하여 JSON 보고서 파일을 선택하거나, 파일을 여기에 드래그 앤 드롭하세요.">Click 'Load JSON' to select one
+                or more JSON report files, or drag and drop files here.</div>
+        </div>
+        <div id="reportContent" style="display: none;"></div>
+    </main>
+
+    <script is:inline>
+        // Configuration - Update this URL when site address changes
+        const SITE_URL = window.location.origin || 'https://securityreports.pages.dev';
+
+        // Update watermark with current site URL
+        document.getElementById('siteUrl').textContent = SITE_URL;
+
+        let reports = [];
+        let currentReportIndex = 0;
+        let currentLang = 'en';
+
+        const labels = {
+            en: {
+                scanMetadata: 'Scan Metadata',
+                scanDate: 'Scan Date',
+                targetRepo: 'Target Repository',
+                totalFiles: 'Total Files',
+                codeFiles: 'Code Files',
+                scanDepth: 'Scan Depth',
+                scannerVersion: 'Scanner Version',
+                repositorySummary: 'Repository Summary',
+                description: 'Description',
+                fileStatistics: 'File Statistics',
+                keyComponents: 'Key Components',
+                sensitiveFilesDetected: 'Sensitive Files Detected',
+                staticCodeFindings: 'Static Code Findings',
+                binaryAnalysis: 'Binary Analysis Findings',
+                skillRiskFindings: 'Skill Risk Findings',
+                agentPolicyFindings: 'Agent Policy Findings',
+                sensitivePatterns: 'Sensitive Patterns',
+                promptOptimization: 'Prompt Optimization',
+                recommendations: 'Recommendations',
+                file: 'File',
+                line: 'Line',
+                issue: 'Issue',
+                severity: 'Severity',
+                deepDiveResult: 'Deep Dive Result',
+                recommendation: 'Recommendation',
+                behaviors: 'Behaviors',
+                riskSummary: 'Risk Summary',
+                fragment: 'Fragment',
+                riskType: 'Risk Type',
+                analysis: 'Analysis',
+                agent: 'Agent',
+                disallowedTools: 'Disallowed Tools',
+                pattern: 'Pattern',
+                detail: 'Detail',
+                gitignoreStatus: 'Gitignore Status',
+                examples: 'Examples',
+                priority: 'Priority',
+                action: 'Action',
+                rationale: 'Rationale',
+                affectedFiles: 'Affected Files',
+                critical: 'Critical',
+                high: 'High',
+                medium: 'Medium',
+                low: 'Low',
+                none: 'None',
+                noFindings: 'No findings in this category',
+                pythonFiles: 'Python',
+                javascriptFiles: 'JavaScript',
+                markdownFiles: 'Markdown',
+                jsonFiles: 'JSON',
+                pemFiles: 'PEM',
+                otherFiles: 'Other',
+                // SBOM Labels
+                sbomAnalysis: 'SBOM & Dependency Analysis',
+                manifestFiles: 'Manifest Files',
+                dependencyStats: 'Dependency Statistics',
+                licenseSummary: 'License Summary',
+                vulnerabilities: 'Vulnerabilities',
+                licenseIssues: 'License Issues',
+                versionRisks: 'Version Risks',
+                supplyChainRisks: 'Supply Chain Risks',
+                sbomStatus: 'SBOM Documentation Status',
+                riskMatrix: 'Risk Matrix',
+                priorityActions: 'Priority Actions',
+                package: 'Package',
+                version: 'Version',
+                currentVersion: 'Current Version',
+                fixedVersion: 'Fixed Version',
+                license: 'License',
+                cveIds: 'CVE IDs',
+                directDeps: 'Direct',
+                devDeps: 'Dev',
+                transitiveDeps: 'Transitive',
+                sbomExists: 'SBOM File Exists',
+                sbomFormat: 'SBOM Format',
+                ciGeneration: 'CI/CD Generation',
+                completeness: 'Completeness',
+                ecosystem: 'Ecosystem',
+                category: 'Category',
+                yes: 'Yes',
+                no: 'No',
+                na: 'N/A'
+            },
+            ko: {
+                scanMetadata: '스캔 메타데이터',
+                scanDate: '스캔 일시',
+                targetRepo: '대상 저장소',
+                totalFiles: '전체 파일',
+                codeFiles: '코드 파일',
+                scanDepth: '스캔 깊이',
+                scannerVersion: '스캐너 버전',
+                repositorySummary: '저장소 요약',
+                description: '설명',
+                fileStatistics: '파일 통계',
+                keyComponents: '주요 구성 요소',
+                sensitiveFilesDetected: '민감한 파일 감지됨',
+                staticCodeFindings: '정적 코드 분석 결과',
+                binaryAnalysis: '바이너리 분석 결과',
+                skillRiskFindings: '스킬 위험 분석 결과',
+                agentPolicyFindings: '에이전트 정책 분석 결과',
+                sensitivePatterns: '민감한 패턴',
+                promptOptimization: '프롬프트 최적화',
+                recommendations: '권장 사항',
+                file: '파일',
+                line: '라인',
+                issue: '이슈',
+                severity: '심각도',
+                deepDiveResult: '심층 분석 결과',
+                recommendation: '권장 사항',
+                behaviors: '동작',
+                riskSummary: '위험 요약',
+                fragment: '코드 조각',
+                riskType: '위험 유형',
+                analysis: '분석',
+                agent: '에이전트',
+                disallowedTools: '비허용 도구',
+                pattern: '패턴',
+                detail: '상세',
+                gitignoreStatus: 'Gitignore 상태',
+                examples: '예시',
+                priority: '우선순위',
+                action: '조치',
+                rationale: '근거',
+                affectedFiles: '영향 받는 파일',
+                critical: '심각',
+                high: '높음',
+                medium: '중간',
+                low: '낮음',
+                none: '없음',
+                noFindings: '이 카테고리에 발견된 항목이 없습니다',
+                pythonFiles: 'Python',
+                javascriptFiles: 'JavaScript',
+                markdownFiles: 'Markdown',
+                jsonFiles: 'JSON',
+                pemFiles: 'PEM',
+                otherFiles: '기타',
+                // SBOM Labels
+                sbomAnalysis: 'SBOM 및 의존성 분석',
+                manifestFiles: '매니페스트 파일',
+                dependencyStats: '의존성 통계',
+                licenseSummary: '라이선스 요약',
+                vulnerabilities: '취약점',
+                licenseIssues: '라이선스 이슈',
+                versionRisks: '버전 위험',
+                supplyChainRisks: '공급망 위험',
+                sbomStatus: 'SBOM 문서화 상태',
+                riskMatrix: '위험 매트릭스',
+                priorityActions: '우선 조치 사항',
+                package: '패키지',
+                version: '버전',
+                currentVersion: '현재 버전',
+                fixedVersion: '수정 버전',
+                license: '라이선스',
+                cveIds: 'CVE ID',
+                directDeps: '직접',
+                devDeps: '개발',
+                transitiveDeps: '전이',
+                sbomExists: 'SBOM 파일 존재',
+                sbomFormat: 'SBOM 포맷',
+                ciGeneration: 'CI/CD 생성',
+                completeness: '완전성',
+                ecosystem: '생태계',
+                category: '카테고리',
+                yes: '예',
+                no: '아니오',
+                na: '해당없음'
+            }
+        };
+
+        function t(key) {
+            return labels[currentLang][key] || key;
+        }
+
+        function getSeverityClass(severity) {
+            if (!severity) return 'none';
+            const s = severity.toLowerCase();
+            if (s === 'critical') return 'critical';
+            if (s === 'high') return 'high';
+            if (s === 'medium') return 'medium';
+            if (s === 'low') return 'low';
+            if (s === 'info') return 'info';
+            return 'none';
+        }
+
+        function getReportData(report) {
+            if (currentLang === 'ko' && report.korean_report) {
+                return report.korean_report;
+            }
+            return report.english_report;
+        }
+
+        function countSeverities(report) {
+            const data = getReportData(report);
+            const counts = { critical: 0, high: 0, medium: 0, low: 0, none: 0 };
+
+            const allFindings = [
+                ...(data.static_code_findings || []),
+                ...(data.binary_analysis_findings || []),
+                ...(data.skill_risk_findings || []),
+                ...(data.agent_policy_findings || []),
+                ...(data.sensitive_patterns || []),
+                ...(data.prompt_optimization || [])
+            ];
+
+            // Include SBOM findings
+            if (data.sbom_analysis) {
+                allFindings.push(...(data.sbom_analysis.vulnerability_findings || []));
+                allFindings.push(...(data.sbom_analysis.license_findings || []));
+                allFindings.push(...(data.sbom_analysis.version_risk_findings || []));
+                allFindings.push(...(data.sbom_analysis.supply_chain_findings || []));
+            }
+
+            allFindings.forEach(f => {
+                const s = (f.severity || 'none').toLowerCase();
+                if (counts[s] !== undefined) counts[s]++;
+            });
+
+            return counts;
+        }
+
+        function countSbomFindings(sbom) {
+            if (!sbom) return 0;
+            return (sbom.vulnerability_findings?.length || 0) +
+                (sbom.license_findings?.length || 0) +
+                (sbom.version_risk_findings?.length || 0) +
+                (sbom.supply_chain_findings?.length || 0);
+        }
+
+        function renderScanMetadata(meta) {
+            if (!meta) return '';
+            return `
+                <div class="scan-meta">
+                    <div class="scan-meta-item">
+                        <span class="scan-meta-label">${t('scanDate')}</span>
+                        <span class="scan-meta-value">${meta.scan_date || '-'}</span>
+                    </div>
+                    <div class="scan-meta-item">
+                        <span class="scan-meta-label">${t('targetRepo')}</span>
+                        <span class="scan-meta-value">${meta.target_repository || '-'}</span>
+                    </div>
+                    <div class="scan-meta-item">
+                        <span class="scan-meta-label">${t('totalFiles')}</span>
+                        <span class="scan-meta-value">${meta.total_files || '-'}</span>
+                    </div>
+                    <div class="scan-meta-item">
+                        <span class="scan-meta-label">${t('codeFiles')}</span>
+                        <span class="scan-meta-value">${meta.code_files || '-'}</span>
+                    </div>
+                    <div class="scan-meta-item">
+                        <span class="scan-meta-label">${t('scanDepth')}</span>
+                        <span class="scan-meta-value">${meta.scan_depth || '-'}</span>
+                    </div>
+                    <div class="scan-meta-item">
+                        <span class="scan-meta-label">${t('scannerVersion')}</span>
+                        <span class="scan-meta-value">${meta.scanner_version || '-'}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSummaryCards(report) {
+            const counts = countSeverities(report);
+            const meta = report.scan_metadata || {};
+            const data = getReportData(report);
+            const sbomCount = countSbomFindings(data.sbom_analysis);
+
+            return `
+                <div class="summary-section">
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-card-label">${t('totalFiles')}</div>
+                            <div class="summary-card-value">${meta.total_files || 0}</div>
+                            <div class="summary-card-sub">${meta.target_repository || ''}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-label">${t('critical')}</div>
+                            <div class="summary-card-value" style="color: var(--severity-critical)">${counts.critical}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-label">${t('high')}</div>
+                            <div class="summary-card-value" style="color: var(--severity-high)">${counts.high}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-label">${t('medium')}</div>
+                            <div class="summary-card-value" style="color: var(--severity-medium)">${counts.medium}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-label">${t('low')}</div>
+                            <div class="summary-card-value" style="color: var(--severity-low)">${counts.low}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-card-label">SBOM Issues</div>
+                            <div class="summary-card-value" style="color: var(--accent-cyan)">${sbomCount}</div>
+                        </div>
+                    </div>
+                    <div class="severity-summary">
+                        <div class="severity-item"><span class="severity-dot critical"></span> ${t('critical')}: ${counts.critical}</div>
+                        <div class="severity-item"><span class="severity-dot high"></span> ${t('high')}: ${counts.high}</div>
+                        <div class="severity-item"><span class="severity-dot medium"></span> ${t('medium')}: ${counts.medium}</div>
+                        <div class="severity-item"><span class="severity-dot low"></span> ${t('low')}: ${counts.low}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRepositorySummary(summary) {
+            if (!summary) return '';
+
+            const stats = summary.file_statistics || {};
+
+            return `
+                <div class="section" id="section-repo">
+                    <div class="section-header" onclick="toggleSection('section-repo')">
+                        <div class="section-title">
+                            <span class="section-icon">📁</span>
+                            ${t('repositorySummary')}
+                        </div>
+                        <span class="section-toggle">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="repo-description">${summary.description || ''}</div>
+
+                        <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">${t('fileStatistics')}</h4>
+                        <div class="repo-stats">
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.python_files || 0}</div>
+                                <div class="repo-stat-label">${t('pythonFiles')}</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.javascript_files || 0}</div>
+                                <div class="repo-stat-label">${t('javascriptFiles')}</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.typescript_tsx || 0}</div>
+                                <div class="repo-stat-label">TypeScript</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.markdown_files || 0}</div>
+                                <div class="repo-stat-label">${t('markdownFiles')}</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.json_files || 0}</div>
+                                <div class="repo-stat-label">${t('jsonFiles')}</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.other || 0}</div>
+                                <div class="repo-stat-label">${t('otherFiles')}</div>
+                            </div>
+                        </div>
+
+                        ${summary.key_components && summary.key_components.length > 0 ? `
+                            <h4 style="font-size: 13px; color: var(--text-muted); margin: 16px 0 12px;">${t('keyComponents')}</h4>
+                            <ul class="components-list">
+                                ${summary.key_components.map(c => `<li>${c}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+
+                        ${summary.sensitive_files_detected && summary.sensitive_files_detected.length > 0 ? `
+                            <h4 style="font-size: 13px; color: var(--text-muted); margin: 16px 0 12px;">${t('sensitiveFilesDetected')}</h4>
+                            <ul class="sensitive-files-list">
+                                ${summary.sensitive_files_detected.map(f => `<li>⚠️ ${f}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFindingsSection(id, icon, title, findings, renderItem) {
+            if (!findings) return '';
+
+            const count = findings.length;
+            const hasContent = count > 0;
+
+            return `
+                <div class="section" id="section-${id}">
+                    <div class="section-header" onclick="toggleSection('section-${id}')">
+                        <div class="section-title">
+                            <span class="section-icon">${icon}</span>
+                            ${title}
+                            <span class="section-count">${count}</span>
+                        </div>
+                        <span class="section-toggle">▼</span>
+                    </div>
+                    <div class="section-content">
+                        ${hasContent ? findings.map(renderItem).join('') : `<p style="color: var(--text-muted); text-align: center; padding: 20px;">${t('noFindings')}</p>`}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStaticFindings(findings) {
+            return renderFindingsSection('static', '🔍', t('staticCodeFindings'), findings, (f) => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-id">${f.id || ''}</span>
+                        <span class="finding-title">${f.issue || ''}</span>
+                        <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                    </div>
+                    <div class="finding-meta">
+                        <div class="finding-meta-item">
+                            <span class="finding-meta-label">${t('file')}:</span>
+                            <code>${f.file || '-'}</code>
+                        </div>
+                        ${f.line ? `
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('line')}:</span>
+                                <code>${f.line}</code>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="finding-description">${f.description || ''}</div>
+                    ${f.deep_dive_result ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('deepDiveResult')}</div>
+                            <div class="finding-detail-content">${f.deep_dive_result}</div>
+                        </div>
+                    ` : ''}
+                    ${f.recommendation ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('recommendation')}</div>
+                            <div class="finding-detail-content">${f.recommendation}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `);
+        }
+
+        function renderBinaryFindings(findings) {
+            return renderFindingsSection('binary', '💾', t('binaryAnalysis'), findings, (f) => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-id">${f.id || ''}</span>
+                        <span class="finding-title">${f.file || 'N/A'}</span>
+                        <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'None'}</span>
+                    </div>
+                    ${f.behaviors && f.behaviors.length > 0 ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('behaviors')}</div>
+                            <div class="finding-detail-content">${f.behaviors.join(', ')}</div>
+                        </div>
+                    ` : ''}
+                    <div class="finding-description">${f.risk_summary || ''}</div>
+                </div>
+            `);
+        }
+
+        function renderSkillFindings(findings) {
+            return renderFindingsSection('skill', '🛠️', t('skillRiskFindings'), findings, (f) => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-id">${f.id || ''}</span>
+                        <span class="finding-title">${f.risk_type || ''}</span>
+                        <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                    </div>
+                    <div class="finding-meta">
+                        <div class="finding-meta-item">
+                            <span class="finding-meta-label">${t('file')}:</span>
+                            <code>${f.file || '-'}</code>
+                        </div>
+                    </div>
+                    ${f.fragment ? `
+                        <div class="code-block">${f.fragment}</div>
+                    ` : ''}
+                    <div class="finding-description">${f.analysis || ''}</div>
+                    ${f.recommendation ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('recommendation')}</div>
+                            <div class="finding-detail-content">${f.recommendation}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `);
+        }
+
+        function renderAgentFindings(findings) {
+            return renderFindingsSection('agent', '🤖', t('agentPolicyFindings'), findings, (f) => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-id">${f.id || ''}</span>
+                        <span class="finding-title">${f.agent || ''}</span>
+                        <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                    </div>
+                    <div class="finding-meta">
+                        <div class="finding-meta-item">
+                            <span class="finding-meta-label">${t('file')}:</span>
+                            <code>${f.file || '-'}</code>
+                        </div>
+                    </div>
+                    <div class="finding-description">${f.issue || ''}</div>
+                    ${f.disallowed_tools && f.disallowed_tools.length > 0 ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('disallowedTools')}</div>
+                            <div class="disallowed-tools">
+                                ${f.disallowed_tools.map(tool => `<span class="tool-badge">${tool}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${f.recommendation ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('recommendation')}</div>
+                            <div class="finding-detail-content">${f.recommendation}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `);
+        }
+
+        function renderSensitivePatterns(findings) {
+            return renderFindingsSection('sensitive', '🔐', t('sensitivePatterns'), findings, (f) => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-id">${f.id || ''}</span>
+                        <span class="finding-title">${f.pattern || ''}</span>
+                        <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                    </div>
+                    <div class="finding-meta">
+                        <div class="finding-meta-item">
+                            <span class="finding-meta-label">${t('file')}:</span>
+                            <code>${f.file || '-'}</code>
+                        </div>
+                    </div>
+                    <div class="finding-description">${f.detail || ''}</div>
+                    ${f.gitignore_status ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('gitignoreStatus')}</div>
+                            <div class="finding-detail-content">${f.gitignore_status}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `);
+        }
+
+        function renderPromptOptimization(findings) {
+            return renderFindingsSection('prompt', '📝', t('promptOptimization'), findings, (f) => `
+                <div class="finding-card">
+                    <div class="finding-header">
+                        <span class="finding-id">${f.id || ''}</span>
+                        <span class="finding-title">${f.issue || ''}</span>
+                        <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                    </div>
+                    <div class="finding-meta">
+                        <div class="finding-meta-item">
+                            <span class="finding-meta-label">${t('file')}:</span>
+                            <code>${f.file || '-'}</code>
+                        </div>
+                    </div>
+                    ${f.examples ? `
+                        <div class="finding-description">${f.examples}</div>
+                    ` : ''}
+                    ${f.recommendation ? `
+                        <div class="finding-detail">
+                            <div class="finding-detail-title">${t('recommendation')}</div>
+                            <div class="finding-detail-content">${f.recommendation}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `);
+        }
+
+        // SBOM Analysis Rendering Functions
+        function renderSbomAnalysis(sbom) {
+            if (!sbom) return '';
+
+            const totalFindings = countSbomFindings(sbom);
+
+            return `
+                <div class="section" id="section-sbom">
+                    <div class="section-header" onclick="toggleSection('section-sbom')">
+                        <div class="section-title">
+                            <span class="section-icon">📦</span>
+                            ${t('sbomAnalysis')}
+                            <span class="section-count">${totalFindings}</span>
+                        </div>
+                        <span class="section-toggle">▼</span>
+                    </div>
+                    <div class="section-content">
+                        ${renderSbomOverview(sbom)}
+                        ${renderRiskMatrix(sbom.risk_matrix)}
+                        ${renderPriorityActions(sbom.priority_actions)}
+                        ${renderVulnerabilityFindings(sbom.vulnerability_findings)}
+                        ${renderLicenseFindings(sbom.license_findings)}
+                        ${renderVersionRiskFindings(sbom.version_risk_findings)}
+                        ${renderSupplyChainFindings(sbom.supply_chain_findings)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSbomOverview(sbom) {
+            const manifests = sbom.manifest_files_found || [];
+            const stats = sbom.dependency_statistics || {};
+            const licenses = sbom.license_summary || {};
+            const status = sbom.sbom_documentation_status || {};
+
+            return `
+                <div class="sbom-overview">
+                    <!-- Manifest Files -->
+                    <div class="sbom-card">
+                        <div class="sbom-card-title">📄 ${t('manifestFiles')}</div>
+                        ${manifests.length > 0 ? `
+                            <div class="manifest-list">
+                                ${manifests.map(m => `
+                                    <div class="manifest-item">
+                                        <div>
+                                            <span class="ecosystem-badge">${m.ecosystem}</span>
+                                            <span class="manifest-file">${m.file}</span>
+                                        </div>
+                                        <div class="manifest-stats">
+                                            <span>${t('directDeps')}: ${m.direct_dependencies}</span>
+                                            <span>${t('devDeps')}: ${m.dev_dependencies}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `<p style="color: var(--text-muted);">No manifest files found</p>`}
+                    </div>
+
+                    <!-- Dependency Statistics -->
+                    <div class="sbom-card">
+                        <div class="sbom-card-title">📊 ${t('dependencyStats')}</div>
+                        <div class="repo-stats">
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.total_direct || 0}</div>
+                                <div class="repo-stat-label">${t('directDeps')}</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.total_dev || 0}</div>
+                                <div class="repo-stat-label">${t('devDeps')}</div>
+                            </div>
+                            <div class="repo-stat">
+                                <div class="repo-stat-value">${stats.total_transitive || '-'}</div>
+                                <div class="repo-stat-label">${t('transitiveDeps')}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- License Summary -->
+                    <div class="sbom-card">
+                        <div class="sbom-card-title">⚖️ ${t('licenseSummary')}</div>
+                        <div class="license-grid">
+                            ${Object.entries(licenses).map(([name, count]) => `
+                                <div class="license-item">
+                                    <div class="license-name">${name}</div>
+                                    <div class="license-count">${count}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- SBOM Status -->
+                    <div class="sbom-card">
+                        <div class="sbom-card-title">📋 ${t('sbomStatus')}</div>
+                        <div class="sbom-status-grid">
+                            <div class="sbom-status-item">
+                                <div class="sbom-status-label">${t('sbomExists')}</div>
+                                <div class="sbom-status-value ${status.sbom_file_exists ? 'status-yes' : 'status-no'}">
+                                    ${status.sbom_file_exists ? t('yes') : t('no')}
+                                </div>
+                            </div>
+                            <div class="sbom-status-item">
+                                <div class="sbom-status-label">${t('sbomFormat')}</div>
+                                <div class="sbom-status-value ${status.sbom_format ? 'status-yes' : 'status-na'}">
+                                    ${status.sbom_format || t('na')}
+                                </div>
+                            </div>
+                            <div class="sbom-status-item">
+                                <div class="sbom-status-label">${t('ciGeneration')}</div>
+                                <div class="sbom-status-value ${status.ci_sbom_generation ? 'status-yes' : 'status-no'}">
+                                    ${status.ci_sbom_generation ? t('yes') : t('no')}
+                                </div>
+                            </div>
+                            <div class="sbom-status-item">
+                                <div class="sbom-status-label">${t('completeness')}</div>
+                                <div class="sbom-status-value">${status.completeness || t('na')}</div>
+                            </div>
+                        </div>
+                        ${status.recommendation ? `
+                            <div class="finding-detail" style="margin-top: 12px;">
+                                <div class="finding-detail-title">${t('recommendation')}</div>
+                                <div class="finding-detail-content">${status.recommendation}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRiskMatrix(matrix) {
+            if (!matrix) return '';
+
+            return `
+                <div class="sbom-card" style="margin-bottom: 20px;">
+                    <div class="sbom-card-title">⚠️ ${t('riskMatrix')}</div>
+                    <table class="risk-matrix">
+                        <thead>
+                            <tr>
+                                <th>${t('category')}</th>
+                                <th>${t('critical')}</th>
+                                <th>${t('high')}</th>
+                                <th>${t('medium')}</th>
+                                <th>${t('low')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${t('vulnerabilities')}</td>
+                                <td class="count-critical">${matrix.vulnerabilities?.critical || 0}</td>
+                                <td class="count-high">${matrix.vulnerabilities?.high || 0}</td>
+                                <td class="count-medium">${matrix.vulnerabilities?.medium || 0}</td>
+                                <td class="count-low">${matrix.vulnerabilities?.low || 0}</td>
+                            </tr>
+                            <tr>
+                                <td>${t('licenseIssues')}</td>
+                                <td class="count-critical">${matrix.license_issues?.critical || 0}</td>
+                                <td class="count-high">${matrix.license_issues?.high || 0}</td>
+                                <td class="count-medium">${matrix.license_issues?.medium || 0}</td>
+                                <td class="count-low">${matrix.license_issues?.low || 0}</td>
+                            </tr>
+                            <tr>
+                                <td>${t('versionRisks')}</td>
+                                <td class="count-critical">${matrix.version_risks?.critical || 0}</td>
+                                <td class="count-high">${matrix.version_risks?.high || 0}</td>
+                                <td class="count-medium">${matrix.version_risks?.medium || 0}</td>
+                                <td class="count-low">${matrix.version_risks?.low || 0}</td>
+                            </tr>
+                            <tr>
+                                <td>${t('supplyChainRisks')}</td>
+                                <td class="count-critical">${matrix.supply_chain?.critical || 0}</td>
+                                <td class="count-high">${matrix.supply_chain?.high || 0}</td>
+                                <td class="count-medium">${matrix.supply_chain?.medium || 0}</td>
+                                <td class="count-low">${matrix.supply_chain?.low || 0}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderPriorityActions(actions) {
+            if (!actions || actions.length === 0) return '';
+
+            return `
+                <div class="sbom-card" style="margin-bottom: 20px;">
+                    <div class="sbom-card-title">🎯 ${t('priorityActions')}</div>
+                    ${actions.map(a => `
+                        <div class="priority-action-card">
+                            <div class="priority-rank">${a.rank}</div>
+                            <div class="priority-content">
+                                <div class="priority-package">
+                                    ${a.package}
+                                    <span class="category-badge category-${(a.category || '').toLowerCase()}">${a.category}</span>
+                                    <span class="severity-badge severity-${getSeverityClass(a.severity)}">${a.severity}</span>
+                                </div>
+                                <div class="priority-version">${t('currentVersion')}: ${a.current_version}</div>
+                                <div class="priority-action-text">→ ${a.action}</div>
+                                <div class="priority-rationale">${a.rationale}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderVulnerabilityFindings(findings) {
+            if (!findings || findings.length === 0) return '';
+
+            return `
+                <h4 style="font-size: 14px; color: var(--text-primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;">
+                    🔓 ${t('vulnerabilities')} <span class="section-count">${findings.length}</span>
+                </h4>
+                ${findings.map(f => `
+                    <div class="finding-card">
+                        <div class="finding-header">
+                            <span class="finding-id">${f.id || ''}</span>
+                            <span class="finding-title">${f.package}@${f.version}</span>
+                            <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                        </div>
+                        <div class="finding-meta">
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('file')}:</span>
+                                <code>${f.file || '-'}</code>
+                            </div>
+                            ${f.fixed_version ? `
+                                <div class="finding-meta-item">
+                                    <span class="finding-meta-label">${t('fixedVersion')}:</span>
+                                    <code style="color: var(--accent-green)">${f.fixed_version}</code>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="finding-description">${f.description || ''}</div>
+                        ${f.cve_ids && f.cve_ids.length > 0 ? `
+                            <div class="cve-list">
+                                ${f.cve_ids.map(cve => `<span class="cve-badge">${cve}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        ${f.recommendation ? `
+                            <div class="finding-detail">
+                                <div class="finding-detail-title">${t('recommendation')}</div>
+                                <div class="finding-detail-content">${f.recommendation}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderLicenseFindings(findings) {
+            if (!findings || findings.length === 0) return '';
+
+            return `
+                <h4 style="font-size: 14px; color: var(--text-primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;">
+                    ⚖️ ${t('licenseIssues')} <span class="section-count">${findings.length}</span>
+                </h4>
+                ${findings.map(f => `
+                    <div class="finding-card">
+                        <div class="finding-header">
+                            <span class="finding-id">${f.id || ''}</span>
+                            <span class="finding-title">${f.package} - ${f.license}</span>
+                            <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                        </div>
+                        <div class="finding-meta">
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('file')}:</span>
+                                <code>${f.file || '-'}</code>
+                            </div>
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('issue')}:</span>
+                                <span>${f.issue}</span>
+                            </div>
+                            ${f.project_license ? `
+                                <div class="finding-meta-item">
+                                    <span class="finding-meta-label">Project License:</span>
+                                    <span>${f.project_license}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${f.recommendation ? `
+                            <div class="finding-detail">
+                                <div class="finding-detail-title">${t('recommendation')}</div>
+                                <div class="finding-detail-content">${f.recommendation}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderVersionRiskFindings(findings) {
+            if (!findings || findings.length === 0) return '';
+
+            return `
+                <h4 style="font-size: 14px; color: var(--text-primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;">
+                    📌 ${t('versionRisks')} <span class="section-count">${findings.length}</span>
+                </h4>
+                ${findings.map(f => `
+                    <div class="finding-card">
+                        <div class="finding-header">
+                            <span class="finding-id">${f.id || ''}</span>
+                            <span class="finding-title">${f.package} - ${f.issue}</span>
+                            <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                        </div>
+                        <div class="finding-meta">
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('file')}:</span>
+                                <code>${f.file || '-'}</code>
+                            </div>
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('currentVersion')}:</span>
+                                <code>${f.current_version}</code>
+                            </div>
+                        </div>
+                        ${f.recommendation ? `
+                            <div class="finding-detail">
+                                <div class="finding-detail-title">${t('recommendation')}</div>
+                                <div class="finding-detail-content">${f.recommendation}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderSupplyChainFindings(findings) {
+            if (!findings || findings.length === 0) return '';
+
+            return `
+                <h4 style="font-size: 14px; color: var(--text-primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;">
+                    🔗 ${t('supplyChainRisks')} <span class="section-count">${findings.length}</span>
+                </h4>
+                ${findings.map(f => `
+                    <div class="finding-card">
+                        <div class="finding-header">
+                            <span class="finding-id">${f.id || ''}</span>
+                            <span class="finding-title">${f.package} - ${f.risk_type}</span>
+                            <span class="severity-badge severity-${getSeverityClass(f.severity)}">${f.severity || 'N/A'}</span>
+                        </div>
+                        <div class="finding-meta">
+                            <div class="finding-meta-item">
+                                <span class="finding-meta-label">${t('file')}:</span>
+                                <code>${f.file || '-'}</code>
+                            </div>
+                        </div>
+                        <div class="finding-description">${f.detail || ''}</div>
+                        ${f.recommendation ? `
+                            <div class="finding-detail">
+                                <div class="finding-detail-title">${t('recommendation')}</div>
+                                <div class="finding-detail-content">${f.recommendation}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function renderRecommendations(recommendations) {
+            if (!recommendations || recommendations.length === 0) return '';
+
+            return `
+                <div class="section" id="section-recommendations">
+                    <div class="section-header" onclick="toggleSection('section-recommendations')">
+                        <div class="section-title">
+                            <span class="section-icon">✅</span>
+                            ${t('recommendations')}
+                            <span class="section-count">${recommendations.length}</span>
+                        </div>
+                        <span class="section-toggle">▼</span>
+                    </div>
+                    <div class="section-content">
+                        ${recommendations.map(r => `
+                            <div class="recommendation-card priority-${(r.priority || '').toLowerCase()}">
+                                <div class="recommendation-priority" style="color: var(--severity-${getSeverityClass(r.priority)})">${t('priority')}: ${r.priority}</div>
+                                <div class="recommendation-action">${r.action || ''}</div>
+                                <div class="recommendation-rationale">${r.rationale || ''}</div>
+                                ${r.affected_files && r.affected_files.length > 0 ? `
+                                    <div class="recommendation-files">${t('affectedFiles')}: ${r.affected_files.join(', ')}</div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.toggle('collapsed');
+            }
+        }
+
+        function renderReport(report) {
+            if (!report) return;
+
+            const data = getReportData(report);
+            const meta = report.scan_metadata;
+
+            const html = `
+                ${renderScanMetadata(meta)}
+                ${renderSummaryCards(report)}
+                ${renderRepositorySummary(data.repository_summary)}
+                ${renderStaticFindings(data.static_code_findings)}
+                ${renderBinaryFindings(data.binary_analysis_findings)}
+                ${renderSkillFindings(data.skill_risk_findings)}
+                ${renderAgentFindings(data.agent_policy_findings)}
+                ${renderSensitivePatterns(data.sensitive_patterns)}
+                ${renderPromptOptimization(data.prompt_optimization)}
+                ${renderSbomAnalysis(data.sbom_analysis)}
+                ${renderRecommendations(data.recommendations)}
+            `;
+
+            document.getElementById('reportContent').innerHTML = html;
+            document.getElementById('reportContent').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('printBtn').style.display = 'flex';
+            document.getElementById('exportBtn').style.display = 'flex';
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevReport');
+            const nextBtn = document.getElementById('nextReport');
+            const indicator = document.getElementById('reportIndicator');
+
+            prevBtn.disabled = currentReportIndex <= 0;
+            nextBtn.disabled = currentReportIndex >= reports.length - 1;
+            indicator.textContent = reports.length > 0 ? `${currentReportIndex + 1} / ${reports.length}` : '0 / 0';
+        }
+
+        function loadReports(files) {
+            reports = [];
+            const filePromises = Array.from(files).map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const json = JSON.parse(e.target.result);
+                            json._filename = file.name;
+                            resolve(json);
+                        } catch (err) {
+                            console.error('Failed to parse:', file.name, err);
+                            resolve(null);
+                        }
+                    };
+                    reader.onerror = reject;
+                    reader.readAsText(file);
+                });
+            });
+
+            Promise.all(filePromises).then(results => {
+                reports = results.filter(r => r !== null);
+                reports.sort((a, b) => {
+                    const nameA = a._filename || '';
+                    const nameB = b._filename || '';
+                    return nameB.localeCompare(nameA);
+                });
+
+                if (reports.length > 0) {
+                    currentReportIndex = 0;
+                    renderReport(reports[currentReportIndex]);
+                }
+                updateNavigation();
+            });
+        }
+
+        function printReport() {
+            // Print to PDF (browser native)
+            if (reports.length === 0) {
+                alert('No report loaded');
+                return;
+            }
+            window.print();
+        }
+
+        function exportHTML() {
+            // Export as standalone HTML file
+            if (reports.length === 0) {
+                alert('No report loaded');
+                return;
+            }
+
+            const report = reports[currentReportIndex];
+            const filename = (report._filename || 'report.json').replace('.json', '.html');
+
+            // Get the current page HTML
+            const htmlContent = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Report - ${report.scan_metadata?.scan_id || 'Report'}</title>
+    <style is:global>
+        ${document.querySelector('style').textContent}
+        
+        /* Show watermark in exported HTML */
+        .report-watermark { display: block !important; }
+        
+        /* Hide navigation controls in exported HTML */
+        .header-controls, .nav-btn, .action-btn { display: none !important; }
+        .header { position: relative !important; }
+    </style>
+</head>
+<body>
+    <!-- Watermark with hardcoded URL -->
+    <div class="report-watermark">
+        Generated by: <span>${SITE_URL}</span>
+    </div>
+    
+    <!-- Header -->
+    ${document.querySelector('.header').outerHTML}
+    
+    <!-- Report Content -->
+    <main class="main-content">
+        ${document.getElementById('reportContent').innerHTML}
+    </main>
+</body>
+</html>`;
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event Listeners
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                loadReports(e.target.files);
+            }
+        });
+
+        document.getElementById('prevReport').addEventListener('click', () => {
+            if (currentReportIndex > 0) {
+                currentReportIndex--;
+                renderReport(reports[currentReportIndex]);
+                updateNavigation();
+            }
+        });
+
+        document.getElementById('nextReport').addEventListener('click', () => {
+            if (currentReportIndex < reports.length - 1) {
+                currentReportIndex++;
+                renderReport(reports[currentReportIndex]);
+                updateNavigation();
+            }
+        });
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    el.textContent = currentLang === 'ko' ? el.dataset.ko : el.dataset.en;
+                });
+
+                if (reports.length > 0) {
+                    renderReport(reports[currentReportIndex]);
+                }
+            });
+        });
+
+        // Drag and Drop
+        document.body.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        document.body.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.json'));
+            if (files.length > 0) {
+                loadReports(files);
+            }
+        });
+
+        // Auto-load from localStorage if available (from index.html upload)
+        function checkAndLoadFromLocalStorage() {
+            console.log('🔍 Checking localStorage for uploaded report...');
+            const storageKey = 'securityReportData';
+            const storedData = localStorage.getItem(storageKey);
+
+            if (storedData) {
+                console.log('✅ Found data in localStorage!', storedData.substring(0, 100) + '...');
+                try {
+                    const reportData = JSON.parse(storedData);
+                    console.log('📦 Parsed report data:', reportData);
+
+                    const jsonData = reportData.data;
+                    const fileName = reportData.metadata.fileName || 'Uploaded Report';
+                    window.currentPostId = reportData.metadata.postId || null;
+
+                    console.log('📊 Loading report:', fileName);
+
+                    // Create a virtual File object to use with loadReports
+                    const jsonString = JSON.stringify(jsonData);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const file = new File([blob], fileName, { type: 'application/json' });
+
+                    // Use existing loadReports function
+                    loadReports([file]);
+
+                    // Clear localStorage after loading
+                    localStorage.removeItem(storageKey);
+                    console.log('🗑️ Cleared localStorage');
+
+                    console.log('✅ Auto-loaded report from localStorage successfully!');
+                    updateShareButtons();
+                } catch (error) {
+                    console.error('❌ Failed to load from localStorage:', error);
+                    // Clear corrupted data
+                    localStorage.removeItem(storageKey);
+                }
+            } else {
+                console.log('ℹ️ No data found in localStorage');
+            }
+        }
+
+        // Load report from URL parameter
+        async function loadFromUrlParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+
+            if (postId) {
+                console.log('📌 Loading report from URL param:', postId);
+                window.currentPostId = postId;
+
+                try {
+                    const response = await fetch(`/upload/${postId}/report.json`);
+                    if (!response.ok) throw new Error('Report not found');
+
+                    const data = await response.json();
+                    const jsonString = JSON.stringify(data);
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const file = new File([blob], `${postId}.json`, { type: 'application/json' });
+
+                    loadReports([file]);
+                    console.log('✅ Loaded report from URL param');
+                    updateShareButtons();
+                    return true;
+                } catch (error) {
+                    console.error('❌ Failed to load from URL:', error);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Update share buttons with current URL
+        function updateShareButtons() {
+            const shareSection = document.getElementById('shareSection');
+            if (shareSection && window.currentPostId) {
+                shareSection.style.display = 'flex';
+            }
+        }
+
+        // SNS Share Functions
+        function getShareUrl() {
+            return window.location.href;
+        }
+
+        function getShareTitle() {
+            return document.title || 'Security Report';
+        }
+
+        function shareToFacebook() {
+            const url = encodeURIComponent(getShareUrl());
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareToLinkedIn() {
+            const url = encodeURIComponent(getShareUrl());
+            const title = encodeURIComponent(getShareTitle());
+            window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareToTwitter() {
+            const url = encodeURIComponent(getShareUrl());
+            const text = encodeURIComponent(`${getShareTitle()} - AI Security Scan Report`);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareToKakao() {
+            const url = getShareUrl();
+            const title = getShareTitle();
+            // KakaoTalk Web Share (fallback to copy)
+            if (navigator.share) {
+                navigator.share({ title: title, url: url });
+            } else {
+                copyShareLink();
+            }
+        }
+
+        function copyShareLink() {
+            const url = getShareUrl();
+            navigator.clipboard.writeText(url).then(() => {
+                const copyBtn = document.querySelector('.share-btn.copy');
+                if (copyBtn) {
+                    copyBtn.classList.add('copied');
+                    copyBtn.innerHTML = '✓';
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyBtn.innerHTML = '🔗';
+                    }, 2000);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check localStorage on page load (MUST RUN FIRST!)
+            console.log('🚀 Reports page initialized');
+
+            // Try URL param first, then localStorage
+            const loadedFromUrl = await loadFromUrlParam();
+            if (!loadedFromUrl) {
+                checkAndLoadFromLocalStorage();
+            }
+
+            updateNavigation();
+        });
+    </script>
+</body>
+
+</html>
