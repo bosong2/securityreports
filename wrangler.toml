@@ -9,6 +9,9 @@ pages_build_output_dir = "./dist"
 SUPABASE_URL = "https://fzkywwerhyihseranqey.supabase.co"
 
 # Astro session uses KV binding
-[[kv_namespaces]]
-binding = "SESSION"
-id = "" # Will be set in Dashboard or wrangler deploy
+# KV namespace ID는 Cloudflare Dashboard에서 생성 후 입력
+# 로컬 개발 시에는 주석 처리하거나 wrangler kv:namespace create SESSION으로 생성
+# [[kv_namespaces]]
+# binding = "SESSION"
+# id = "your-kv-namespace-id"
+
