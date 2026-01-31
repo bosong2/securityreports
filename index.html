@@ -178,6 +178,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/app.bundle.css">
+    <link rel="stylesheet" href="css/auth.css">
 
     <!-- Markdown Parser Library -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" defer></script>
@@ -199,6 +200,11 @@
                 <button id="languageBtn" class="btn" title="Change Language">
                     <span>🌐</span>
                     <span class="btn-text">EN</span>
+                </button>
+
+                <button id="authBtn" class="btn" title="Login / Sign Up">
+                    <span>👤</span>
+                    <span class="btn-text" data-i18n="btnLogin">로그인</span>
                 </button>
 
                 <button id="themeBtn" class="btn" title="Toggle Theme">
@@ -381,6 +387,40 @@
     </aside>
     </div>
 
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal">
+            <button class="auth-close-btn" id="authCloseBtn">&times;</button>
+
+            <h2 class="auth-title" id="authTitle" data-i18n="loginTitle">로그인</h2>
+            <p class="auth-subtitle" id="authSubtitle" data-i18n="loginSubtitle">계정에 로그인하여 리포트를 관리하세요</p>
+
+            <div id="authError" class="auth-error"></div>
+
+            <form id="authForm">
+                <div class="auth-form-group">
+                    <label for="authEmail" class="auth-label" data-i18n="labelEmail">이메일</label>
+                    <input type="email" id="authEmail" class="auth-input" placeholder="name@example.com" required>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="authPassword" class="auth-label" data-i18n="labelPassword">비밀번호</label>
+                    <input type="password" id="authPassword" class="auth-input" placeholder="••••••••" required
+                        minlength="6">
+                </div>
+
+                <button type="submit" class="auth-submit-btn" id="authSubmitBtn">
+                    <span id="authSubmitText" data-i18n="btnLogin">로그인</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span id="authFooterText" data-i18n="noAccount">계정이 없으신가요?</span>
+                <button id="authToggleBtn" class="auth-toggle-btn" data-i18n="linkSignup">회원가입</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <p>
@@ -404,6 +444,12 @@
     <script src="js/cookie-consent.js" defer></script>
     <script src="js/upload-handler.js" defer></script>
     <script src="js/blog.js" defer></script>
+
+    <!-- Supabase Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/app.js" defer></script>
 
     <!-- News Rotation -->

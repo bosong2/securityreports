@@ -240,6 +240,26 @@ const translations = {
     alertSuccess: '파일이 성공적으로 생성되었습니다!',
     alertNextSteps: '다음 단계',
     alertError: '파일 생성 중 오류가 발생했습니다. 다시 시도해주세요.',
+
+    // Auth
+    btnLogin: '로그인',
+    btnSignup: '회원가입',
+    btnLogout: '로그아웃',
+    loginTitle: '로그인',
+    loginSubtitle: '계정에 로그인하여 리포트를 관리하세요',
+    signupTitle: '회원가입',
+    signupSubtitle: '새로운 계정을 만들고 서비스를 시작하세요',
+    labelEmail: '이메일',
+    labelPassword: '비밀번호',
+    labelPasswordConfirm: '비밀번호 확인',
+    noAccount: '계정이 없으신가요?',
+    hasAccount: '이미 계정이 있으신가요?',
+    linkSignup: '회원가입',
+    linkLogin: '로그인',
+    authWelcome: '환영합니다',
+    authErrorDefault: '인증 중 오류가 발생했습니다',
+    authErrorPasswordShort: '비밀번호는 6자 이상이어야 합니다',
+    authErrorPasswordMatch: '비밀번호가 일치하지 않습니다',
   },
 
   en: {
@@ -481,6 +501,26 @@ const translations = {
     alertSuccess: 'Files generated successfully!',
     alertNextSteps: 'Next steps',
     alertError: 'Error generating files. Please try again.',
+
+    // Auth
+    btnLogin: 'Login',
+    btnSignup: 'Sign Up',
+    btnLogout: 'Logout',
+    loginTitle: 'Login',
+    loginSubtitle: 'Login to manage your reports',
+    signupTitle: 'Sign Up',
+    signupSubtitle: 'Create a new account to get started',
+    labelEmail: 'Email',
+    labelPassword: 'Password',
+    labelPasswordConfirm: 'Confirm Password',
+    noAccount: 'No account yet?',
+    hasAccount: 'Already have an account?',
+    linkSignup: 'Sign Up',
+    linkLogin: 'Login',
+    authWelcome: 'Welcome',
+    authErrorDefault: 'Authentication error occurred',
+    authErrorPasswordShort: 'Password must be at least 6 characters',
+    authErrorPasswordMatch: 'Passwords do not match',
   }
 };
 
