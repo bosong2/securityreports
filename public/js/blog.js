@@ -149,7 +149,7 @@ class BlogSystem {
         }));
 
         // Redirect to reports page with post ID for shareable URL
-        window.location.href = `reports.html?post=${encodeURIComponent(postId)}`;
+        window.location.href = `/reports?post=${encodeURIComponent(postId)}`;
     }
 
     /**

@@ -54,7 +54,7 @@ class UploadHandler {
 
             // Redirect to reports page
             setTimeout(() => {
-                window.location.href = 'reports.html';
+                window.location.href = '/reports';
             }, 1000);
 
         } catch (error) {
