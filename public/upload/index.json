@@ -8,4 +8,13 @@
     "description": "Comprehensive security audit of a React application revealing critical SQL injection vulnerabilities and XSS issues that require immediate attention.",
     "folder": "post-001"
   }
+  {
+  "id": "post-002",
+  "title": "OpenClaw AI Assistant Security Audit - Critical Code Execution Vulnerability",
+  "author": "Security Research Team",
+  "date": "2026-02-05",
+  "tags": ["security", "typescript", "critical", "code-execution", "eval", "whatsapp", "ai-assistant", "supply-chain"],
+  "description": "Comprehensive security audit of OpenClaw Personal AI Assistant revealing critical eval() code execution vulnerability, multiple pre-release dependencies in production, and supply chain risks across 4,997 files.",
+  "folder": "20260206-OpenClaw"
+}
 ]
