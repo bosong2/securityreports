@@ -7,7 +7,7 @@
     "tags": ["security", "react", "critical", "sql-injection"],
     "description": "Comprehensive security audit of a React application revealing critical SQL injection vulnerabilities and XSS issues that require immediate attention.",
     "folder": "post-001"
-  }
+  },
   {
   "id": "post-002",
   "title": "OpenClaw AI Assistant Security Audit - Critical Code Execution Vulnerability",
