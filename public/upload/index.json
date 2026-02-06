@@ -1,11 +1,11 @@
 [
   {
     "id": "post-001",
-    "title": "React Application Security Audit - Critical Vulnerabilities Found",
+    "title": "Urban VPN Chrome Extension Security Audit - Confirmed Spyware/Malware",
     "author": "Security Research Team",
-    "date": "2026-01-10",
-    "tags": ["security", "react", "critical", "sql-injection"],
-    "description": "Comprehensive security audit of a React application revealing critical SQL injection vulnerabilities and XSS issues that require immediate attention.",
+    "date": "2026-01-12",
+    "tags": ["security", "chrome-extension", "critical", "spyware", "malware", "data-exfiltration", "ai-interception", "chatgpt", "claude", "gemini"],
+    "description": "Critical security audit of Urban VPN Chrome Extension v5.10.3 revealing active spyware that intercepts AI chatbot conversations (ChatGPT, Claude, Gemini), Facebook/Twitter data, and monitors all network traffic across 362 files using sophisticated obfuscation techniques.",
     "folder": "post-001"
   },
   {
@@ -15,6 +15,6 @@
     "date": "2026-02-05",
     "tags": ["security", "typescript", "critical", "code-execution", "eval", "whatsapp", "ai-assistant", "supply-chain"],
     "description": "Comprehensive security audit of OpenClaw Personal AI Assistant revealing critical eval() code execution vulnerability, multiple pre-release dependencies in production, and supply chain risks across 4,997 files.",
-    "folder": "20260206-OpenClaw"
+    "folder": "post-002"
   }
 ]
