@@ -20,7 +20,7 @@
   
   <!-- Reports viewer -->
   <url>
-    <loc>https://securityreports.pages.dev/reports.html</loc>
+    <loc>https://securityreports.pages.dev/reports</loc>
     <lastmod>2026-01-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
