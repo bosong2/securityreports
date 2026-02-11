@@ -2304,11 +2304,28 @@
                 if (section) section.classList.add('collapsed');
             });
 
-            // Get all CSS styles from the page
+            // Get all CSS styles from the page (including external stylesheets)
             let allStyles = '';
-            document.querySelectorAll('style').forEach(style => {
-                allStyles += style.textContent + '\n';
-            });
+            try {
+                Array.from(document.styleSheets).forEach(sheet => {
+                    try {
+                        const rules = sheet.cssRules || sheet.rules;
+                        if (rules) {
+                            Array.from(rules).forEach(rule => {
+                                allStyles += rule.cssText + '\n';
+                            });
+                        }
+                    } catch (e) {
+                        // Cross-origin stylesheets may throw SecurityError
+                        console.warn('Could not read stylesheet:', e);
+                    }
+                });
+            } catch (e) {
+                // Fallback: try to get inline style content
+                document.querySelectorAll('style').forEach(style => {
+                    allStyles += style.textContent + '\n';
+                });
+            }
 
             // Build the standalone HTML with all CSS, responsive styles, and inline JS for interactivity
             const htmlContent = `<!DOCTYPE html>
