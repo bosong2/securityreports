@@ -5,13 +5,12 @@ User-agent: *
 
 # Allow main pages
 Allow: /
-Allow: /index.html
-Allow: /blog.html
+Allow: /blog
 Allow: /reports
-Allow: /about.html
-Allow: /contact.html
-Allow: /privacy.html
-Allow: /blog-submit.html
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /blog-submit
 
 # Allow CSS and JS for rendering
 Allow: /css/

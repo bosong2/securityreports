@@ -32,7 +32,7 @@ class CookieConsent {
           <p data-i18n="cookieConsentText">
             이 웹사이트는 사용자 경험 개선 및 맞춤 광고 제공을 위해 쿠키를 사용합니다.
             계속 사용하시면 쿠키 정책에 동의하는 것으로 간주됩니다.
-            자세한 내용은 <a href="privacy.html" data-i18n-link="cookieConsentLink">개인정보 처리방침</a>을 참조하세요.
+            자세한 내용은 <a href="/privacy" data-i18n-link="cookieConsentLink">개인정보 처리방침</a>을 참조하세요.
           </p>
         </div>
         <div class="cookie-consent-actions">
