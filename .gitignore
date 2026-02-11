@@ -34,3 +34,4 @@ __pycache__/
 
 # Development documentation
 .devdocs/
+.docs/
