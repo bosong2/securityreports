@@ -566,17 +566,16 @@
     <script is:inline>
         async function initNewsRotation() {
             try {
-                const response = await fetch('/upload/index.json');
+                const response = await fetch('/api/blog/posts?limit=5');
                 if (!response.ok) return;
 
                 const posts = await response.json();
-                const latest = posts.slice(0, 3);
-
-                if (latest.length === 0) {
+                if (!Array.isArray(posts) || posts.length === 0) {
                     document.getElementById('newsRotation').textContent = 'No posts yet';
                     return;
                 }
 
+                const latest = posts.slice(0, 5);
                 let currentIndex = 0;
 
                 function updateNews() {
@@ -585,7 +584,8 @@
                     newsText.style.opacity = '0';
 
                     setTimeout(() => {
-                        newsText.innerHTML = `<strong>${post.title}</strong> - ${post.description.substring(0, 80)}...`;
+                        const desc = (post.description || '').substring(0, 80);
+                        newsText.innerHTML = `<strong>${post.title}</strong> - ${desc}${desc.length >= 80 ? '...' : ''}`;
                         newsText.style.opacity = '1';
                     }, 300);
 
@@ -593,7 +593,9 @@
                 }
 
                 updateNews();
-                setInterval(updateNews, 4000);
+                if (latest.length > 1) {
+                    setInterval(updateNews, 4000);
+                }
 
             } catch (error) {
                 console.log('News rotation not available');
