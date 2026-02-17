@@ -344,9 +344,9 @@
         <div class="blog-header-actions">
             <input type="text" id="searchInput" class="search-input" placeholder="Search posts..."
                 data-i18n-placeholder="searchPlaceholder">
-            <a href="/blog-submit" class="btn-create" data-i18n="createPost">
+            <button class="btn-create" id="createPostBtn" data-i18n="createPost">
                 ✍️ Create Post
-            </a>
+            </button>
         </div>
     </div>
 
@@ -385,6 +385,38 @@
     <script is:inline src="/js/i18n.js" defer></script>
     <script is:inline src="/js/theme.js" defer></script>
     <script is:inline src="/js/blog.js" defer></script>
+
+    <!-- Supabase for auth check -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script is:inline>
+        // Auth gate for Create Post button
+        const SUPABASE_CONFIG = {
+            url: 'https://fzkywwerhyihseranqey.supabase.co',
+            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a3l3d2VyaHlpaHNlcmFucWV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2NTAzMDcsImV4cCI6MjA1NDIyNjMwN30.vqMmJDjLRn-O82ihJNW5DZsfjtWnQPp7wGagdy0tpLI'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const createBtn = document.getElementById('createPostBtn');
+            if (createBtn) {
+                createBtn.addEventListener('click', async () => {
+                    try {
+                        const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                        const { data: { session } } = await sb.auth.getSession();
+                        if (session) {
+                            window.location.href = '/blog-submit';
+                        } else {
+                            const msg = window.i18n ? window.i18n.t('loginRequiredForSubmit') : '로그인 후 포스트를 작성할 수 있습니다.';
+                            alert('🔒 ' + msg);
+                        }
+                    } catch (e) {
+                        console.error('Auth check error:', e);
+                        alert('🔒 로그인 후 포스트를 작성할 수 있습니다.');
+                    }
+                });
+            }
+        });
+    </script>
 
     <script is:inline>
         // Render blog posts
