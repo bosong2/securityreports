@@ -2,10 +2,14 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-    import.meta.env.SUPABASE_URL || 'https://fzkywwerhyihseranqey.supabase.co',
-    import.meta.env.SUPABASE_SECRET_KEY || ''
-);
+const SUPABASE_URL = import.meta.env.SUPABASE_URL || 'https://fzkywwerhyihseranqey.supabase.co';
+
+// Create Supabase admin client using runtime env (Cloudflare Pages secrets)
+function getSupabaseAdmin(locals: any) {
+    const runtime = locals.runtime as any;
+    const secretKey = runtime?.env?.SUPABASE_SECRET_KEY || import.meta.env.SUPABASE_SECRET_KEY || '';
+    return createClient(SUPABASE_URL, secretKey);
+}
 
 // Input sanitization: strip HTML tags and dangerous patterns
 function sanitizeText(input: string): string {
@@ -65,9 +69,9 @@ interface SubmissionErrorData {
     errorStep?: string;  // 'r2_md' | 'r2_json' | 'db_insert' | 'tags_insert'
 }
 
-async function logSubmissionError(data: SubmissionErrorData): Promise<string | null> {
+async function logSubmissionError(supabaseClient: any, data: SubmissionErrorData): Promise<string | null> {
     try {
-        const { data: errorRecord, error } = await supabaseAdmin
+        const { data: errorRecord, error } = await supabaseClient
             .from('submission_errors')
             .insert({
                 user_id: data.userId || null,
@@ -96,8 +100,9 @@ async function logSubmissionError(data: SubmissionErrorData): Promise<string | n
 }
 
 // GET /api/blog/posts - List blog posts with tags
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, locals }) => {
     try {
+        const supabaseAdmin = getSupabaseAdmin(locals);
         const limit = parseInt(url.searchParams.get('limit') || '50');
         const offset = parseInt(url.searchParams.get('offset') || '0');
         const tag = url.searchParams.get('tag');
@@ -218,16 +223,8 @@ export const GET: APIRoute = async ({ url }) => {
 // POST /api/blog/posts - Create a new blog post
 export const POST: APIRoute = async ({ request, locals }) => {
     try {
-        // Validate Supabase configuration
-        if (!import.meta.env.SUPABASE_SECRET_KEY) {
-            console.error('[API] SUPABASE_SECRET_KEY is not configured');
-            return new Response(JSON.stringify({
-                error: 'Server configuration error: database credentials not set'
-            }), {
-                status: 503,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
+        // Create Supabase client from runtime env
+        const supabaseAdmin = getSupabaseAdmin(locals);
 
         // Parse multipart form data
         const formData = await request.formData();
@@ -350,7 +347,7 @@ ${sanitizedContent}
 
         if (!r2Bucket) {
             console.error('[API] R2_BUCKET binding not available');
-            const errorId = await logSubmissionError({
+            const errorId = await logSubmissionError(supabaseAdmin, {
                 userId, title: sanitizedTitle, description: sanitizedDescription,
                 author: sanitizedAuthor, tags, contentPreview: sanitizedContent,
                 jsonFileName: jsonFile.name,
@@ -401,7 +398,7 @@ ${sanitizedContent}
             // Cleanup R2 files on failure
             await r2Bucket.delete(mdKey);
             await r2Bucket.delete(jsonKey);
-            const errorId = await logSubmissionError({
+            const errorId = await logSubmissionError(supabaseAdmin, {
                 userId, title: sanitizedTitle, description: sanitizedDescription,
                 author: sanitizedAuthor, tags, contentPreview: sanitizedContent,
                 jsonFileName: jsonFile.name,
@@ -449,21 +446,23 @@ ${sanitizedContent}
     } catch (err) {
         console.error('[API] Blog post creation exception:', err);
         const errorMessage = err instanceof Error ? err.message : 'Internal server error';
-        // Try to extract userId from an earlier step if available
-        let catchUserId: string | null = null;
+        // Try to log error with a fresh client
+        let errorId: string | null = null;
         try {
+            const fallbackClient = getSupabaseAdmin(locals);
+            let catchUserId: string | null = null;
             const fd = await request.clone().formData().catch(() => null);
             const token = fd?.get('accessToken') as string;
             if (token) {
-                const { data: { user } } = await supabaseAdmin.auth.getUser(token);
+                const { data: { user } } = await fallbackClient.auth.getUser(token);
                 catchUserId = user?.id || null;
             }
+            errorId = await logSubmissionError(fallbackClient, {
+                userId: catchUserId,
+                errorMessage,
+                errorCode: 'UNKNOWN', errorStep: 'unhandled'
+            });
         } catch { /* ignore */ }
-        const errorId = await logSubmissionError({
-            userId: catchUserId,
-            errorMessage,
-            errorCode: 'UNKNOWN', errorStep: 'unhandled'
-        });
         return new Response(JSON.stringify({ error: 'Internal server error', errorId }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }

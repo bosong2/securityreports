@@ -2,13 +2,17 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-    import.meta.env.SUPABASE_URL || 'https://fzkywwerhyihseranqey.supabase.co',
-    import.meta.env.SUPABASE_SECRET_KEY || ''
-);
+const SUPABASE_URL = import.meta.env.SUPABASE_URL || 'https://fzkywwerhyihseranqey.supabase.co';
 
-export const GET: APIRoute = async () => {
+function getSupabaseAdmin(locals: any) {
+    const runtime = locals.runtime as any;
+    const secretKey = runtime?.env?.SUPABASE_SECRET_KEY || import.meta.env.SUPABASE_SECRET_KEY || '';
+    return createClient(SUPABASE_URL, secretKey);
+}
+
+export const GET: APIRoute = async ({ locals }) => {
     try {
+        const supabaseAdmin = getSupabaseAdmin(locals);
         const { data, error } = await supabaseAdmin
             .from('blog_tags')
             .select('tag');

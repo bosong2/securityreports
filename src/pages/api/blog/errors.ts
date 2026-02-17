@@ -2,13 +2,17 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-    import.meta.env.SUPABASE_URL || 'https://fzkywwerhyihseranqey.supabase.co',
-    import.meta.env.SUPABASE_SECRET_KEY || ''
-);
+const SUPABASE_URL = import.meta.env.SUPABASE_URL || 'https://fzkywwerhyihseranqey.supabase.co';
+
+// Create Supabase admin client using runtime env (Cloudflare Pages secrets)
+function getSupabaseAdmin(locals: any) {
+    const runtime = locals.runtime as any;
+    const secretKey = runtime?.env?.SUPABASE_SECRET_KEY || import.meta.env.SUPABASE_SECRET_KEY || '';
+    return createClient(SUPABASE_URL, secretKey);
+}
 
 // Helper: authenticate user from Authorization header or query param
-async function authenticateUser(request: Request, url: URL): Promise<{ userId: string } | Response> {
+async function authenticateUser(supabaseAdmin: any, request: Request, url: URL): Promise<{ userId: string } | Response> {
     const authHeader = request.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '') || url.searchParams.get('token');
 
@@ -31,9 +35,10 @@ async function authenticateUser(request: Request, url: URL): Promise<{ userId: s
 }
 
 // GET /api/blog/errors - List current user's submission errors
-export const GET: APIRoute = async ({ request, url }) => {
+export const GET: APIRoute = async ({ request, url, locals }) => {
     try {
-        const auth = await authenticateUser(request, url);
+        const supabaseAdmin = getSupabaseAdmin(locals);
+        const auth = await authenticateUser(supabaseAdmin, request, url);
         if (auth instanceof Response) return auth;
 
         const limit = parseInt(url.searchParams.get('limit') || '50');
@@ -76,9 +81,10 @@ export const GET: APIRoute = async ({ request, url }) => {
 };
 
 // DELETE /api/blog/errors?id=<errorId> - Delete a specific error
-export const DELETE: APIRoute = async ({ request, url }) => {
+export const DELETE: APIRoute = async ({ request, url, locals }) => {
     try {
-        const auth = await authenticateUser(request, url);
+        const supabaseAdmin = getSupabaseAdmin(locals);
+        const auth = await authenticateUser(supabaseAdmin, request, url);
         if (auth instanceof Response) return auth;
 
         const errorId = url.searchParams.get('id');
@@ -118,9 +124,10 @@ export const DELETE: APIRoute = async ({ request, url }) => {
 };
 
 // PATCH /api/blog/errors?id=<errorId> - Mark error as resolved
-export const PATCH: APIRoute = async ({ request, url }) => {
+export const PATCH: APIRoute = async ({ request, url, locals }) => {
     try {
-        const auth = await authenticateUser(request, url);
+        const supabaseAdmin = getSupabaseAdmin(locals);
+        const auth = await authenticateUser(supabaseAdmin, request, url);
         if (auth instanceof Response) return auth;
 
         const errorId = url.searchParams.get('id');
