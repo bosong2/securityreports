@@ -45,9 +45,12 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/app.bundle.css">
 
+    <!-- EasyMDE Markdown Editor -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
+
     <style is:global>
         .submit-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 0 1.5rem;
         }
@@ -64,6 +67,44 @@
         }
 
         .submit-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Auth notice */
+        .auth-notice {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .auth-notice.warning {
+            border-left: 4px solid var(--accent-red, #f85149);
+        }
+
+        .auth-notice.success {
+            border-left: 4px solid #3fb950;
+        }
+
+        .auth-notice-icon {
+            font-size: 1.5rem;
+        }
+
+        .auth-notice-text {
+            flex: 1;
+        }
+
+        .auth-notice-text strong {
+            color: var(--text-primary);
+        }
+
+        .auth-notice-text p {
+            margin: 0;
+            font-size: 0.9rem;
             color: var(--text-secondary);
         }
 
@@ -102,6 +143,7 @@
             font-size: 0.95rem;
             font-family: inherit;
             transition: border-color 0.2s;
+            box-sizing: border-box;
         }
 
         .form-input:focus,
@@ -165,6 +207,11 @@
         .file-upload-zone.has-file {
             border-color: var(--accent-primary);
             background: rgba(var(--accent-primary-rgb), 0.1);
+        }
+
+        .file-upload-zone.error {
+            border-color: var(--accent-red, #f85149);
+            background: rgba(248, 81, 73, 0.05);
         }
 
         .file-icon {
@@ -240,6 +287,131 @@
             margin: 0.5rem 0;
         }
 
+        /* EasyMDE theme overrides */
+        .EasyMDEContainer .CodeMirror {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .EasyMDEContainer .editor-toolbar {
+            border-color: var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .EasyMDEContainer .editor-toolbar button {
+            color: var(--text-secondary) !important;
+        }
+
+        .EasyMDEContainer .editor-toolbar button:hover,
+        .EasyMDEContainer .editor-toolbar button.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary) !important;
+        }
+
+        .EasyMDEContainer .editor-preview {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .EasyMDEContainer .editor-toolbar.disabled-for-preview button:not(.no-disable) {
+            opacity: 0.5;
+        }
+
+        .EasyMDEContainer .CodeMirror-cursor {
+            border-color: var(--text-primary);
+        }
+
+        .EasyMDEContainer .editor-statusbar {
+            color: var(--text-tertiary);
+        }
+
+        /* MD file drag overlay */
+        .md-drop-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: white;
+            pointer-events: none;
+        }
+
+        .md-drop-overlay.active {
+            display: flex;
+        }
+
+        .md-drop-overlay-inner {
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 3rem 4rem;
+            text-align: center;
+        }
+
+        /* JSON validation result */
+        .json-validation-result {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .json-validation-result.success {
+            display: block;
+            background: rgba(63, 185, 80, 0.15);
+            color: #3fb950;
+        }
+
+        .json-validation-result.error {
+            display: block;
+            background: rgba(248, 81, 73, 0.15);
+            color: #f85149;
+        }
+
+        /* Submit progress */
+        .submit-progress {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .submit-progress.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            animation: progressPulse 1.5s infinite;
+        }
+
+        @keyframes progressPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .progress-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .form-actions {
                 flex-direction: column;
@@ -249,6 +421,291 @@
             .btn-secondary {
                 width: 100%;
             }
+        }
+
+        /* Error Toast Banner */
+        .error-toast {
+            display: none;
+            background: rgba(248, 81, 73, 0.1);
+            border: 1px solid var(--accent-red, #f85149);
+            border-left: 4px solid var(--accent-red, #f85149);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .error-toast.active {
+            display: block;
+        }
+
+        .error-toast-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-toast-icon {
+            font-size: 1.25rem;
+        }
+
+        .error-toast-title {
+            font-weight: 600;
+            color: var(--accent-red, #f85149);
+        }
+
+        .error-toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .error-toast-close:hover {
+            color: var(--text-primary);
+        }
+
+        .error-toast-body {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .error-toast-body code {
+            background: var(--bg-tertiary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Draft Restore Banner */
+        .draft-restore-banner {
+            display: none;
+            background: rgba(56, 139, 253, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .draft-restore-banner.active {
+            display: flex;
+        }
+
+        .draft-restore-text {
+            flex: 1;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .draft-restore-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .draft-restore-actions button {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .draft-restore-actions .btn-restore {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Error Report Modal */
+        .error-report-trigger {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--accent-red, #f85149);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(248, 81, 73, 0.4);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+
+        .error-report-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(248, 81, 73, 0.5);
+        }
+
+        .error-report-trigger .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--accent-red, #f85149);
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .error-report-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .error-report-modal.active {
+            display: flex;
+        }
+
+        .error-report-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.3s ease;
+        }
+
+        .error-report-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .error-report-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .error-report-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .error-report-body {
+            padding: 1rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .error-report-empty {
+            text-align: center;
+            color: var(--text-tertiary);
+            padding: 2rem;
+        }
+
+        .error-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .error-item-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-item-code {
+            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--accent-red, #f85149);
+            font-weight: 600;
+        }
+
+        .error-item-time {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-left: auto;
+        }
+
+        .error-item-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .error-item-message {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .error-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .error-item-actions button {
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .btn-retry {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary) !important;
+            color: white;
+        }
+
+        .btn-retry:hover { opacity: 0.9; }
+
+        .btn-delete-error {
+            background: transparent;
+            color: var(--accent-red, #f85149);
+            border-color: var(--accent-red, #f85149) !important;
+        }
+
+        .btn-delete-error:hover {
+            background: rgba(248, 81, 73, 0.1);
         }
     </style>
 </head>
@@ -288,6 +745,14 @@
         </div>
     </nav>
 
+    <!-- MD file drag overlay -->
+    <div class="md-drop-overlay" id="mdDropOverlay">
+        <div class="md-drop-overlay-inner">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
+            <div data-i18n="dropMdFile">MD 파일을 드롭하여 편집기에 로드합니다</div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="submit-container">
         <div class="submit-header">
@@ -295,14 +760,22 @@
             <p data-i18n="submitSubtitle">커뮤니티에 보안 스캔 결과를 공유해주세요</p>
         </div>
 
+        <!-- Auth Notice -->
+        <div class="auth-notice warning" id="authNotice">
+            <div class="auth-notice-icon">🔒</div>
+            <div class="auth-notice-text">
+                <strong data-i18n="loginRequired">로그인이 필요합니다</strong>
+                <p data-i18n="loginRequiredDesc">리포트를 작성하려면 먼저 로그인해주세요. 작성한 리포트는 회원님의 소유로 기록됩니다.</p>
+            </div>
+        </div>
+
         <!-- Info Box -->
         <div class="info-box">
             <h3 data-i18n="howItWorks">📋 작동 방식</h3>
             <ol>
-                <li data-i18n="howItWorksStep1">아래 양식을 작성하세요</li>
-                <li data-i18n="howItWorksStep2">JSON 보안 스캔 리포트를 업로드하세요</li>
-                <li data-i18n="howItWorksStep3">생성된 파일(ZIP)을 다운로드하세요</li>
-                <li data-i18n="howItWorksStep4">GitHub Pull Request로 제출하세요</li>
+                <li data-i18n="howItWorksStep1New">아래 양식을 작성하세요 (마크다운 에디터 지원)</li>
+                <li data-i18n="howItWorksStep2New">JSON 보안 스캔 리포트를 업로드하세요</li>
+                <li data-i18n="howItWorksStep3New">제출하면 자동으로 블로그에 게시됩니다</li>
             </ol>
         </div>
 
@@ -312,23 +785,24 @@
             <div class="form-group">
                 <label class="form-label required" for="title" data-i18n="formTitle">제목</label>
                 <input type="text" id="title" class="form-input" data-i18n-placeholder="formTitlePlaceholder"
-                    placeholder="예: React 애플리케이션 보안 감사" required>
-                <div class="form-help" data-i18n="formTitleHelp">보안 리포트를 명확하게 설명하는 제목</div>
+                    placeholder="예: React 애플리케이션 보안 감사" required minlength="5" maxlength="200">
+                <div class="form-help" data-i18n="formTitleHelp">보안 리포트를 명확하게 설명하는 제목 (5-200자)</div>
             </div>
 
             <!-- Description -->
             <div class="form-group">
                 <label class="form-label required" for="description" data-i18n="formDescription">설명</label>
                 <textarea id="description" class="form-textarea" data-i18n-placeholder="formDescriptionPlaceholder"
-                    placeholder="발견된 내용에 대한 간략한 요약..." required></textarea>
-                <div class="form-help" data-i18n="formDescriptionHelp">짧은 요약 (1-2문장)</div>
+                    placeholder="발견된 내용에 대한 간략한 요약..." required maxlength="500"
+                    style="min-height: 80px;"></textarea>
+                <div class="form-help" data-i18n="formDescriptionHelp">짧은 요약 (1-2문장, 최대 500자)</div>
             </div>
 
             <!-- Author -->
             <div class="form-group">
                 <label class="form-label required" for="author" data-i18n="formAuthor">작성자</label>
                 <input type="text" id="author" class="form-input" data-i18n-placeholder="formAuthorPlaceholder"
-                    placeholder="예: 보안 연구팀" required>
+                    placeholder="예: 보안 연구팀" required maxlength="100">
             </div>
 
             <!-- Tags -->
@@ -336,19 +810,18 @@
                 <label class="form-label required" data-i18n="formTags">태그</label>
                 <div class="tag-input-container" id="tagContainer">
                     <input type="text" id="tagInput" class="form-input" data-i18n-placeholder="formTagPlaceholder"
-                        placeholder="태그를 입력하고 Enter를 누르세요" style="flex: 1; min-width: 200px;">
+                        placeholder="태그를 입력하고 Enter를 누르세요" style="flex: 1; min-width: 200px;" maxlength="50">
                 </div>
-                <div class="form-help" data-i18n="formTagHelp">태그 추가 예: security, react, critical, sql-injection (Enter로
-                    추가)</div>
+                <div class="form-help" data-i18n="formTagHelp">태그 추가 예: security, react, critical, sql-injection (Enter로 추가)</div>
             </div>
 
-            <!-- Content -->
+            <!-- Content (Markdown Editor) -->
             <div class="form-group">
                 <label class="form-label required" for="content" data-i18n="formContent">상세 리포트</label>
-                <textarea id="content" class="form-textarea" style="min-height: 300px;"
-                    data-i18n-placeholder="formContentPlaceholder"
-                    placeholder="# 상세 분석&#10;&#10;## 주요 발견사항&#10;&#10;### 1. 심각한 취약점&#10;&#10;..." required></textarea>
-                <div class="form-help" data-i18n="formContentHelp">Markdown 지원 - 상세 분석, 발견사항, 권장사항</div>
+                <div class="form-help" style="margin-bottom: 0.5rem;" data-i18n="formContentHelpMd">
+                    마크다운 에디터 사용 가능 · .md 파일을 드래그&드롭하여 불러올 수 있습니다
+                </div>
+                <textarea id="content"></textarea>
             </div>
 
             <!-- JSON File Upload -->
@@ -358,55 +831,317 @@
                     <div class="file-icon">📄</div>
                     <div><strong data-i18n="formJsonFileUpload">클릭하여 업로드</strong> <span
                             data-i18n="formJsonFileDragDrop">또는 드래그 앤 드롭</span></div>
-                    <div class="form-help" data-i18n="formJsonFileHelp">보안 스캔에서 생성된 JSON 파일</div>
+                    <div class="form-help" data-i18n="formJsonFileHelp">보안 스캔에서 생성된 JSON 파일 (최대 10MB)</div>
                 </div>
-                <input type="file" id="jsonFile" accept=".json" style="display: none;" required>
+                <input type="file" id="jsonFile" accept=".json" style="display: none;">
+                <div class="json-validation-result" id="jsonValidationResult"></div>
+            </div>
+
+            <!-- Submit Progress -->
+            <div class="submit-progress" id="submitProgress">
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">업로드 중...</div>
             </div>
 
             <!-- Actions -->
-            <div class="form-actions">
+            <div class="form-actions" id="formActions">
                 <button type="button" class="btn-secondary" onclick="window.location.href='/blog'"
                     data-i18n="btnCancel">
                     취소
                 </button>
-                <button type="submit" class="btn-primary" id="submitBtn">
-                    <span data-i18n="btnGenerate">파일 생성</span> 📦
+                <button type="submit" class="btn-primary" id="submitBtn" disabled>
+                    <span data-i18n="btnSubmitPost">리포트 제출</span> 🚀
                 </button>
             </div>
         </form>
+
+        <!-- Error Toast -->
+        <div class="error-toast" id="errorToast">
+            <div class="error-toast-header">
+                <span class="error-toast-icon" id="errorToastIcon">❌</span>
+                <span class="error-toast-title" id="errorToastTitle">제출 실패</span>
+                <button class="error-toast-close" onclick="closeErrorToast()">&times;</button>
+            </div>
+            <div class="error-toast-body" id="errorToastBody"></div>
+        </div>
+
+        <!-- Draft Restore Banner -->
+        <div class="draft-restore-banner" id="draftRestoreBanner">
+            <span>📝</span>
+            <div class="draft-restore-text" data-i18n="draftRestoreText">이전에 작성하던 내용이 있습니다. 복원하시겠습니까?</div>
+            <div class="draft-restore-actions">
+                <button class="btn-restore" onclick="restoreDraft()" data-i18n="btnRestore">복원</button>
+                <button onclick="dismissDraft()" data-i18n="btnDismiss">무시</button>
+            </div>
+        </div>
+
+        <!-- Error Report Trigger Button (floating) -->
+        <button class="error-report-trigger" id="errorReportTrigger" onclick="openErrorReport()">
+            ⚠️ 실패 내역 <span class="badge" id="errorCountBadge">0</span>
+        </button>
+    </div>
+
+    <!-- Error Report Modal -->
+    <div class="error-report-modal" id="errorReportModal">
+        <div class="error-report-panel">
+            <div class="error-report-header">
+                <span>📜</span>
+                <h2 data-i18n="errorReportTitle">제출 실패 기록</h2>
+                <button class="error-report-close" onclick="closeErrorReport()">&times;</button>
+            </div>
+            <div class="error-report-body" id="errorReportBody">
+                <div class="error-report-empty" id="errorReportEmpty">
+                    ✅ 실패 기록이 없습니다
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
     <script is:inline src="/js/i18n.js" defer></script>
     <script is:inline src="/js/theme.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+
+    <!-- Supabase for auth check -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script is:inline src="/js/supabase-config.js"></script>
+
+    <!-- EasyMDE Markdown Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js" defer></script>
 
     <script is:inline>
-        // Initialize i18n
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.i18n) {
-                window.i18n.updatePageLanguage();
-            }
-        });
-
-        // Tags management
+        // =============================================
+        // State Management
+        // =============================================
         const tags = [];
-        const tagInput = document.getElementById('tagInput');
-        const tagContainer = document.getElementById('tagContainer');
+        let selectedFile = null;
+        let jsonValidated = false;
+        let currentUser = null;
+        let easyMDE = null;
 
-        tagInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const tag = tagInput.value.trim().toLowerCase();
-                if (tag && !tags.includes(tag)) {
-                    tags.push(tag);
-                    renderTags();
-                    tagInput.value = '';
+        // =============================================
+        // Auth Check
+        // =============================================
+        async function checkAuth() {
+            try {
+                if (typeof SUPABASE_CONFIG === 'undefined') return;
+                const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                const { data: { session } } = await supabase.auth.getSession();
+
+                const authNotice = document.getElementById('authNotice');
+                const submitBtn = document.getElementById('submitBtn');
+
+                if (session && session.user) {
+                    currentUser = session.user;
+                    authNotice.className = 'auth-notice success';
+                    authNotice.innerHTML = `
+                        <div class="auth-notice-icon">✅</div>
+                        <div class="auth-notice-text">
+                            <strong>${session.user.email}</strong>
+                            <p>로그인 상태입니다. 작성한 리포트는 회원님의 소유로 기록됩니다.</p>
+                        </div>
+                    `;
+                    updateSubmitButton();
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.title = '로그인이 필요합니다';
+                }
+            } catch (err) {
+                console.error('Auth check error:', err);
+            }
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const author = document.getElementById('author').value.trim();
+            const hasContent = easyMDE ? easyMDE.value().trim().length > 0 : false;
+
+            submitBtn.disabled = !(
+                currentUser &&
+                title.length >= 5 &&
+                description.length > 0 &&
+                author.length > 0 &&
+                tags.length > 0 &&
+                hasContent &&
+                jsonValidated
+            );
+        }
+
+        // =============================================
+        // Markdown Editor Setup
+        // =============================================
+        function initEditor() {
+            if (typeof EasyMDE === 'undefined') {
+                setTimeout(initEditor, 100);
+                return;
+            }
+
+            easyMDE = new EasyMDE({
+                element: document.getElementById('content'),
+                spellChecker: false,
+                autosave: {
+                    enabled: true,
+                    uniqueId: 'blog-submit-content',
+                    delay: 5000
+                },
+                placeholder: '# 상세 분석\n\n## 주요 발견사항\n\n### 1. 심각한 취약점\n\n...',
+                minHeight: '350px',
+                toolbar: [
+                    'bold', 'italic', 'heading', '|',
+                    'quote', 'unordered-list', 'ordered-list', '|',
+                    'link', 'code', 'table', '|',
+                    'preview', 'side-by-side', 'fullscreen', '|',
+                    'guide',
+                    {
+                        name: 'load-md',
+                        action: function() {
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.accept = '.md,.markdown,.txt';
+                            input.onchange = (e) => {
+                                if (e.target.files[0]) loadMdFile(e.target.files[0]);
+                            };
+                            input.click();
+                        },
+                        className: 'fa fa-upload',
+                        title: 'MD 파일 불러오기'
+                    }
+                ],
+                status: ['lines', 'words', 'cursor']
+            });
+
+            easyMDE.codemirror.on('change', updateSubmitButton);
+        }
+
+        // Load .md file into editor
+        function loadMdFile(file) {
+            if (!file.name.match(/\.(md|markdown|txt)$/i)) {
+                alert('MD, Markdown, 또는 TXT 파일만 지원합니다.');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('파일 크기가 너무 큽니다 (최대 5MB)');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                let content = e.target.result;
+
+                // If file has frontmatter, try to extract metadata
+                const fmMatch = content.match(/^---\n([\s\S]+?)\n---\n([\s\S]*)$/);
+                if (fmMatch) {
+                    const lines = fmMatch[1].split('\n');
+                    lines.forEach(line => {
+                        const colonIdx = line.indexOf(':');
+                        if (colonIdx === -1) return;
+                        const key = line.substring(0, colonIdx).trim();
+                        let val = line.substring(colonIdx + 1).trim().replace(/^["']|["']$/g, '');
+
+                        if (key === 'title' && !document.getElementById('title').value) {
+                            document.getElementById('title').value = val;
+                        }
+                        if (key === 'author' && !document.getElementById('author').value) {
+                            document.getElementById('author').value = val;
+                        }
+                        if (key === 'description' && !document.getElementById('description').value) {
+                            document.getElementById('description').value = val;
+                        }
+                        if (key === 'tags' && val.startsWith('[')) {
+                            try {
+                                const fileTags = val.slice(1, -1).split(',').map(t => t.trim().replace(/^["']|["']$/g, ''));
+                                fileTags.forEach(t => {
+                                    if (t && !tags.includes(t)) {
+                                        tags.push(t);
+                                    }
+                                });
+                                renderTags();
+                            } catch {}
+                        }
+                    });
+                    content = fmMatch[2].trim();
+                }
+
+                easyMDE.value(content);
+                updateSubmitButton();
+            };
+            reader.readAsText(file);
+        }
+
+        // =============================================
+        // MD Drag and Drop (global)
+        // =============================================
+        let dragCounter = 0;
+
+        document.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            const items = e.dataTransfer?.items;
+            if (items && items.length > 0) {
+                const item = items[0];
+                if (item.kind === 'file') {
+                    dragCounter++;
+                    document.getElementById('mdDropOverlay').classList.add('active');
                 }
             }
         });
 
+        document.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter <= 0) {
+                dragCounter = 0;
+                document.getElementById('mdDropOverlay').classList.remove('active');
+            }
+        });
+
+        document.addEventListener('dragover', (e) => e.preventDefault());
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragCounter = 0;
+            document.getElementById('mdDropOverlay').classList.remove('active');
+
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+                const file = files[0];
+                if (file.name.match(/\.(md|markdown|txt)$/i)) {
+                    loadMdFile(file);
+                } else if (file.name.endsWith('.json')) {
+                    // Let the JSON upload zone handle it
+                    handleJsonFile(file);
+                }
+            }
+        });
+
+        // =============================================
+        // Tags Management
+        // =============================================
+        function initTags() {
+            const tagInput = document.getElementById('tagInput');
+            tagInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const tag = tagInput.value.trim().toLowerCase();
+                    if (tag && !tags.includes(tag) && tags.length < 15) {
+                        // Sanitize tag
+                        const sanitized = tag.replace(/[<>'"]/g, '').slice(0, 50);
+                        if (sanitized) {
+                            tags.push(sanitized);
+                            renderTags();
+                            tagInput.value = '';
+                            updateSubmitButton();
+                        }
+                    }
+                }
+            });
+        }
+
         function renderTags() {
+            const tagContainer = document.getElementById('tagContainer');
+            const tagInput = document.getElementById('tagInput');
             const existing = tagContainer.querySelectorAll('.tag-chip');
             existing.forEach(el => el.remove());
 
@@ -421,161 +1156,484 @@
             });
         }
 
-        function removeTag(tag) {
+        window.removeTag = function(tag) {
             const index = tags.indexOf(tag);
             if (index > -1) {
                 tags.splice(index, 1);
                 renderTags();
+                updateSubmitButton();
+            }
+        };
+
+        // =============================================
+        // JSON File Upload & Validation
+        // =============================================
+        function initFileUpload() {
+            const uploadZone = document.getElementById('uploadZone');
+            const jsonFileInput = document.getElementById('jsonFile');
+
+            uploadZone.addEventListener('click', () => jsonFileInput.click());
+
+            jsonFileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleJsonFile(e.target.files[0]);
+                }
+            });
+
+            // Drag and drop for JSON zone
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].name.endsWith('.json')) {
+                    handleJsonFile(files[0]);
+                }
+            });
+        }
+
+        async function handleJsonFile(file) {
+            const uploadZone = document.getElementById('uploadZone');
+            const validationResult = document.getElementById('jsonValidationResult');
+
+            // Reset
+            jsonValidated = false;
+            uploadZone.classList.remove('has-file', 'error');
+            validationResult.className = 'json-validation-result';
+            validationResult.style.display = 'none';
+
+            // Validate extension
+            if (!file.name.toLowerCase().endsWith('.json')) {
+                showJsonError('JSON 파일만 업로드할 수 있습니다.');
+                return;
+            }
+
+            // Validate size (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showJsonError('파일 크기가 너무 큽니다 (최대 10MB)');
+                return;
+            }
+
+            if (file.size === 0) {
+                showJsonError('빈 파일은 업로드할 수 없습니다.');
+                return;
+            }
+
+            try {
+                const content = await file.text();
+                const data = JSON.parse(content);
+
+                // Validate structure
+                if (typeof data !== 'object' || data === null) {
+                    showJsonError('JSON은 객체 형식이어야 합니다.');
+                    return;
+                }
+
+                // Check for dangerous patterns
+                const jsonStr = JSON.stringify(data);
+                const dangerousPatterns = [
+                    /<script/i,
+                    /javascript:/i,
+                    /data:text\/html/i,
+                    /eval\s*\(/i,
+                    /Function\s*\(/i,
+                ];
+                for (const pattern of dangerousPatterns) {
+                    if (pattern.test(jsonStr)) {
+                        showJsonError('보안 위험이 감지되었습니다. 파일을 확인해주세요.');
+                        return;
+                    }
+                }
+
+                // Success
+                selectedFile = file;
+                jsonValidated = true;
+                uploadZone.classList.add('has-file');
+                uploadZone.innerHTML = `
+                    <div class="file-icon">✅</div>
+                    <div><strong>${file.name}</strong></div>
+                    <div class="form-help">${(file.size / 1024).toFixed(2)} KB · JSON 형식 검증 완료</div>
+                `;
+
+                validationResult.className = 'json-validation-result success';
+                validationResult.textContent = '✅ JSON 파일 형식 및 보안 검증 통과';
+                validationResult.style.display = 'block';
+
+                updateSubmitButton();
+
+            } catch (parseErr) {
+                showJsonError('JSON 파일 파싱 실패: ' + parseErr.message);
             }
         }
 
-        // File upload
-        const uploadZone = document.getElementById('uploadZone');
-        const jsonFile = document.getElementById('jsonFile');
-        let selectedFile = null;
+        function showJsonError(message) {
+            const uploadZone = document.getElementById('uploadZone');
+            const validationResult = document.getElementById('jsonValidationResult');
 
-        uploadZone.addEventListener('click', () => jsonFile.click());
+            uploadZone.classList.add('error');
+            validationResult.className = 'json-validation-result error';
+            validationResult.textContent = '❌ ' + message;
+            validationResult.style.display = 'block';
+            selectedFile = null;
+            jsonValidated = false;
+            updateSubmitButton();
+        }
 
-        jsonFile.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                selectedFile = e.target.files[0];
-                uploadZone.classList.add('has-file');
-                uploadZone.innerHTML = `
-                    <div class="file-icon">✅</div>
-                    <div><strong>${selectedFile.name}</strong></div>
-                    <div class="form-help">${(selectedFile.size / 1024).toFixed(2)} KB</div>
-                `;
-            }
-        });
-
-        // Drag and drop
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+        // =============================================
+        // Form Submission
+        // =============================================
+        function initForm() {
+            // Live validation
+            ['title', 'description', 'author'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateSubmitButton);
             });
-        });
 
-        uploadZone.addEventListener('drop', (e) => {
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].name.endsWith('.json')) {
-                jsonFile.files = files;
-                selectedFile = files[0];
-                uploadZone.classList.add('has-file');
-                uploadZone.innerHTML = `
-                    <div class="file-icon">✅</div>
-                    <div><strong>${selectedFile.name}</strong></div>
-                    <div class="form-help">${(selectedFile.size / 1024).toFixed(2)} KB</div>
-                `;
-            }
-        });
+            document.getElementById('submitForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-        // Form submission
-        document.getElementById('submitForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+                if (!currentUser) {
+                    showErrorToast('AUTH', '로그인이 필요합니다.', '로그인 후 다시 시도해주세요.');
+                    return;
+                }
 
-            const t = window.i18n?.translations[window.i18n?.currentLanguage] || {};
+                if (!jsonValidated || !selectedFile) {
+                    showErrorToast('VALIDATION', '파일 누락', 'JSON 파일을 업로드하고 검증을 통과해야 합니다.');
+                    return;
+                }
 
-            if (tags.length === 0) {
-                alert(t.alertNoTags || '최소 하나의 태그를 추가해주세요');
-                return;
-            }
+                const submitBtn = document.getElementById('submitBtn');
+                const formActions = document.getElementById('formActions');
+                const progress = document.getElementById('submitProgress');
 
-            if (!selectedFile) {
-                alert(t.alertNoFile || 'JSON 파일을 업로드해주세요');
-                return;
-            }
+                submitBtn.disabled = true;
+                formActions.style.display = 'none';
+                progress.classList.add('active');
+                closeErrorToast();
 
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.querySelector('span').textContent = t.btnGenerating || '생성 중...';
+                try {
+                    setProgress(20, '데이터 준비 중...');
 
+                    // Get access token
+                    const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                    const { data: { session } } = await supabase.auth.getSession();
+
+                    if (!session) {
+                        throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+                    }
+
+                    setProgress(40, '파일 업로드 중...');
+
+                    // Build FormData
+                    const formData = new FormData();
+                    formData.append('title', document.getElementById('title').value.trim());
+                    formData.append('description', document.getElementById('description').value.trim());
+                    formData.append('author', document.getElementById('author').value.trim());
+                    formData.append('content', easyMDE.value());
+                    formData.append('tags', JSON.stringify(tags));
+                    formData.append('jsonFile', selectedFile);
+                    formData.append('accessToken', session.access_token);
+
+                    setProgress(60, '서버에 전송 중...');
+
+                    const response = await fetch('/api/blog/posts', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        // Save draft to localStorage on failure
+                        saveDraftToLocalStorage();
+                        const errorType = response.status === 503 ? 'R2_UPLOAD'
+                            : response.status === 401 ? 'AUTH'
+                            : response.status === 400 ? 'VALIDATION'
+                            : 'DB_INSERT';
+                        showErrorToast(
+                            errorType,
+                            result.error || '제출에 실패했습니다.',
+                            result.errorId ? `에러 ID: <code>${result.errorId.slice(0, 8)}</code>` : ''
+                        );
+                        throw new Error(result.error || '제출에 실패했습니다.');
+                    }
+
+                    setProgress(100, '완료!');
+
+                    // Clear autosave & draft
+                    if (easyMDE && easyMDE.options.autosave) {
+                        localStorage.removeItem('smde_blog-submit-content');
+                    }
+                    clearDraft();
+
+                    setTimeout(() => {
+                        alert('✅ 리포트가 성공적으로 게시되었습니다!');
+                        window.location.href = '/blog';
+                    }, 500);
+
+                } catch (err) {
+                    console.error('Submit error:', err);
+                    progress.classList.remove('active');
+                    formActions.style.display = 'flex';
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        function setProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        // =============================================
+        // Error Toast
+        // =============================================
+        const ERROR_ICONS = {
+            AUTH: '🔒', VALIDATION: '⚠️', R2_UPLOAD: '☁️', DB_INSERT: '🗄️', UNKNOWN: '❌'
+        };
+        const ERROR_TITLES = {
+            AUTH: '인증 오류', VALIDATION: '입력 검증 실패',
+            R2_UPLOAD: '파일 저장소 오류', DB_INSERT: '데이터 저장 오류', UNKNOWN: '알 수 없는 오류'
+        };
+
+        function showErrorToast(type, message, detail) {
+            const toast = document.getElementById('errorToast');
+            document.getElementById('errorToastIcon').textContent = ERROR_ICONS[type] || '❌';
+            document.getElementById('errorToastTitle').textContent = ERROR_TITLES[type] || '제출 실패';
+            let body = message;
+            if (detail) body += '<br>' + detail;
+            document.getElementById('errorToastBody').innerHTML = body;
+            toast.classList.add('active');
+            toast.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function closeErrorToast() {
+            document.getElementById('errorToast').classList.remove('active');
+        }
+
+        // =============================================
+        // Draft Save/Restore (localStorage)
+        // =============================================
+        const DRAFT_KEY = 'blog-submit-draft';
+
+        function saveDraftToLocalStorage() {
             try {
-                // Get form data
-                const title = document.getElementById('title').value;
-                const description = document.getElementById('description').value;
-                const author = document.getElementById('author').value;
-                const content = document.getElementById('content').value;
-
-                // Generate post ID
-                const postId = `post-${Date.now()}`;
-                const date = new Date().toISOString().split('T')[0];
-
-                // Create MD file content with frontmatter
-                const mdContent = `---
-id: ${postId}
-title: "${title}"
-author: "${author}"
-date: "${date}"
-tags: [${tags.map(t => `"${t}"`).join(', ')}]
-description: "${description}"
-jsonFile: "report.json"
----
-
-${content}
-`;
-
-                // Read JSON file
-                const jsonContent = await selectedFile.text();
-
-                // Create ZIP file
-                const zip = new JSZip();
-                const folder = zip.folder(postId);
-                folder.file('post.md', mdContent);
-                folder.file('report.json', jsonContent);
-
-                // Generate ZIP
-                const blob = await zip.generateAsync({ type: 'blob' });
-
-                // Download ZIP
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${postId}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                // Show success message
-                const successMsg = t.alertSuccess || '파일이 성공적으로 생성되었습니다!';
-                const nextSteps = t.alertNextSteps || '다음 단계';
-                alert(`✅ ${successMsg}
-
-${nextSteps}:
-1. ${postId}.zip 압축 해제
-2. https://github.com/bosong2/securityreports Fork
-3. /upload/${postId}/ 폴더에 업로드
-4. Pull Request 생성
-5. 승인 대기
-
-감사합니다! 🎉`);
-
-                // Reset form
-                document.getElementById('submitForm').reset();
-                tags.length = 0;
-                renderTags();
-                selectedFile = null;
-                uploadZone.classList.remove('has-file');
-
-                const uploadText = t.formJsonFileUpload || '클릭하여 업로드';
-                const dragText = t.formJsonFileDragDrop || '또는 드래그 앤 드롭';
-                const helpText = t.formJsonFileHelp || '보안 스캔에서 생성된 JSON 파일';
-
-                uploadZone.innerHTML = `
-                    <div class="file-icon">📄</div>
-                    <div><strong data-i18n="formJsonFileUpload">${uploadText}</strong> <span data-i18n="formJsonFileDragDrop">${dragText}</span></div>
-                    <div class="form-help" data-i18n="formJsonFileHelp">${helpText}</div>
-                `;
-
-            } catch (error) {
-                console.error('Error:', error);
-                const errorMsg = t.alertError || '파일 생성 중 오류가 발생했습니다. 다시 시도해주세요.';
-                alert(`❌ ${errorMsg}`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.querySelector('span').textContent = t.btnGenerate || '파일 생성';
+                const draft = {
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    author: document.getElementById('author').value,
+                    content: easyMDE ? easyMDE.value() : '',
+                    tags: [...tags],
+                    savedAt: new Date().toISOString()
+                };
+                localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+            } catch (e) {
+                console.warn('Failed to save draft:', e);
             }
+        }
+
+        function checkForDraft() {
+            try {
+                const raw = localStorage.getItem(DRAFT_KEY);
+                if (!raw) return;
+                const draft = JSON.parse(raw);
+                // Show if saved within last 24 hours
+                const age = Date.now() - new Date(draft.savedAt).getTime();
+                if (age > 24 * 60 * 60 * 1000) {
+                    clearDraft();
+                    return;
+                }
+                document.getElementById('draftRestoreBanner').classList.add('active');
+            } catch {
+                clearDraft();
+            }
+        }
+
+        function restoreDraft() {
+            try {
+                const raw = localStorage.getItem(DRAFT_KEY);
+                if (!raw) return;
+                const draft = JSON.parse(raw);
+                if (draft.title) document.getElementById('title').value = draft.title;
+                if (draft.description) document.getElementById('description').value = draft.description;
+                if (draft.author) document.getElementById('author').value = draft.author;
+                if (draft.content && easyMDE) easyMDE.value(draft.content);
+                if (draft.tags && Array.isArray(draft.tags)) {
+                    draft.tags.forEach(t => {
+                        if (!tags.includes(t)) tags.push(t);
+                    });
+                    renderTags();
+                }
+                updateSubmitButton();
+            } catch (e) {
+                console.warn('Failed to restore draft:', e);
+            }
+            dismissDraft();
+        }
+
+        function dismissDraft() {
+            document.getElementById('draftRestoreBanner').classList.remove('active');
+        }
+
+        function clearDraft() {
+            localStorage.removeItem(DRAFT_KEY);
+        }
+
+        // =============================================
+        // Error Report Modal
+        // =============================================
+        let submissionErrors = [];
+
+        async function getAccessToken() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                const { data: { session } } = await supabase.auth.getSession();
+                return session?.access_token || null;
+            } catch { return null; }
+        }
+
+        async function loadSubmissionErrors() {
+            if (!currentUser) return;
+            try {
+                const token = await getAccessToken();
+                if (!token) return;
+                const res = await fetch(`/api/blog/errors?token=${encodeURIComponent(token)}`);
+                if (!res.ok) return;
+                submissionErrors = await res.json();
+                updateErrorBadge();
+            } catch (e) {
+                console.warn('Failed to load errors:', e);
+            }
+        }
+
+        function updateErrorBadge() {
+            const trigger = document.getElementById('errorReportTrigger');
+            const badge = document.getElementById('errorCountBadge');
+            if (submissionErrors.length > 0) {
+                trigger.style.display = 'inline-flex';
+                badge.textContent = submissionErrors.length;
+            } else {
+                trigger.style.display = 'none';
+            }
+        }
+
+        function openErrorReport() {
+            renderErrorList();
+            document.getElementById('errorReportModal').classList.add('active');
+        }
+
+        function closeErrorReport() {
+            document.getElementById('errorReportModal').classList.remove('active');
+        }
+
+        function formatTimeAgo(dateStr) {
+            const diff = Date.now() - new Date(dateStr).getTime();
+            const mins = Math.floor(diff / 60000);
+            if (mins < 60) return `${mins}분 전`;
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return `${hrs}시간 전`;
+            const days = Math.floor(hrs / 24);
+            return `${days}일 전`;
+        }
+
+        function renderErrorList() {
+            const body = document.getElementById('errorReportBody');
+            const empty = document.getElementById('errorReportEmpty');
+
+            if (submissionErrors.length === 0) {
+                empty.style.display = 'block';
+                body.querySelectorAll('.error-item').forEach(el => el.remove());
+                return;
+            }
+
+            empty.style.display = 'none';
+            // Remove old items
+            body.querySelectorAll('.error-item').forEach(el => el.remove());
+
+            submissionErrors.forEach(err => {
+                const item = document.createElement('div');
+                item.className = 'error-item';
+                item.id = `error-${err.id}`;
+                item.innerHTML = `
+                    <div class="error-item-header">
+                        <span class="error-item-code">${err.error_code || 'UNKNOWN'}</span>
+                        <span class="error-item-time">${formatTimeAgo(err.created_at)}</span>
+                    </div>
+                    ${err.title ? `<div class="error-item-title">${err.title}</div>` : ''}
+                    <div class="error-item-message">${err.error_message}</div>
+                    <div class="error-item-actions">
+                        ${err.title ? `<button class="btn-retry" onclick="retryFromError('${err.id}')">🔄 재시도</button>` : ''}
+                        <button class="btn-delete-error" onclick="deleteSubmissionError('${err.id}')">🗑 삭제</button>
+                    </div>
+                `;
+                body.appendChild(item);
+            });
+        }
+
+        window.deleteSubmissionError = async function(errorId) {
+            try {
+                const token = await getAccessToken();
+                if (!token) return;
+                const res = await fetch(`/api/blog/errors?id=${errorId}&token=${encodeURIComponent(token)}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    submissionErrors = submissionErrors.filter(e => e.id !== errorId);
+                    const el = document.getElementById(`error-${errorId}`);
+                    if (el) el.remove();
+                    updateErrorBadge();
+                    if (submissionErrors.length === 0) {
+                        document.getElementById('errorReportEmpty').style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                console.error('Delete error failed:', e);
+            }
+        };
+
+        window.retryFromError = function(errorId) {
+            const err = submissionErrors.find(e => e.id === errorId);
+            if (!err) return;
+            // Pre-fill form fields
+            if (err.title) document.getElementById('title').value = err.title;
+            if (err.description) document.getElementById('description').value = err.description;
+            if (err.author) document.getElementById('author').value = err.author;
+            if (err.content_preview && easyMDE) easyMDE.value(err.content_preview);
+            if (err.tags && Array.isArray(err.tags)) {
+                err.tags.forEach(t => {
+                    if (!tags.includes(t)) tags.push(t);
+                });
+                renderTags();
+            }
+            updateSubmitButton();
+            closeErrorReport();
+            // Scroll to form
+            document.getElementById('submitForm').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // Close modal on backdrop click
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('errorReportModal');
+            if (e.target === modal) closeErrorReport();
+        });
+
+        // =============================================
+        // Initialize
+        // =============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.i18n) window.i18n.updatePageLanguage();
+            checkAuth();
+            initEditor();
+            initTags();
+            initFileUpload();
+            initForm();
+            // Check for saved draft after editor is ready
+            setTimeout(checkForDraft, 300);
+            // Load submission errors after a short delay for auth
+            setTimeout(loadSubmissionErrors, 500);
         });
     </script>
 </body>

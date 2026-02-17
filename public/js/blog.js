@@ -1,4 +1,5 @@
-// Blog System - Frontmatter Parser & Post Loader
+// Blog System - Supabase + R2 Based Post Loader
+// Migrated from file-based (upload/index.json) to API-based
 
 class BlogSystem {
     constructor() {
@@ -8,13 +9,50 @@ class BlogSystem {
     }
 
     /**
+     * Load all blog posts from API (Supabase)
+     */
+    async loadPosts() {
+        try {
+            const response = await fetch('/api/blog/posts');
+            if (!response.ok) throw new Error('Failed to load posts');
+
+            this.posts = await response.json();
+            this.filteredPosts = [...this.posts];
+
+            console.log(`Loaded ${this.posts.length} posts from API`);
+            return this.posts;
+        } catch (error) {
+            console.error('Error loading posts:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Load full post content (MD file from R2 via API proxy)
+     */
+    async loadPostContent(post) {
+        try {
+            const hash = post.md_file_hash;
+            if (!hash) throw new Error('No md_file_hash for post');
+
+            const response = await fetch(`/api/blog/files/${hash}`);
+            if (!response.ok) throw new Error(`Failed to load post content`);
+
+            const markdown = await response.text();
+            return this.parseFrontmatter(markdown);
+        } catch (error) {
+            console.error(`Error loading post content:`, error);
+            return null;
+        }
+    }
+
+    /**
      * Parse YAML frontmatter from markdown
      */
     parseFrontmatter(markdown) {
         const match = markdown.match(/^---\n([\s\S]+?)\n---\n([\s\S]*)$/);
         if (!match) {
-            console.error('No frontmatter found');
-            return null;
+            return { metadata: {}, content: markdown };
         }
 
         const frontmatter = {};
@@ -47,41 +85,6 @@ class BlogSystem {
     }
 
     /**
-     * Load all blog posts from index.json
-     */
-    async loadPosts() {
-        try {
-            const response = await fetch('/upload/index.json');
-            if (!response.ok) throw new Error('Failed to load posts index');
-
-            this.posts = await response.json();
-            this.filteredPosts = [...this.posts];
-
-            console.log(`Loaded ${this.posts.length} posts`);
-            return this.posts;
-        } catch (error) {
-            console.error('Error loading posts:', error);
-            return [];
-        }
-    }
-
-    /**
-     * Load full post content with markdown parsing
-     */
-    async loadPostContent(postId) {
-        try {
-            const response = await fetch(`/upload/${postId}/post.md`);
-            if (!response.ok) throw new Error(`Failed to load post ${postId}`);
-
-            const markdown = await response.text();
-            return this.parseFrontmatter(markdown);
-        } catch (error) {
-            console.error(`Error loading post ${postId}:`, error);
-            return null;
-        }
-    }
-
-    /**
      * Filter posts by tags
      */
     filterByTags(tags) {
@@ -111,45 +114,61 @@ class BlogSystem {
     }
 
     /**
-     * Load JSON report for a post
+     * Load JSON report for a post (from R2 via API proxy)
      */
-    async loadReport(postId) {
+    async loadReport(post) {
         try {
-            const response = await fetch(`/upload/${postId}/report.json`);
-            if (!response.ok) throw new Error(`Failed to load report ${postId}`);
+            // Support both object and string ID
+            const postData = typeof post === 'string'
+                ? this.posts.find(p => p.id === post)
+                : post;
 
-            const data = await response.json();
-            return data;
+            if (!postData) throw new Error('Post not found');
+
+            const hash = postData.json_file_hash;
+            if (!hash) throw new Error('No json_file_hash for post');
+
+            const response = await fetch(`/api/blog/files/${hash}`);
+            if (!response.ok) throw new Error('Failed to load report');
+
+            return await response.json();
         } catch (error) {
-            console.error(`Error loading report ${postId}:`, error);
+            console.error('Error loading report:', error);
             return null;
         }
     }
 
     /**
-     * View report in reports.html
+     * View report in reports page
      */
-    async viewReport(postId, fileName) {
-        const reportData = await this.loadReport(postId);
+    async viewReport(postId) {
+        const post = this.posts.find(p => p.id === postId);
+        if (!post) {
+            alert('Post not found');
+            return;
+        }
+
+        const reportData = await this.loadReport(post);
         if (!reportData) {
             alert('Failed to load report');
             return;
         }
 
-        // Store in localStorage for backward compatibility
+        // Store in localStorage for the reports page
         localStorage.setItem('securityReportData', JSON.stringify({
             data: reportData,
             metadata: {
-                fileName: fileName || `${postId}.json`,
+                fileName: post.json_file_hash + '.json',
                 fileSize: JSON.stringify(reportData).length,
                 uploadTime: new Date().toISOString(),
                 version: '1.0',
-                postId: postId
+                postId: postId,
+                jsonHash: post.json_file_hash
             }
         }));
 
-        // Redirect to reports page with post ID for shareable URL
-        window.location.href = `/reports?post=${encodeURIComponent(postId)}`;
+        // Redirect with post ID and hash for shareable URL
+        window.location.href = `/reports?post=${encodeURIComponent(postId)}&hash=${encodeURIComponent(post.json_file_hash)}`;
     }
 
     /**
@@ -178,7 +197,7 @@ class BlogSystem {
     }
 }
 
-// Initialize blog system (but don't overwrite if already exists)
+// Initialize blog system
 if (!window.blogSystem) {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
