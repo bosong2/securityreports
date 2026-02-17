@@ -700,33 +700,38 @@
         </p>
     </footer>
 
-    <!-- Scripts -->
+    <!-- CDN Libraries (must load first) -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
+    <!-- Core Scripts -->
     <script is:inline src="/js/i18n.js" defer></script>
     <script is:inline src="/js/theme.js" defer></script>
-    <script is:inline src="/js/blog.js" defer></script>
+
+    <!-- Auth Scripts (depend on Supabase CDN) -->
     <script is:inline src="/js/supabase-config.js"></script>
     <script is:inline src="/js/supabase-client.js"></script>
     <script is:inline src="/js/auth.js"></script>
 
-    <!-- Supabase for auth check -->
-    <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Marked.js for markdown rendering -->
-    <script is:inline src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    <!-- Blog Script -->
+    <script is:inline src="/js/blog.js" defer></script>
 
     <script is:inline>
         // Auth gate for Create Post button + global auth state
-        const SUPABASE_CONFIG = {
-            url: 'https://fzkywwerhyihseranqey.supabase.co',
-            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a3l3d2VyaHlpaHNlcmFucWV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2NTAzMDcsImV4cCI6MjA1NDIyNjMwN30.vqMmJDjLRn-O82ihJNW5DZsfjtWnQPp7wGagdy0tpLI'
-        };
-
         let currentSession = null;
 
-        async function initAuth() {
+        async function initBlogAuth() {
             try {
-                const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
-                const { data: { session } } = await sb.auth.getSession();
+                // Wait for supabaseClient to be ready
+                const client = window.supabaseClient;
+                if (!client) {
+                    // Fallback: create client directly
+                    const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                    const { data: { session } } = await sb.auth.getSession();
+                    currentSession = session;
+                    return session;
+                }
+                const { data: { session } } = await client.auth.getSession();
                 currentSession = session;
                 return session;
             } catch (e) {
@@ -736,7 +741,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            initAuth();
+            initBlogAuth();
 
             const createBtn = document.getElementById('createPostBtn');
             if (createBtn) {
