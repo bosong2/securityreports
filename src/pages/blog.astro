@@ -297,6 +297,283 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* =============================================
+           Post Viewer Modal
+           ============================================= */
+        .post-viewer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: fadeIn 0.25s ease;
+        }
+
+        .post-viewer-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .post-viewer-frame {
+            display: flex;
+            flex-direction: column;
+            width: 90vw;
+            max-width: 860px;
+            max-height: 90vh;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+            animation: slideUp 0.3s ease;
+        }
+
+        /* Modal Header */
+        .post-viewer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+
+        .post-viewer-header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-viewer-header h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+
+        .post-viewer-header-meta {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-top: 0.2rem;
+        }
+
+        .post-viewer-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        .post-viewer-close:hover {
+            background: var(--accent-red);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Ad Banner */
+        .post-viewer-ad {
+            flex-shrink: 0;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-viewer-ad-bottom {
+            border-bottom: none;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .post-viewer-ad-placeholder {
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+
+        /* Scrollable Content */
+        .post-viewer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 2.5rem;
+            scroll-behavior: smooth;
+        }
+
+        .post-viewer-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .post-viewer-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .post-viewer-body::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .post-viewer-body::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        /* Markdown Rendered Content */
+        .post-viewer-content h1 { font-size: 1.8rem; margin: 1.5rem 0 0.75rem; color: var(--text-primary); border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
+        .post-viewer-content h2 { font-size: 1.45rem; margin: 1.25rem 0 0.6rem; color: var(--text-primary); }
+        .post-viewer-content h3 { font-size: 1.2rem; margin: 1rem 0 0.5rem; color: var(--text-primary); }
+        .post-viewer-content p { line-height: 1.8; color: var(--text-secondary); margin-bottom: 1rem; }
+        .post-viewer-content ul, .post-viewer-content ol { padding-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); line-height: 1.8; }
+        .post-viewer-content li { margin-bottom: 0.25rem; }
+        .post-viewer-content blockquote { border-left: 4px solid var(--accent-primary); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--bg-secondary); border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+        .post-viewer-content code { background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: 0.9em; color: var(--accent-primary); }
+        .post-viewer-content pre { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 1rem 0; }
+        .post-viewer-content pre code { background: none; padding: 0; color: var(--text-primary); font-size: 0.85rem; }
+        .post-viewer-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .post-viewer-content th, .post-viewer-content td { border: 1px solid var(--border-color); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.9rem; }
+        .post-viewer-content th { background: var(--bg-secondary); font-weight: 600; color: var(--text-primary); }
+        .post-viewer-content td { color: var(--text-secondary); }
+        .post-viewer-content a { color: var(--accent-primary); text-decoration: none; }
+        .post-viewer-content a:hover { text-decoration: underline; }
+        .post-viewer-content img { max-width: 100%; border-radius: 8px; }
+        .post-viewer-content hr { border: none; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
+        .post-viewer-content strong { color: var(--text-primary); }
+
+        .post-viewer-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-tertiary);
+            gap: 1rem;
+        }
+
+        .post-viewer-loading .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Footer Actions */
+        .post-viewer-footer {
+            flex-shrink: 0;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .post-viewer-footer .btn-viewer {
+            padding: 0.6rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-viewer-close {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-viewer-close:hover {
+            background: var(--border-color);
+        }
+
+        .btn-viewer-report {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-viewer-report:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-viewer-edit {
+            background: #2ea043;
+            color: white;
+        }
+
+        .btn-viewer-edit:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-viewer-delete {
+            background: var(--accent-red, #f85149);
+            color: white;
+        }
+
+        .btn-viewer-delete:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .post-viewer-frame {
+                width: 100vw;
+                max-width: 100vw;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .post-viewer-body {
+                padding: 1.25rem 1rem;
+            }
+
+            .post-viewer-footer {
+                flex-wrap: wrap;
+            }
+
+            .post-viewer-footer .btn-viewer {
+                flex: 1;
+                justify-content: center;
+                min-width: 100px;
+            }
+        }
     </style>
 </head>
 
@@ -365,6 +642,43 @@
         </div>
     </div>
 
+    <!-- Post Viewer Modal -->
+    <div class="post-viewer-overlay" id="postViewerOverlay">
+        <div class="post-viewer-frame">
+            <!-- Header -->
+            <div class="post-viewer-header">
+                <div class="post-viewer-header-info">
+                    <h2 id="viewerTitle">Post Title</h2>
+                    <div class="post-viewer-header-meta" id="viewerMeta">By author · date</div>
+                </div>
+                <button class="post-viewer-close" onclick="closePostViewer()" title="닫기">✕</button>
+            </div>
+
+            <!-- Top Ad Banner -->
+            <div class="post-viewer-ad">
+                <div class="post-viewer-ad-placeholder">— AD —</div>
+            </div>
+
+            <!-- Scrollable Markdown Content -->
+            <div class="post-viewer-body" id="viewerBody">
+                <div class="post-viewer-loading">
+                    <div class="spinner"></div>
+                    <span>Loading content...</span>
+                </div>
+            </div>
+
+            <!-- Bottom Ad Banner -->
+            <div class="post-viewer-ad post-viewer-ad-bottom">
+                <div class="post-viewer-ad-placeholder">— AD —</div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="post-viewer-footer" id="viewerFooter">
+                <button class="btn-viewer btn-viewer-close" onclick="closePostViewer()">닫기</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <p>
@@ -389,29 +703,41 @@
     <!-- Supabase for auth check -->
     <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- Marked.js for markdown rendering -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
     <script is:inline>
-        // Auth gate for Create Post button
+        // Auth gate for Create Post button + global auth state
         const SUPABASE_CONFIG = {
             url: 'https://fzkywwerhyihseranqey.supabase.co',
             key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a3l3d2VyaHlpaHNlcmFucWV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2NTAzMDcsImV4cCI6MjA1NDIyNjMwN30.vqMmJDjLRn-O82ihJNW5DZsfjtWnQPp7wGagdy0tpLI'
         };
 
+        let currentSession = null;
+
+        async function initAuth() {
+            try {
+                const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                const { data: { session } } = await sb.auth.getSession();
+                currentSession = session;
+                return session;
+            } catch (e) {
+                console.error('Auth init error:', e);
+                return null;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+
             const createBtn = document.getElementById('createPostBtn');
             if (createBtn) {
                 createBtn.addEventListener('click', async () => {
-                    try {
-                        const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
-                        const { data: { session } } = await sb.auth.getSession();
-                        if (session) {
-                            window.location.href = '/blog-submit';
-                        } else {
-                            const msg = window.i18n ? window.i18n.t('loginRequiredForSubmit') : '로그인 후 포스트를 작성할 수 있습니다.';
-                            alert('🔒 ' + msg);
-                        }
-                    } catch (e) {
-                        console.error('Auth check error:', e);
-                        alert('🔒 로그인 후 포스트를 작성할 수 있습니다.');
+                    if (currentSession) {
+                        window.location.href = '/blog-submit';
+                    } else {
+                        const msg = window.i18n ? window.i18n.t('loginRequiredForSubmit') : '로그인 후 포스트를 작성할 수 있습니다.';
+                        alert('🔒 ' + msg);
                     }
                 });
             }
@@ -419,7 +745,171 @@
     </script>
 
     <script is:inline>
-        // Render blog posts
+        // =============================================
+        // Post Viewer Modal
+        // =============================================
+        let currentViewingPost = null;
+
+        async function openPostViewer(postId) {
+            const post = window.blogSystem.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            currentViewingPost = post;
+
+            const overlay = document.getElementById('postViewerOverlay');
+            const title = document.getElementById('viewerTitle');
+            const meta = document.getElementById('viewerMeta');
+            const body = document.getElementById('viewerBody');
+            const footer = document.getElementById('viewerFooter');
+
+            // Set header
+            title.textContent = post.title;
+            meta.textContent = `By ${post.author} · ${window.blogSystem.formatDate(post.date)}`;
+
+            // Loading state
+            body.innerHTML = `
+                <div class="post-viewer-loading">
+                    <div class="spinner"></div>
+                    <span>콘텐츠 로드 중...</span>
+                </div>
+            `;
+
+            // Build footer buttons
+            let footerHTML = '';
+
+            // Check ownership
+            const isOwner = currentSession && post.user_id && currentSession.user.id === post.user_id;
+
+            footerHTML += `<button class="btn-viewer btn-viewer-report" onclick="viewReportFromModal()">📊 리포트 보기</button>`;
+
+            if (isOwner) {
+                footerHTML += `<button class="btn-viewer btn-viewer-edit" onclick="editPost()">✏️ 수정</button>`;
+                footerHTML += `<button class="btn-viewer btn-viewer-delete" onclick="deletePost()">🗑 삭제</button>`;
+            }
+
+            footerHTML += `<button class="btn-viewer btn-viewer-close" onclick="closePostViewer()">닫기</button>`;
+            footer.innerHTML = footerHTML;
+
+            // Show modal
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Fetch & render markdown
+            try {
+                const result = await window.blogSystem.loadPostContent(post);
+                if (result && result.content) {
+                    const html = marked.parse(result.content);
+                    body.innerHTML = `<div class="post-viewer-content">${html}</div>`;
+                } else {
+                    body.innerHTML = `
+                        <div class="post-viewer-loading">
+                            <span>⚠️ 콘텐츠를 불러올 수 없습니다.</span>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('Error loading post content:', err);
+                body.innerHTML = `
+                    <div class="post-viewer-loading">
+                        <span>❌ 로드 실패: ${err.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        function closePostViewer() {
+            const overlay = document.getElementById('postViewerOverlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            currentViewingPost = null;
+        }
+
+        function viewReportFromModal() {
+            if (currentViewingPost) {
+                closePostViewer();
+                window.blogSystem.viewReport(currentViewingPost.id);
+            }
+        }
+
+        function editPost() {
+            if (currentViewingPost) {
+                // Navigate to submit page with edit mode (future feature)
+                alert('✏️ 수정 기능은 준비 중입니다.');
+            }
+        }
+
+        async function deletePost() {
+            if (!currentViewingPost || !currentSession) return;
+
+            const confirmed = confirm(`정말로 "${currentViewingPost.title}" 포스트를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`);
+            if (!confirmed) return;
+
+            try {
+                const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                const { data: { session } } = await sb.auth.getSession();
+                if (!session) {
+                    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+                    return;
+                }
+
+                const response = await fetch(`/api/blog/posts?slug=${encodeURIComponent(currentViewingPost.id)}&token=${encodeURIComponent(session.access_token)}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('✅ 포스트가 삭제되었습니다.');
+                    closePostViewer();
+                    renderPosts(); // Re-render the list
+                } else {
+                    const result = await response.text();
+                    let errMsg = '삭제에 실패했습니다.';
+                    try { errMsg = JSON.parse(result).error || errMsg; } catch {}
+                    alert('❌ ' + errMsg);
+                }
+            } catch (err) {
+                console.error('Delete error:', err);
+                alert('❌ 삭제 중 오류가 발생했습니다.');
+            }
+        }
+
+        // Close on backdrop click
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'postViewerOverlay') closePostViewer();
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePostViewer();
+        });
+    </script>
+
+    <script is:inline>
+        // =============================================
+        // Render blog posts (with post viewer click)
+        // =============================================
+        function createPostCard(post) {
+            return `
+                <div class="post-card" onclick="openPostViewer('${post.id}')">
+                    <h2 class="post-title">${post.title}</h2>
+                    <p class="post-description">${post.description}</p>
+                    <div class="post-tags">
+                        ${post.tags.map(tag => `
+                            <span class="tag ${tag === 'critical' ? 'critical' : ''}">${tag}</span>
+                        `).join('')}
+                    </div>
+                    <div class="post-meta">
+                        <span class="post-author">By ${post.author}</span>
+                        <span>${window.blogSystem.formatDate(post.date)}</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-view-report" onclick="event.stopPropagation(); window.blogSystem.viewReport('${post.id}')">
+                            <span data-i18n="viewReport">View Report</span> →
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
         async function renderPosts() {
             const container = document.getElementById('blogPosts');
 
@@ -446,26 +936,7 @@
                     return;
                 }
 
-                container.innerHTML = posts.map(post => `
-                    <div class="post-card">
-                        <h2 class="post-title">${post.title}</h2>
-                        <p class="post-description">${post.description}</p>
-                        <div class="post-tags">
-                            ${post.tags.map(tag => `
-                                <span class="tag ${tag === 'critical' ? 'critical' : ''}">${tag}</span>
-                            `).join('')}
-                        </div>
-                        <div class="post-meta">
-                            <span class="post-author">By ${post.author}</span>
-                            <span>${window.blogSystem.formatDate(post.date)}</span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="btn-view-report" onclick="window.blogSystem.viewReport('${post.id}', '${post.folder}/report.json')">
-                                <span data-i18n="viewReport">View Report</span> →
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                container.innerHTML = posts.map(post => createPostCard(post)).join('');
 
                 // Update i18n
                 if (window.i18n) window.i18n.updatePageLanguage();
@@ -556,26 +1027,7 @@
                 return;
             }
 
-            container.innerHTML = filtered.map(post => `
-                <div class="post-card">
-                    <h2 class="post-title">${post.title}</h2>
-                    <p class="post-description">${post.description}</p>
-                    <div class="post-tags">
-                        ${post.tags.map(tag => `
-                            <span class="tag ${tag === 'critical' ? 'critical' : ''}">${tag}</span>
-                        `).join('')}
-                    </div>
-                    <div class="post-meta">
-                        <span class="post-author">By ${post.author}</span>
-                        <span>${window.blogSystem.formatDate(post.date)}</span>
-                    </div>
-                    <div class="post-actions">
-                        <button class="btn-view-report" onclick="window.blogSystem.viewReport('${post.id}', '${post.folder}/report.json')">
-                            <span data-i18n="viewReport">View Report</span> →
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+            container.innerHTML = filtered.map(post => createPostCard(post)).join('');
         });
     </script>
 </body>
