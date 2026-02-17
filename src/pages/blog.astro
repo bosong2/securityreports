@@ -595,6 +595,11 @@
                     <span class="btn-text">KO</span>
                 </button>
 
+                <button id="authBtn" class="btn" title="Login / Sign Up">
+                    <span>👤</span>
+                    <span class="btn-text" data-i18n="btnLogin">로그인</span>
+                </button>
+
                 <button id="themeToggle" class="btn" title="Toggle Theme">
                     <span class="theme-icon">🌙</span>
                     <span class="btn-text" data-i18n="btnDark">다크</span>
@@ -699,6 +704,9 @@
     <script is:inline src="/js/i18n.js" defer></script>
     <script is:inline src="/js/theme.js" defer></script>
     <script is:inline src="/js/blog.js" defer></script>
+    <script is:inline src="/js/supabase-config.js"></script>
+    <script is:inline src="/js/supabase-client.js"></script>
+    <script is:inline src="/js/auth.js"></script>
 
     <!-- Supabase for auth check -->
     <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
