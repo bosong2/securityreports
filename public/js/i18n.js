@@ -246,6 +246,8 @@ const translations = {
     alertSuccess: '파일이 성공적으로 생성되었습니다!',
     alertNextSteps: '다음 단계',
     alertError: '파일 생성 중 오류가 발생했습니다. 다시 시도해주세요.',
+    btnSubmitPost: '리포트 제출',
+    btnSubmitting: '제출 중...',
 
     // Auth
     btnLogin: '로그인',
@@ -560,6 +562,8 @@ const translations = {
     alertSuccess: 'Files generated successfully!',
     alertNextSteps: 'Next steps',
     alertError: 'Error generating files. Please try again.',
+    btnSubmitPost: 'Submit Report',
+    btnSubmitting: 'Submitting...',
 
     // Auth
     btnLogin: 'Login',

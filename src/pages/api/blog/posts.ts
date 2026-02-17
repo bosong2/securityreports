@@ -218,6 +218,17 @@ export const GET: APIRoute = async ({ url }) => {
 // POST /api/blog/posts - Create a new blog post
 export const POST: APIRoute = async ({ request, locals }) => {
     try {
+        // Validate Supabase configuration
+        if (!import.meta.env.SUPABASE_SECRET_KEY) {
+            console.error('[API] SUPABASE_SECRET_KEY is not configured');
+            return new Response(JSON.stringify({
+                error: 'Server configuration error: database credentials not set'
+            }), {
+                status: 503,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
         // Parse multipart form data
         const formData = await request.formData();
         const title = formData.get('title') as string;

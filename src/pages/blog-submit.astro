@@ -1344,7 +1344,13 @@
                         body: formData
                     });
 
-                    const result = await response.json();
+                    const responseText = await response.text();
+                    let result;
+                    try {
+                        result = responseText ? JSON.parse(responseText) : {};
+                    } catch {
+                        result = { error: `서버 오류 (HTTP ${response.status})` };
+                    }
 
                     if (!response.ok) {
                         // Save draft to localStorage on failure
