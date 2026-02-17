@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 /* Theme Variables */
 :root {
   /* Light Theme Colors */
@@ -64,8 +66,7 @@
               border-color var(--transition-normal),
               color var(--transition-normal);
 }
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 
 /* Reset & Base Styles */
 * {
