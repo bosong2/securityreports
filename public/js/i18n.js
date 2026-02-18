@@ -31,6 +31,7 @@ const translations = {
     jsonViewTitle: 'JSON Report 보기',
     jsonViewUploadTitle: 'JSON 리포트 업로드',
     loading: '로딩 중...',
+    instructionsTitle: '시작하기',
     instructionsSubtitle: 'AI 보안 스캔을 시작하려면 아래 단계를 따라주세요',
 
     step1Title: '1. AI 프롬프트 다운로드',
@@ -356,6 +357,7 @@ const translations = {
     jsonViewTitle: 'JSON Report Viewer',
     jsonViewUploadTitle: 'Upload JSON Report',
     loading: 'Loading...',
+    instructionsTitle: 'Getting Started',
     instructionsSubtitle: 'Follow these steps to begin your AI security scan',
 
     step1Title: '1. Download AI Prompt',
