@@ -612,7 +612,8 @@
             if (!container) return;
 
             try {
-                const res = await fetch('/api/security-news');
+                const lang = localStorage.getItem('language') || 'ko';
+                const res = await fetch(`/api/security-news?lang=${lang}`);
                 if (!res.ok) throw new Error('API error');
 
                 const data = await res.json();

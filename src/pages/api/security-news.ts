@@ -14,7 +14,6 @@ interface NewsItem {
 }
 
 function extractCDATA(text: string): string {
-    // Strip CDATA wrapper if present
     return text.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim();
 }
 
@@ -37,20 +36,17 @@ function parseRSSItem(itemXml: string): NewsItem | null {
         const rawDate = dateMatch ? extractCDATA(dateMatch[1]) : '';
         const rawDesc = descMatch ? stripHtml(extractCDATA(descMatch[1])) : '';
 
-        // Format date
         let date = '';
         if (rawDate) {
             try {
                 const d = new Date(rawDate);
-                date = d.toISOString().split('T')[0]; // YYYY-MM-DD
+                date = d.toISOString().split('T')[0];
             } catch {
                 date = rawDate.substring(0, 10);
             }
         }
 
-        // Truncate summary to ~120 chars
         const summary = rawDesc.length > 120 ? rawDesc.substring(0, 120) + '...' : rawDesc;
-
         return { title, link, date, summary };
     } catch {
         return null;
@@ -59,8 +55,6 @@ function parseRSSItem(itemXml: string): NewsItem | null {
 
 function parseRSS(xml: string): NewsItem[] {
     const items: NewsItem[] = [];
-
-    // Match all <item>...</item> blocks
     const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/g;
     let match;
 
@@ -74,10 +68,77 @@ function parseRSS(xml: string): NewsItem[] {
     return items;
 }
 
-export const GET: APIRoute = async () => {
+/**
+ * Google Translate (free endpoint) — batch translate an array of texts.
+ * Combines texts with a separator to minimize API calls.
+ */
+async function translateTexts(texts: string[], targetLang: string): Promise<string[]> {
+    if (!texts.length) return [];
+
+    const SEPARATOR = '\n|||SPLIT|||\n';
+    const combined = texts.join(SEPARATOR);
+
+    try {
+        const url = new URL('https://translate.googleapis.com/translate_a/single');
+        url.searchParams.set('client', 'gtx');
+        url.searchParams.set('sl', 'en');
+        url.searchParams.set('tl', targetLang);
+        url.searchParams.set('dt', 't');
+        url.searchParams.set('q', combined);
+
+        const res = await fetch(url.toString(), {
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+            signal: AbortSignal.timeout(8000),
+        });
+
+        if (!res.ok) return texts; // Fallback: return original
+
+        const data = await res.json();
+
+        // data[0] is an array of [translatedSegment, originalSegment, ...]
+        let translated = '';
+        if (Array.isArray(data) && Array.isArray(data[0])) {
+            translated = data[0].map((seg: any[]) => seg[0] || '').join('');
+        }
+
+        // Split back
+        const parts = translated.split(/\|\|\|SPLIT\|\|\|/i).map((s: string) => s.trim());
+
+        // If split count matches, return translated; otherwise fallback
+        if (parts.length === texts.length) {
+            return parts;
+        }
+        return texts;
+    } catch {
+        return texts; // Fallback: return original on any error
+    }
+}
+
+async function translateItems(items: NewsItem[], targetLang: string): Promise<NewsItem[]> {
+    // Collect all titles and summaries for batch translation
+    const titles = items.map(i => i.title);
+    const summaries = items.map(i => i.summary);
+
+    const [translatedTitles, translatedSummaries] = await Promise.all([
+        translateTexts(titles, targetLang),
+        translateTexts(summaries, targetLang),
+    ]);
+
+    return items.map((item, idx) => ({
+        ...item,
+        title: translatedTitles[idx] || item.title,
+        summary: translatedSummaries[idx] || item.summary,
+    }));
+}
+
+export const GET: APIRoute = async ({ request }) => {
+    const url = new URL(request.url);
+    const lang = url.searchParams.get('lang') || 'en';
+
     const headers = {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=1800, s-maxage=3600', // Cache 30min client, 1hr CDN
+        'Cache-Control': 'public, max-age=1800, s-maxage=3600',
+        'Vary': 'Accept-Language',
     };
 
     for (const feedUrl of RSS_FEEDS) {
@@ -93,12 +154,18 @@ export const GET: APIRoute = async () => {
             if (!response.ok) continue;
 
             const xml = await response.text();
-            const items = parseRSS(xml);
+            let items = parseRSS(xml);
 
             if (items.length > 0) {
+                // Translate if not English
+                if (lang === 'ko') {
+                    items = await translateItems(items, 'ko');
+                }
+
                 return new Response(JSON.stringify({
                     source: feedUrl.includes('hackernews') ? 'The Hacker News' : 'BleepingComputer',
                     items,
+                    lang,
                     fetchedAt: new Date().toISOString(),
                 }), { status: 200, headers });
             }
@@ -107,7 +174,6 @@ export const GET: APIRoute = async () => {
         }
     }
 
-    // Fallback: return empty with error
     return new Response(JSON.stringify({
         source: null,
         items: [],
