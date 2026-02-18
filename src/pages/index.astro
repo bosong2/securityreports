@@ -494,22 +494,23 @@
             display: flex;
             gap: 1rem;
             padding: 1rem 1.25rem;
-            background: var(--card-bg, #fff);
-            border: 1px solid var(--border-color, #e5e7eb);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            transition: box-shadow 0.2s, transform 0.15s;
+            transition: box-shadow 0.2s, transform 0.15s, background-color 0.3s;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
         }
         .news-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
             transform: translateY(-1px);
+            background: var(--bg-tertiary);
         }
         .news-card-rank {
             font-size: 1.5rem;
             font-weight: 800;
-            color: var(--accent-color, #6366f1);
+            color: var(--accent-primary);
             min-width: 2rem;
             display: flex;
             align-items: center;
@@ -522,7 +523,7 @@
         .news-card-title {
             font-size: 0.95rem;
             font-weight: 600;
-            color: var(--text-primary, #1f2937);
+            color: var(--text-primary);
             margin-bottom: 0.35rem;
             line-height: 1.4;
             overflow: hidden;
@@ -533,7 +534,7 @@
         }
         .news-card-summary {
             font-size: 0.82rem;
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
             line-height: 1.45;
             margin-bottom: 0.35rem;
             overflow: hidden;
@@ -544,14 +545,14 @@
         }
         .news-card-meta {
             font-size: 0.75rem;
-            color: var(--text-tertiary, #9ca3af);
+            color: var(--text-tertiary);
         }
         .news-source-tag {
             display: inline-block;
             font-size: 0.7rem;
             padding: 0.15rem 0.5rem;
             border-radius: 99px;
-            background: var(--accent-color, #6366f1);
+            background: var(--accent-primary);
             color: #fff;
             font-weight: 500;
             margin-left: 0.5rem;
@@ -559,7 +560,7 @@
         .news-empty {
             text-align: center;
             padding: 2rem;
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
         }
         @media (max-width: 600px) {
             .news-card { padding: 0.75rem 1rem; }
