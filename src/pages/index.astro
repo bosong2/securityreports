@@ -607,13 +607,27 @@
             }
         }
 
+        async function translateTexts(texts, targetLang) {
+            try {
+                const res = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texts, target: targetLang }),
+                });
+                if (!res.ok) return texts;
+                const data = await res.json();
+                return data.translations || texts;
+            } catch {
+                return texts;
+            }
+        }
+
         async function loadSecurityNews() {
             const container = document.getElementById('securityNewsContainer');
             if (!container) return;
 
             try {
-                const lang = localStorage.getItem('language') || 'ko';
-                const res = await fetch(`/api/security-news?lang=${lang}`);
+                const res = await fetch('/api/security-news');
                 if (!res.ok) throw new Error('API error');
 
                 const data = await res.json();
@@ -623,8 +637,28 @@
                     return;
                 }
 
+                let items = data.items;
+                const lang = localStorage.getItem('language') || 'ko';
+
+                // Translate if Korean
+                if (lang === 'ko') {
+                    const titles = items.map(i => i.title);
+                    const summaries = items.map(i => i.summary);
+
+                    const [trTitles, trSummaries] = await Promise.all([
+                        translateTexts(titles, 'ko'),
+                        translateTexts(summaries, 'ko'),
+                    ]);
+
+                    items = items.map((item, idx) => ({
+                        ...item,
+                        title: trTitles[idx] || item.title,
+                        summary: trSummaries[idx] || item.summary,
+                    }));
+                }
+
                 const source = data.source || '';
-                container.innerHTML = data.items.map((item, i) => `
+                container.innerHTML = items.map((item, i) => `
                     <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-card">
                         <div class="news-card-rank">${i + 1}</div>
                         <div class="news-card-body">
