@@ -11,6 +11,7 @@ Allow: /about
 Allow: /contact
 Allow: /privacy
 Allow: /blog-submit
+Allow: /toolkit
 
 # Allow CSS and JS for rendering
 Allow: /css/
