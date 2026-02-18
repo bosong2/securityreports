@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>AI 툴킷 | AI Toolkit - Security Reports</title>
+    <meta name="description"
+        content="AI 보안 스캔 도구 모음. 프롬프트 다운로드, JSON 리포트 업로드, 사용 매뉴얼을 한곳에서 확인하세요. AI security scanning toolkit with prompt templates, JSON upload, and manuals.">
+    <meta name="keywords"
+        content="AI 툴킷, AI toolkit, 보안 스캔, security scan, 프롬프트 템플릿, prompt templates, JSON upload">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://securityreports.pages.dev/toolkit">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://securityreports.pages.dev/toolkit">
+    <meta property="og:title" content="AI 툴킷 - Security Reports">
+    <meta property="og:description" content="AI 보안 스캔 도구 모음. 프롬프트 다운로드, JSON 리포트 업로드, 사용 매뉴얼.">
+    <meta property="og:image" content="https://securityreports.pages.dev/favicon.svg">
+    <meta property="og:site_name" content="Security Reports">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S410S37PMX"></script>
+    <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-S410S37PMX');
+    </script>
+
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "v2u86ujuew");
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5068642866393193"
+        crossorigin="anonymous"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/app.bundle.css">
+    <link rel="stylesheet" href="/css/auth.css">
+
+    <!-- Markdown Parser Library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span>
+                <div class="logo-text">
+                    <h1 data-i18n="siteTitle">Security Reports</h1>
+                    <p data-i18n="siteSubtitle">AI 기반 보안 스캔 리포트</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="languageBtn" class="btn" title="Change Language">
+                    <span>🌐</span>
+                    <span class="btn-text">EN</span>
+                </button>
+
+                <button id="authBtn" class="btn" title="Login / Sign Up">
+                    <span>👤</span>
+                    <span class="btn-text" data-i18n="btnLogin">로그인</span>
+                </button>
+
+                <button id="themeBtn" class="btn" title="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                    <span class="btn-text" data-i18n="btnDark">다크</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-container">
+            <a href="/" class="nav-tab" data-i18n="navHome">홈</a>
+            <a href="/toolkit" class="nav-tab active" data-i18n="navToolkit">AI 툴킷</a>
+            <a href="/blog" class="nav-tab" data-i18n="tabBlog">블로그</a>
+            <a href="/reports" class="nav-tab" data-i18n="navReports">리포트</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content-wrapper">
+        <div class="main-content-area">
+
+            <!-- Page Header -->
+            <div class="welcome-banner-compact">
+                <h2 data-i18n="toolkitTitle">🧰 AI 보안 스캔 툴킷</h2>
+                <p data-i18n="toolkitSubtitle">프롬프트 다운로드부터 리포트 확인까지, 보안 스캔에 필요한 모든 도구</p>
+            </div>
+
+            <!-- Getting Started Section (Compact) -->
+            <div class="content-section">
+                <h3 class="section-title" data-i18n="instructionsTitle">시작하기</h3>
+                <div class="getting-started-compact">
+                    <!-- Step 1 -->
+                    <div class="step-card-compact">
+                        <h4 data-i18n="step1Title">1. AI 프롬프트 다운로드</h4>
+                        <p data-i18n="step1Desc">사용할 AI(Claude, Gemini 등)를 선택하고 보안 스캔 프롬프트를 다운로드하세요</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card-compact">
+                        <h4 data-i18n="step2Title">2. 프로젝트 스캔</h4>
+                        <p data-i18n="step2Desc">다운로드한 프롬프트를 AI에 적용하여 프로젝트를 스캔하세요</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card-compact">
+                        <h4 data-i18n="step3Title">3. 리포트 확인</h4>
+                        <p data-i18n="step3Desc">AI가 생성한 JSON 결과를 리포트 탭에서 업로드하여 확인하세요</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Filter Section -->
+            <div class="content-section">
+                <h3 class="section-title">AI Prompt Templates</h3>
+                <div class="filter-section">
+                    <span class="filter-label" data-i18n="filterLabel">AI 선택:</span>
+                    <div id="filterButtons" class="filter-buttons">
+                        <!-- Filter buttons will be dynamically generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- File List -->
+                <div id="fileList" class="file-list">
+                    <!-- File list will be dynamically generated by JavaScript -->
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 1rem;">Loading resources...</p>
+                    </div>
+                </div>
+
+                <!-- Manual Section (Hidden by default) -->
+                <div id="manualSection" class="manual-section hidden">
+                    <div class="manual-header">
+                        <h4 id="manualTitle" class="manual-title">📖 Usage Manual</h4>
+                    </div>
+                    <div id="manualContent" class="manual-content">
+                        <!-- Manual content will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inline Ad (between content) -->
+            <div class="ad-inline">
+                <div class="ad-placeholder">Ad Banner (728x90)</div>
+            </div>
+
+            <!-- JSON Upload -->
+            <div class="content-section">
+                <h3 class="section-title">
+                    <span data-i18n="uploadTitle">JSON 리포트 업로드</span>
+                </h3>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <!-- Upload Card -->
+                    <div class="quick-action-card upload-section" id="uploadZone">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-title" data-i18n="uploadTitle">JSON 리포트 업로드</div>
+                        <div class="upload-description" data-i18n="uploadDesc">스캔 결과 JSON 파일을 업로드하여 상세 리포트를 확인하세요</div>
+
+                        <!-- Hidden File Input -->
+                        <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+
+                        <!-- Upload Button -->
+                        <button class="upload-button" id="uploadJsonBtn">
+                            <span>📁</span>
+                            <span data-i18n="uploadButton">파일 선택</span>
+                        </button>
+                        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary);"
+                            data-i18n="uploadDragDrop">또는 파일을 여기로 드래그하세요</p>
+                    </div>
+
+                    <!-- Reports Link Card -->
+                    <div class="quick-action-card">
+                        <div class="quick-action-icon">📊</div>
+                        <div class="quick-action-title" data-i18n="reportsLinkTitle">REPORTS 페이지로 이동</div>
+                        <div class="quick-action-desc" data-i18n="reportsLinkDesc">리포트 페이지에서 더 많은 기능을 사용하실 수 있습니다</div>
+                        <a href="/reports" class="btn btn-primary" style="margin-top: 1rem; text-decoration: none;">
+                            <span>🔗</span>
+                            <span data-i18n="reportsLinkButton">REPORTS 열기</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <span>💡</span>
+                        <span data-i18n="infoBoxTitle">향후 기능</span>
+                    </div>
+                    <div class="info-box-content">
+                        <p data-i18n="infoBoxContent">다음 업데이트에서 추가될 예정입니다:</p>
+                        <ul>
+                            <li data-i18n="infoFeature1">JSON 업로드 시 자동 리포트 팝업</li>
+                            <li data-i18n="infoFeature2">드래그 앤 드롭 파일 업로드</li>
+                            <li data-i18n="infoFeature3">리포트 미리보기</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar with Ads -->
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">ADVERTISEMENT</div>
+            <div class="ad-container">
+                <div class="ad-placeholder">Ad Space (300x250)</div>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">SPONSORED</div>
+            <div class="ad-container">
+                <div class="ad-placeholder">Ad Space (300x600)</div>
+            </div>
+        </div>
+    </aside>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal-overlay">
+        <div class="auth-modal" id="authModalContent">
+            <button class="auth-close-btn" id="authCloseBtn">&times;</button>
+
+            <div id="authWelcomeBanner" class="auth-welcome-banner" style="display: none;">
+                <span class="welcome-emoji">🎉</span>
+                <span data-i18n="signupWelcome">환영합니다! 새로운 계정을 만들어보세요</span>
+            </div>
+
+            <h2 class="auth-title" data-i18n="authTitle">로그인 / 회원가입</h2>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-auth-tab="login" data-i18n="authLogin">로그인</button>
+                <button class="auth-tab" data-auth-tab="signup" data-i18n="authSignup">회원가입</button>
+            </div>
+
+            <div id="authMessage" class="auth-message" style="display: none;"></div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="auth-input-group">
+                    <label for="loginEmail" data-i18n="authEmail">이메일</label>
+                    <input type="email" id="loginEmail" placeholder="email@example.com" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="loginPassword" data-i18n="authPassword">비밀번호</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required minlength="6">
+                </div>
+                <button type="submit" class="auth-submit-btn" data-i18n="authLoginBtn">로그인</button>
+            </form>
+
+            <form id="signupForm" class="auth-form" style="display: none;">
+                <div class="auth-input-group">
+                    <label for="signupEmail" data-i18n="authEmail">이메일</label>
+                    <input type="email" id="signupEmail" placeholder="email@example.com" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupPassword" data-i18n="authPassword">비밀번호</label>
+                    <input type="password" id="signupPassword" placeholder="••••••••" required minlength="6">
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupPasswordConfirm" data-i18n="authPasswordConfirm">비밀번호 확인</label>
+                    <input type="password" id="signupPasswordConfirm" placeholder="••••••••" required minlength="6">
+                </div>
+                <div class="auth-consent-group" id="consentGroup">
+                    <label class="auth-checkbox-label">
+                        <input type="checkbox" id="consentCheckbox" required>
+                        <span data-i18n="authConsent">개인정보 수집 및 이용에 동의합니다</span>
+                        <a href="/privacy" target="_blank" data-i18n="authConsentLink">(자세히 보기)</a>
+                    </label>
+                </div>
+                <button type="submit" class="auth-submit-btn" data-i18n="authSignupBtn">회원가입</button>
+            </form>
+
+            <div class="auth-divider">
+                <span data-i18n="authOr">또는</span>
+            </div>
+
+            <button id="googleLoginBtn" class="auth-social-btn google-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                    <path fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                <span data-i18n="authGoogle">Google로 계속하기</span>
+            </button>
+
+            <div class="auth-footer">
+                <a href="#" id="forgotPasswordLink" data-i18n="authForgotPassword">비밀번호를 잊으셨나요?</a>
+            </div>
+
+            <div id="resetPasswordForm" style="display: none;">
+                <h3 data-i18n="authResetTitle">비밀번호 재설정</h3>
+                <div class="auth-input-group">
+                    <label for="resetEmail" data-i18n="authEmail">이메일</label>
+                    <input type="email" id="resetEmail" placeholder="email@example.com" required>
+                </div>
+                <button type="button" id="resetPasswordBtn" class="auth-submit-btn"
+                    data-i18n="authResetBtn">재설정 링크 보내기</button>
+                <a href="#" id="backToLoginLink" class="auth-back-link" data-i18n="authBackToLogin">← 로그인으로 돌아가기</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Page Modal -->
+    <div id="mypageModal" class="auth-modal-overlay">
+        <div class="auth-modal mypage-modal">
+            <button class="auth-close-btn" id="mypageCloseBtn">&times;</button>
+            <h2 class="auth-title" data-i18n="mypageTitle">마이페이지</h2>
+
+            <div class="mypage-section" id="mypageUserInfo">
+                <h3 data-i18n="mypageUserInfoTitle">계정 정보</h3>
+                <div class="mypage-info-row">
+                    <span class="mypage-label" data-i18n="authEmail">이메일</span>
+                    <span class="mypage-value" id="mypageEmail">-</span>
+                </div>
+                <div class="mypage-info-row">
+                    <span class="mypage-label" data-i18n="mypageProvider">로그인 방식</span>
+                    <span class="mypage-value" id="mypageProvider">-</span>
+                </div>
+                <div class="mypage-info-row">
+                    <span class="mypage-label" data-i18n="mypageJoinDate">가입일</span>
+                    <span class="mypage-value" id="mypageJoinDate">-</span>
+                </div>
+            </div>
+
+            <div class="mypage-section" id="mypageConsentSection">
+                <h3 data-i18n="mypageConsentTitle">개인정보 동의 관리</h3>
+                <div class="mypage-info-row">
+                    <span class="mypage-label" data-i18n="mypageConsentStatus">동의 상태</span>
+                    <span class="mypage-value" id="mypageConsentStatus">-</span>
+                </div>
+                <div class="mypage-info-row">
+                    <span class="mypage-label" data-i18n="mypageConsentDate">동의 일자</span>
+                    <span class="mypage-value" id="mypageConsentDate">-</span>
+                </div>
+                <button type="button" id="withdrawConsentBtn" class="mypage-btn mypage-btn-warning"
+                    data-i18n="mypageWithdrawConsent" style="display: none;">
+                    동의 철회
+                </button>
+            </div>
+
+            <div class="mypage-section mypage-danger-zone">
+                <h3 data-i18n="mypageDeleteTitle">계정 삭제</h3>
+                <p data-i18n="mypageDeleteDesc">계정을 삭제하면 모든 데이터가 영구적으로 제거됩니다. 이 작업은 되돌릴 수 없습니다.</p>
+                <button type="button" id="deleteAccountBtn" class="mypage-btn mypage-btn-danger"
+                    data-i18n="mypageDeleteBtn">
+                    회원 탈퇴
+                </button>
+            </div>
+
+            <div class="mypage-footer">
+                <button type="button" id="logoutFromMypageBtn" class="mypage-btn mypage-btn-outline"
+                    data-i18n="btnLogout">
+                    로그아웃
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            <span data-i18n="footerText">© 2026 Security Reports. 오픈소스 프로젝트</span>
+            <br>
+            <a href="https://github.com/bosong2/securityreports" target="_blank" rel="noopener noreferrer"
+                data-i18n="footerGithub">GitHub에서 보기</a>
+            |
+            <a href="/privacy" data-i18n="footerPrivacy">개인정보 처리방침</a>
+            |
+            <a href="/about" data-i18n="footerAbout">About</a>
+            |
+            <a href="/contact" data-i18n="footerContact">Contact</a>
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script is:inline src="/js/i18n.js" defer></script>
+    <script is:inline src="/js/theme.js" defer></script>
+    <script is:inline src="/js/resources.js" defer></script>
+    <script is:inline src="/js/cookie-consent.js" defer></script>
+    <script is:inline src="/js/upload-handler.js" defer></script>
+
+    <!-- Supabase Auth -->
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script is:inline src="/js/supabase-config.js"></script>
+    <script is:inline src="/js/supabase-client.js"></script>
+    <script is:inline src="/js/auth.js"></script>
+    <script is:inline src="/js/app.js" defer></script>
+</body>
+
+</html>

@@ -9,6 +9,7 @@ const translations = {
     // Navigation
     navHome: '홈',
     navReports: '리포트',
+    navToolkit: 'AI 툴킷',
 
     // Buttons
     btnLanguage: '언어',
@@ -19,6 +20,13 @@ const translations = {
     // Welcome Section
     welcomeTitle: 'AI 보안 스캔 리포트에 오신 것을 환영합니다',
     welcomeSubtitle: '프로젝트의 보안 취약점을 AI로 분석하고, 상세한 리포트를 확인하세요',
+
+    // Toolkit Page
+    toolkitTitle: '🧰 AI 보안 스캔 툴킷',
+    toolkitSubtitle: '프롬프트 다운로드부터 리포트 확인까지, 보안 스캔에 필요한 모든 도구',
+    toolkitCtaTitle: 'AI 보안 스캔 툴킷',
+    toolkitCtaDesc: '프롬프트 다운로드, JSON 업로드, 사용 매뉴얼까지 한곳에서 확인하세요',
+    toolkitCtaButton: 'AI 툴킷 열기',
 
     // Instructions Section
     instructionsTitle: '시작하기',
@@ -325,6 +333,7 @@ const translations = {
     // Navigation
     navHome: 'Home',
     navReports: 'Reports',
+    navToolkit: 'AI Toolkit',
 
     // Buttons
     btnLanguage: 'Language',
@@ -335,6 +344,13 @@ const translations = {
     // Welcome Section
     welcomeTitle: 'Welcome to AI Security Scan Reports',
     welcomeSubtitle: 'Analyze your project\'s security vulnerabilities with AI and view detailed reports',
+
+    // Toolkit Page
+    toolkitTitle: '🧰 AI Security Scan Toolkit',
+    toolkitSubtitle: 'Everything you need for security scanning — from prompt downloads to report viewing',
+    toolkitCtaTitle: 'AI Security Scan Toolkit',
+    toolkitCtaDesc: 'Download prompts, upload JSON reports, and access manuals — all in one place',
+    toolkitCtaButton: 'Open AI Toolkit',
 
     // Instructions Section
     instructionsTitle: 'Getting Started',
