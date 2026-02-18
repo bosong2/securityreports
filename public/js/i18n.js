@@ -27,9 +27,10 @@ const translations = {
     toolkitCtaTitle: 'AI 보안 스캔 툴킷',
     toolkitCtaDesc: '프롬프트 다운로드, JSON 업로드, 사용 매뉴얼까지 한곳에서 확인하세요',
     toolkitCtaButton: 'AI 툴킷 열기',
-
-    // Instructions Section
-    instructionsTitle: '시작하기',
+    securityNewsTitle: '🔒 최신 보안 이슈 TOP5',
+    jsonViewTitle: 'JSON Report 보기',
+    jsonViewUploadTitle: 'JSON 리포트 업로드',
+    loading: '로딩 중...',
     instructionsSubtitle: 'AI 보안 스캔을 시작하려면 아래 단계를 따라주세요',
 
     step1Title: '1. AI 프롬프트 다운로드',
@@ -351,9 +352,10 @@ const translations = {
     toolkitCtaTitle: 'AI Security Scan Toolkit',
     toolkitCtaDesc: 'Download prompts, upload JSON reports, and access manuals — all in one place',
     toolkitCtaButton: 'Open AI Toolkit',
-
-    // Instructions Section
-    instructionsTitle: 'Getting Started',
+    securityNewsTitle: '🔒 Latest Security Issues TOP5',
+    jsonViewTitle: 'JSON Report Viewer',
+    jsonViewUploadTitle: 'Upload JSON Report',
+    loading: 'Loading...',
     instructionsSubtitle: 'Follow these steps to begin your AI security scan',
 
     step1Title: '1. Download AI Prompt',

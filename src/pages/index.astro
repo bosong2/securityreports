@@ -249,9 +249,19 @@
                 </div>
             </div>
 
-            <!-- AI Toolkit CTA -->
+            <!-- Security News TOP5 -->
             <div class="content-section">
-                <h3 class="section-title" data-i18n="instructionsTitle">시작하기</h3>
+                <h3 class="section-title" data-i18n="securityNewsTitle">🔒 최신 보안 이슈 TOP5</h3>
+                <div id="securityNewsContainer" class="security-news-container">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 1rem;" data-i18n="loading">로딩 중...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="content-section">
                 <div class="quick-actions">
                     <div class="quick-action-card">
                         <div class="quick-action-icon">🧰</div>
@@ -473,7 +483,91 @@
     <script is:inline src="/js/auth.js"></script>
     <script is:inline src="/js/app.js" defer></script>
 
-    <!-- News Rotation -->
+    <!-- Security News Card Styles -->
+    <style>
+        .security-news-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .news-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 10px;
+            transition: box-shadow 0.2s, transform 0.15s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .news-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+        .news-card-rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-color, #6366f1);
+            min-width: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .news-card-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .news-card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary, #1f2937);
+            margin-bottom: 0.35rem;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .news-card-summary {
+            font-size: 0.82rem;
+            color: var(--text-secondary, #6b7280);
+            line-height: 1.45;
+            margin-bottom: 0.35rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .news-card-meta {
+            font-size: 0.75rem;
+            color: var(--text-tertiary, #9ca3af);
+        }
+        .news-source-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 99px;
+            background: var(--accent-color, #6366f1);
+            color: #fff;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+        .news-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary, #6b7280);
+        }
+        @media (max-width: 600px) {
+            .news-card { padding: 0.75rem 1rem; }
+            .news-card-rank { font-size: 1.2rem; min-width: 1.5rem; }
+        }
+    </style>
+
+    <!-- News Rotation + Security News -->
     <script is:inline>
         async function initNewsRotation() {
             try {
@@ -513,8 +607,45 @@
             }
         }
 
+        async function loadSecurityNews() {
+            const container = document.getElementById('securityNewsContainer');
+            if (!container) return;
+
+            try {
+                const res = await fetch('/api/security-news');
+                if (!res.ok) throw new Error('API error');
+
+                const data = await res.json();
+
+                if (!data.items || data.items.length === 0) {
+                    container.innerHTML = '<div class="news-empty">보안 뉴스를 불러올 수 없습니다.</div>';
+                    return;
+                }
+
+                const source = data.source || '';
+                container.innerHTML = data.items.map((item, i) => `
+                    <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-card">
+                        <div class="news-card-rank">${i + 1}</div>
+                        <div class="news-card-body">
+                            <div class="news-card-title">${item.title}</div>
+                            <div class="news-card-summary">${item.summary}</div>
+                            <div class="news-card-meta">
+                                ${item.date}
+                                <span class="news-source-tag">${source}</span>
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+
+            } catch (err) {
+                console.log('Security news not available:', err);
+                container.innerHTML = '<div class="news-empty">보안 뉴스를 불러올 수 없습니다.</div>';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initNewsRotation();
+            loadSecurityNews();
         });
     </script>
 </body>
