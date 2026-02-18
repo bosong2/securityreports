@@ -920,6 +920,12 @@
         let currentUser = null;
         let easyMDE = null;
 
+        // Edit mode state
+        const urlParams = new URLSearchParams(window.location.search);
+        const editSlug = urlParams.get('edit');
+        let isEditMode = !!editSlug;
+        let editPostData = null;
+
         // =============================================
         // Auth Check
         // =============================================
@@ -1298,7 +1304,8 @@
                     return;
                 }
 
-                if (!jsonValidated || !selectedFile) {
+                // In edit mode, JSON file is optional (keep existing if not re-uploaded)
+                if (!isEditMode && (!jsonValidated || !selectedFile)) {
                     showErrorToast('VALIDATION', '파일 누락', 'JSON 파일을 업로드하고 검증을 통과해야 합니다.');
                     return;
                 }
@@ -1332,13 +1339,20 @@
                     formData.append('author', document.getElementById('author').value.trim());
                     formData.append('content', easyMDE.value());
                     formData.append('tags', JSON.stringify(tags));
-                    formData.append('jsonFile', selectedFile);
+                    if (selectedFile) {
+                        formData.append('jsonFile', selectedFile);
+                    }
                     formData.append('accessToken', session.access_token);
+
+                    // In edit mode, add slug and use PUT
+                    if (isEditMode) {
+                        formData.append('slug', editSlug);
+                    }
 
                     setProgress(60, '서버에 전송 중...');
 
                     const response = await fetch('/api/blog/posts', {
-                        method: 'POST',
+                        method: isEditMode ? 'PUT' : 'POST',
                         body: formData
                     });
 
@@ -1359,10 +1373,10 @@
                             : 'DB_INSERT';
                         showErrorToast(
                             errorType,
-                            result.error || '제출에 실패했습니다.',
+                            result.error || (isEditMode ? '수정에 실패했습니다.' : '제출에 실패했습니다.'),
                             result.errorId ? `에러 ID: <code>${result.errorId.slice(0, 8)}</code>` : ''
                         );
-                        throw new Error(result.error || '제출에 실패했습니다.');
+                        throw new Error(result.error || (isEditMode ? '수정에 실패했습니다.' : '제출에 실패했습니다.'));
                     }
 
                     setProgress(100, '완료!');
@@ -1374,7 +1388,7 @@
                     clearDraft();
 
                     setTimeout(() => {
-                        alert('✅ 리포트가 성공적으로 게시되었습니다!');
+                        alert(isEditMode ? '✅ 리포트가 성공적으로 수정되었습니다!' : '✅ 리포트가 성공적으로 게시되었습니다!');
                         window.location.href = '/blog';
                     }, 500);
 
@@ -1627,6 +1641,84 @@
         // =============================================
         // Initialize
         // =============================================
+        // =============================================
+        // Edit Mode Initialization
+        // =============================================
+        async function initEditMode() {
+            if (!isEditMode || !editSlug) return;
+
+            try {
+                // Update page title and submit button
+                document.querySelector('.submit-header h1').textContent = '✏️ 리포트 수정하기';
+                document.querySelector('.submit-header p').textContent = '기존 리포트를 수정합니다';
+                document.querySelector('#submitBtn span').textContent = '수정 완료';
+                document.title = '리포트 수정 | Edit Security Report - Security Reports';
+
+                // Fetch existing post data
+                const postRes = await fetch(`/api/blog/posts?slug=${encodeURIComponent(editSlug)}`);
+                if (!postRes.ok) {
+                    alert('❌ 게시물을 불러올 수 없습니다.');
+                    window.location.href = '/blog';
+                    return;
+                }
+                editPostData = await postRes.json();
+
+                // Fill title, description, author
+                document.getElementById('title').value = editPostData.title || '';
+                document.getElementById('description').value = editPostData.description || '';
+                document.getElementById('author').value = editPostData.author || '';
+
+                // Fill tags
+                if (editPostData.tags && editPostData.tags.length > 0) {
+                    editPostData.tags.forEach(tag => {
+                        if (!tags.includes(tag)) {
+                            tags.push(tag);
+                        }
+                    });
+                    renderTags();
+                }
+
+                // Load markdown content from R2
+                if (editPostData.md_file_hash) {
+                    const mdRes = await fetch(`/api/blog/files/${editPostData.md_file_hash}`);
+                    if (mdRes.ok) {
+                        let mdContent = await mdRes.text();
+                        // Strip frontmatter (between --- markers)
+                        const fmMatch = mdContent.match(/^---[\s\S]*?---\s*\n?/);
+                        if (fmMatch) {
+                            mdContent = mdContent.slice(fmMatch[0].length);
+                        }
+                        // Wait for editor to be ready
+                        const waitForEditor = () => {
+                            if (easyMDE) {
+                                easyMDE.value(mdContent.trim());
+                            } else {
+                                setTimeout(waitForEditor, 100);
+                            }
+                        };
+                        waitForEditor();
+                    }
+                }
+
+                // In edit mode, mark JSON as validated if post already has a JSON file
+                // (user can optionally re-upload a new one)
+                if (editPostData.json_file_hash) {
+                    jsonValidated = true;
+                    const validationResult = document.getElementById('jsonValidationResult');
+                    validationResult.className = 'json-validation-result success';
+                    validationResult.textContent = '✅ 기존 JSON 파일 유지 (새 파일 업로드 시 교체됩니다)';
+                    validationResult.style.display = 'block';
+                }
+
+                // Update submit button state
+                setTimeout(updateSubmitButton, 500);
+
+            } catch (err) {
+                console.error('Edit mode init error:', err);
+                alert('❌ 수정 모드 초기화 중 오류가 발생했습니다.');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             if (window.i18n) window.i18n.updatePageLanguage();
             checkAuth();
@@ -1634,8 +1726,13 @@
             initTags();
             initFileUpload();
             initForm();
-            // Check for saved draft after editor is ready
-            setTimeout(checkForDraft, 300);
+            if (isEditMode) {
+                // In edit mode, load existing data instead of checking for drafts
+                setTimeout(initEditMode, 300);
+            } else {
+                // Check for saved draft after editor is ready
+                setTimeout(checkForDraft, 300);
+            }
             // Load submission errors after a short delay for auth
             setTimeout(loadSubmissionErrors, 500);
         });

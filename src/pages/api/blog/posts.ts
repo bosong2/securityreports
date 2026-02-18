@@ -467,3 +467,316 @@ ${sanitizedContent}
         });
     }
 };
+
+// DELETE /api/blog/posts - Delete a blog post (owner only)
+export const DELETE: APIRoute = async ({ url, locals }) => {
+    try {
+        const supabaseAdmin = getSupabaseAdmin(locals);
+        const slug = url.searchParams.get('slug');
+        const token = url.searchParams.get('token');
+
+        if (!slug || !token) {
+            return new Response(JSON.stringify({ error: 'Missing slug or token' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Authenticate user
+        const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+        if (authError || !user) {
+            return new Response(JSON.stringify({ error: 'Authentication failed' }), {
+                status: 401,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Find the post
+        const { data: post, error: findError } = await supabaseAdmin
+            .from('blog_posts')
+            .select('*')
+            .eq('slug', slug)
+            .single();
+
+        if (findError || !post) {
+            return new Response(JSON.stringify({ error: 'Post not found' }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Verify ownership
+        if (post.user_id !== user.id) {
+            return new Response(JSON.stringify({ error: 'Not authorized to delete this post' }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Delete tags first (foreign key)
+        await supabaseAdmin
+            .from('blog_tags')
+            .delete()
+            .eq('post_id', post.id);
+
+        // Delete the post from DB
+        const { error: deleteError } = await supabaseAdmin
+            .from('blog_posts')
+            .delete()
+            .eq('id', post.id);
+
+        if (deleteError) {
+            console.error('[API] Delete post error:', deleteError);
+            return new Response(JSON.stringify({ error: 'Failed to delete post' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Delete R2 files (non-blocking, best effort)
+        try {
+            const runtime = locals.runtime;
+            const r2Bucket = runtime?.env?.R2_BUCKET;
+            if (r2Bucket) {
+                if (post.md_file_hash) {
+                    await r2Bucket.delete(`blog/${post.md_file_hash}.md`);
+                }
+                if (post.json_file_hash) {
+                    await r2Bucket.delete(`blog/${post.json_file_hash}.json`);
+                }
+            }
+        } catch (r2Err) {
+            console.error('[API] R2 cleanup error (non-fatal):', r2Err);
+        }
+
+        return new Response(JSON.stringify({ success: true, message: 'Post deleted' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+    } catch (err) {
+        console.error('[API] Delete post exception:', err);
+        return new Response(JSON.stringify({ error: 'Internal server error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+};
+
+// PUT /api/blog/posts - Update a blog post (owner only)
+export const PUT: APIRoute = async ({ request, locals }) => {
+    try {
+        const supabaseAdmin = getSupabaseAdmin(locals);
+        const formData = await request.formData();
+
+        const slug = formData.get('slug') as string;
+        const title = formData.get('title') as string;
+        const description = formData.get('description') as string;
+        const author = formData.get('author') as string;
+        const content = formData.get('content') as string;
+        const tagsStr = formData.get('tags') as string;
+        const jsonFile = formData.get('jsonFile') as File | null;
+        const accessToken = formData.get('accessToken') as string;
+
+        // Validate required fields
+        if (!slug || !title || !description || !author || !content || !accessToken) {
+            return new Response(JSON.stringify({
+                error: 'Missing required fields: slug, title, description, author, content, accessToken'
+            }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Authenticate user
+        const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(accessToken);
+        if (authError || !user) {
+            return new Response(JSON.stringify({ error: 'Authentication failed' }), {
+                status: 401,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Find existing post
+        const { data: existingPost, error: findError } = await supabaseAdmin
+            .from('blog_posts')
+            .select('*')
+            .eq('slug', slug)
+            .single();
+
+        if (findError || !existingPost) {
+            return new Response(JSON.stringify({ error: 'Post not found' }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Verify ownership
+        if (existingPost.user_id !== user.id) {
+            return new Response(JSON.stringify({ error: 'Not authorized to edit this post' }), {
+                status: 403,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Sanitize inputs
+        const sanitizedTitle = sanitizeText(title);
+        const sanitizedDescription = sanitizeText(description);
+        const sanitizedAuthor = sanitizeText(author);
+        const sanitizedContent = sanitizeText(content);
+
+        if (sanitizedTitle.length < 5 || sanitizedTitle.length > 200) {
+            return new Response(JSON.stringify({ error: 'Title must be 5-200 characters' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Parse and validate tags
+        let tags: string[] = [];
+        try {
+            tags = JSON.parse(tagsStr || '[]');
+            if (!Array.isArray(tags) || tags.length === 0) {
+                return new Response(JSON.stringify({ error: 'At least one tag is required' }), {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            tags = tags.map(t => sanitizeText(t).toLowerCase().slice(0, 50));
+        } catch {
+            return new Response(JSON.stringify({ error: 'Invalid tags format' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        const runtime = locals.runtime;
+        const r2Bucket = runtime?.env?.R2_BUCKET;
+
+        if (!r2Bucket) {
+            return new Response(JSON.stringify({ error: 'Storage service unavailable' }), {
+                status: 503,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        const oldMdHash = existingPost.md_file_hash;
+        const oldJsonHash = existingPost.json_file_hash;
+
+        // Upload new MD file
+        const date = new Date().toISOString().split('T')[0];
+        const mdContent = `---
+id: ${slug}
+title: "${sanitizedTitle}"
+author: "${sanitizedAuthor}"
+date: "${date}"
+tags: [${tags.map(t => `"${t}"`).join(', ')}]
+description: "${sanitizedDescription}"
+jsonFile: "report.json"
+---
+
+${sanitizedContent}
+`;
+        const timestamp = Date.now();
+        const newMdHash = await hashContent(mdContent + timestamp);
+        const mdKey = `blog/${newMdHash}.md`;
+
+        await r2Bucket.put(mdKey, mdContent, {
+            httpMetadata: { contentType: 'text/markdown; charset=utf-8' },
+            customMetadata: { originalName: 'post.md', postSlug: slug }
+        });
+
+        // Handle JSON file - upload new if provided, keep old if not
+        let newJsonHash = oldJsonHash;
+        if (jsonFile && jsonFile.size > 0) {
+            const jsonContent = await jsonFile.text();
+            let jsonData: any;
+            try {
+                jsonData = JSON.parse(jsonContent);
+            } catch {
+                return new Response(JSON.stringify({ error: 'Invalid JSON file format' }), {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            const validation = validateJsonReport(jsonData);
+            if (!validation.valid) {
+                return new Response(JSON.stringify({ error: validation.error }), {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+
+            newJsonHash = await hashContent(jsonContent + timestamp);
+            const jsonKey = `blog/${newJsonHash}.json`;
+            await r2Bucket.put(jsonKey, jsonContent, {
+                httpMetadata: { contentType: 'application/json; charset=utf-8' },
+                customMetadata: { originalName: jsonFile.name, postSlug: slug }
+            });
+        }
+
+        // Update DB
+        const { error: updateError } = await supabaseAdmin
+            .from('blog_posts')
+            .update({
+                title: sanitizedTitle,
+                description: sanitizedDescription,
+                author: sanitizedAuthor,
+                md_file_hash: newMdHash,
+                json_file_hash: newJsonHash,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', existingPost.id);
+
+        if (updateError) {
+            console.error('[API] Update post error:', updateError);
+            // Clean up new R2 files on failure
+            await r2Bucket.delete(mdKey);
+            if (newJsonHash !== oldJsonHash) {
+                await r2Bucket.delete(`blog/${newJsonHash}.json`);
+            }
+            return new Response(JSON.stringify({ error: 'Failed to update post' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Update tags: delete old, insert new
+        await supabaseAdmin.from('blog_tags').delete().eq('post_id', existingPost.id);
+        const tagInserts = tags.map(tag => ({ post_id: existingPost.id, tag }));
+        await supabaseAdmin.from('blog_tags').insert(tagInserts);
+
+        // Delete old R2 files (best effort, after successful DB update)
+        try {
+            if (oldMdHash && oldMdHash !== newMdHash) {
+                await r2Bucket.delete(`blog/${oldMdHash}.md`);
+            }
+            if (oldJsonHash && oldJsonHash !== newJsonHash) {
+                await r2Bucket.delete(`blog/${oldJsonHash}.json`);
+            }
+        } catch (r2Err) {
+            console.error('[API] R2 cleanup error (non-fatal):', r2Err);
+        }
+
+        return new Response(JSON.stringify({
+            success: true,
+            post: {
+                id: slug,
+                title: sanitizedTitle,
+                author: sanitizedAuthor,
+                date: existingPost.created_at,
+                tags
+            }
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+    } catch (err) {
+        console.error('[API] Update post exception:', err);
+        return new Response(JSON.stringify({ error: 'Internal server error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+};

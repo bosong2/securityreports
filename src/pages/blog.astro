@@ -71,6 +71,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/app.bundle.css">
     <link rel="stylesheet" href="/css/news.css">
+    <link rel="stylesheet" href="/css/auth.css">
 
     <style is:global>
         /* Blog-specific styles */
@@ -990,8 +991,7 @@
 
         function editPost() {
             if (currentViewingPost) {
-                // Navigate to submit page with edit mode (future feature)
-                alert('✏️ 수정 기능은 준비 중입니다.');
+                window.location.href = `/blog-submit?edit=${encodeURIComponent(currentViewingPost.id)}`;
             }
         }
 
@@ -1002,8 +1002,12 @@
             if (!confirmed) return;
 
             try {
-                const sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
-                const { data: { session } } = await sb.auth.getSession();
+                const client = window.supabaseClient;
+                if (!client) {
+                    alert('인증 서비스가 준비되지 않았습니다. 페이지를 새로고침해주세요.');
+                    return;
+                }
+                const { data: { session } } = await client.auth.getSession();
                 if (!session) {
                     alert('세션이 만료되었습니다. 다시 로그인해주세요.');
                     return;
@@ -1016,7 +1020,10 @@
                 if (response.ok) {
                     alert('✅ 포스트가 삭제되었습니다.');
                     closePostViewer();
-                    renderPosts(); // Re-render the list
+                    if (window.blogSystem) {
+                        await window.blogSystem.loadPosts();
+                    }
+                    renderPosts();
                 } else {
                     const result = await response.text();
                     let errMsg = '삭제에 실패했습니다.';
