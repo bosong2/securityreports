@@ -683,6 +683,11 @@
             initNewsRotation();
             loadSecurityNews();
         });
+
+        // Re-load news when language is changed
+        window.addEventListener('languageChanged', () => {
+            loadSecurityNews();
+        });
     </script>
 </body>
 

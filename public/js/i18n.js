@@ -688,6 +688,8 @@ class I18n {
     this.currentLang = lang;
     localStorage.setItem('language', lang);
     this.updatePageLanguage();
+    // Notify other scripts that language changed
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
   }
 
   toggleLanguage() {
