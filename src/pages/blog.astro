@@ -849,6 +849,7 @@
     <!-- CDN Libraries (must load first) -->
     <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script is:inline src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 
     <!-- Core Scripts -->
     <script is:inline src="/js/i18n.js" defer></script>
@@ -863,6 +864,32 @@
     <script is:inline src="/js/blog.js" defer></script>
 
     <script is:inline>
+        // Initialize mermaid
+        if (typeof mermaid !== 'undefined') {
+            mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+        }
+
+        // Utility: render mermaid code blocks inside a container
+        async function renderMermaidBlocks(container) {
+            if (typeof mermaid === 'undefined') return;
+            const codeBlocks = container.querySelectorAll('pre code.language-mermaid');
+            for (let i = 0; i < codeBlocks.length; i++) {
+                const code = codeBlocks[i];
+                const pre = code.parentElement;
+                const graphDef = code.textContent;
+                try {
+                    const id = 'mermaid-' + Date.now() + '-' + i;
+                    const { svg } = await mermaid.render(id, graphDef);
+                    const div = document.createElement('div');
+                    div.className = 'mermaid';
+                    div.innerHTML = svg;
+                    pre.replaceWith(div);
+                } catch (e) {
+                    console.warn('Mermaid render error:', e);
+                }
+            }
+        }
+
         // Auth gate for Create Post button + global auth state
         let currentSession = null;
 
@@ -959,6 +986,8 @@
                 if (result && result.content) {
                     const html = marked.parse(result.content);
                     body.innerHTML = `<div class="post-viewer-content">${html}</div>`;
+                    // Render mermaid diagrams
+                    renderMermaidBlocks(body);
                 } else {
                     body.innerHTML = `
                         <div class="post-viewer-loading">
@@ -985,7 +1014,7 @@
 
         function viewReportFromModal() {
             if (currentViewingPost) {
-                closePostViewer();
+                // Don't close modal first — it interferes with the redirect
                 window.blogSystem.viewReport(currentViewingPost.id);
             }
         }

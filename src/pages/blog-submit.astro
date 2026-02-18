@@ -219,6 +219,104 @@
             margin-bottom: 0.5rem;
         }
 
+        /* AI Analysis Section */
+        .ai-analysis-section {
+            display: flex;
+            gap: 1.5rem;
+            align-items: stretch;
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-analysis-upload {
+            flex: 1;
+        }
+
+        .ai-analysis-action {
+            display: flex;
+            align-items: center;
+            min-width: 240px;
+        }
+
+        .ai-generate-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .ai-generate-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .ai-generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .ai-btn-icon {
+            font-size: 2rem;
+            z-index: 1;
+        }
+
+        .ai-btn-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 1;
+        }
+
+        .ai-btn-text strong {
+            font-size: 0.95rem;
+        }
+
+        .ai-btn-text small {
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+
+        .ai-btn-badge {
+            background: rgba(255,255,255,0.25);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            z-index: 1;
+            margin-left: auto;
+        }
+
+        @media (max-width: 768px) {
+            .ai-analysis-section {
+                flex-direction: column;
+            }
+            .ai-analysis-action {
+                min-width: unset;
+            }
+        }
+
         .btn-primary {
             padding: 0.75rem 2rem;
             background: var(--accent-primary);
@@ -782,6 +880,33 @@
 
         <!-- Form -->
         <form id="submitForm" class="form-card">
+            <!-- Step 1: JSON Upload + AI Analysis -->
+            <div class="ai-analysis-section">
+                <div class="ai-analysis-upload">
+                    <label class="form-label required" data-i18n="formJsonFile">JSON 보안 리포트</label>
+                    <div class="file-upload-zone" id="uploadZone">
+                        <div class="file-icon">📄</div>
+                        <div><strong data-i18n="formJsonFileUpload">클릭하여 업로드</strong> <span
+                                data-i18n="formJsonFileDragDrop">또는 드래그 앤 드롭</span></div>
+                        <div class="form-help" data-i18n="formJsonFileHelp">보안 스캔에서 생성된 JSON 파일 (최대 10MB)</div>
+                    </div>
+                    <input type="file" id="jsonFile" accept=".json" style="display: none;">
+                    <div class="json-validation-result" id="jsonValidationResult"></div>
+                </div>
+                <div class="ai-analysis-action">
+                    <button type="button" class="ai-generate-btn" onclick="alert('🔒 유료 기능 준비 중입니다.\n\nAI 분석 레포트 자동 생성 기능은 프리미엄 서비스로 곧 출시됩니다.')">
+                        <span class="ai-btn-icon">🤖</span>
+                        <span class="ai-btn-text">
+                            <strong>AI 분석 레포트 자동 생성</strong>
+                            <small>Premium · JSON 기반 심층 분석</small>
+                        </span>
+                        <span class="ai-btn-badge">PRO</span>
+                    </button>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
             <!-- Title -->
             <div class="form-group">
                 <label class="form-label required" for="title" data-i18n="formTitle">제목</label>
@@ -825,18 +950,7 @@
                 <textarea id="content"></textarea>
             </div>
 
-            <!-- JSON File Upload -->
-            <div class="form-group">
-                <label class="form-label required" data-i18n="formJsonFile">JSON 보안 리포트</label>
-                <div class="file-upload-zone" id="uploadZone">
-                    <div class="file-icon">📄</div>
-                    <div><strong data-i18n="formJsonFileUpload">클릭하여 업로드</strong> <span
-                            data-i18n="formJsonFileDragDrop">또는 드래그 앤 드롭</span></div>
-                    <div class="form-help" data-i18n="formJsonFileHelp">보안 스캔에서 생성된 JSON 파일 (최대 10MB)</div>
-                </div>
-                <input type="file" id="jsonFile" accept=".json" style="display: none;">
-                <div class="json-validation-result" id="jsonValidationResult"></div>
-            </div>
+            <!-- JSON File Upload moved to top -->
 
             <!-- Submit Progress -->
             <div class="submit-progress" id="submitProgress">
@@ -910,8 +1024,16 @@
 
     <!-- EasyMDE Markdown Editor -->
     <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" defer></script>
 
     <script is:inline>
+        // Initialize mermaid for preview rendering
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof mermaid !== 'undefined') {
+                mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+            }
+        });
+
         // =============================================
         // State Management
         // =============================================
@@ -1017,7 +1139,27 @@
                         title: 'MD 파일 불러오기'
                     }
                 ],
-                status: ['lines', 'words', 'cursor']
+                status: ['lines', 'words', 'cursor'],
+                previewRender: function(plainText, preview) {
+                    const html = this.parent.markdown(plainText);
+                    preview.innerHTML = html;
+                    // Render mermaid blocks in preview
+                    if (typeof mermaid !== 'undefined') {
+                        const codeBlocks = preview.querySelectorAll('pre code.language-mermaid');
+                        codeBlocks.forEach(async (code, i) => {
+                            const pre = code.parentElement;
+                            try {
+                                const id = 'mermaid-preview-' + Date.now() + '-' + i;
+                                const { svg } = await mermaid.render(id, code.textContent);
+                                const div = document.createElement('div');
+                                div.className = 'mermaid';
+                                div.innerHTML = svg;
+                                pre.replaceWith(div);
+                            } catch (e) { console.warn('Mermaid preview error:', e); }
+                        });
+                    }
+                    return html;
+                }
             });
 
             easyMDE.codemirror.on('change', updateSubmitButton);
