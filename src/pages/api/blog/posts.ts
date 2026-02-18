@@ -35,8 +35,6 @@ function validateJsonReport(data: any): { valid: boolean; error?: string } {
         /<script/i,
         /javascript:/i,
         /data:text\/html/i,
-        /eval\s*\(/i,
-        /Function\s*\(/i,
     ];
     for (const pattern of dangerousPatterns) {
         if (pattern.test(jsonStr)) {
